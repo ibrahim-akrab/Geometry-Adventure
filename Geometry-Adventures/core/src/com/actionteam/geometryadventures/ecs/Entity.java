@@ -1,4 +1,4 @@
-package com.actionteam.geometryadventures.ECS;
+package com.actionteam.geometryadventures.ecs;
 
 /**
  * Created by ibrahim on 3/18/18.

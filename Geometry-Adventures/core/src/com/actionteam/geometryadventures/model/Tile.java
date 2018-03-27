@@ -11,4 +11,10 @@ public class Tile {
     public float x;
     public float y;
     public float z;
+
+    @Override
+    public String toString(){
+        return "Tile - type: " + type + ", textureName: " + textureName + ", x: " + x +
+                ", y: " + y;
+    }
 }

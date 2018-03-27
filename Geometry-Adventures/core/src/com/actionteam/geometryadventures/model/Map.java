@@ -6,10 +6,6 @@ package com.actionteam.geometryadventures.model;
 import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 
-/**
- * Created by theartful on 3/20/18.
- */
-
 public class Map {
     private final String WALL = "Wall";
     private final String FLOOR = "Floor";

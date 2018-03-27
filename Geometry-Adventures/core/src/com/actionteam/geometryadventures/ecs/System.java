@@ -1,4 +1,4 @@
-package com.actionteam.geometryadventures.ECS;
+package com.actionteam.geometryadventures.ecs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
