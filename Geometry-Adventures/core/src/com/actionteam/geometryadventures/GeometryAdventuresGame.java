@@ -9,15 +9,15 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class GeometryAdventuresGame extends ApplicationAdapter {
 	private ECSManager ecsManager;
+	private GameUtils gameUtils;
 
-	@Override
-	public void resize(int width, int height){
-		ecsManager.fireEvent(ECSEvents.resizeEvent(width,height));
+	public GeometryAdventuresGame(GameUtils gameUtils){
+		this.gameUtils = gameUtils;
 	}
 
 	@Override
 	public void create () {
-		ecsManager = LevelLoader.loadLevel("map");
+		ecsManager = LevelLoader.loadLevel("map", gameUtils);
 	}
 
 	@Override
@@ -29,5 +29,12 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
+		ecsManager.fireEvent(ECSEvents.disposeEvent());
 	}
+
+	@Override
+	public void resize(int width, int height) {
+		ecsManager.fireEvent(ECSEvents.resizeEvent(width,height));
+	}
+
 }

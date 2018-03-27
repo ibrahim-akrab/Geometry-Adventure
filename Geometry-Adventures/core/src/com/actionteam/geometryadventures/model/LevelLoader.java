@@ -1,17 +1,22 @@
 package com.actionteam.geometryadventures.model;
 
+import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Created by theartful on 3/27/18.
@@ -19,20 +24,30 @@ import java.io.FileReader;
 
 public class LevelLoader {
 
-    private static Map loadMap(String levelName){
+    private static Map loadMap(String levelName, GameUtils gameUtils){
         try {
-            File file = Gdx.files.internal(levelName).file();
-            if(!file.exists()) throw new FileNotFoundException();
+            InputStream fis = gameUtils.openFile(levelName);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line;
+            while((line = br.readLine()) != null){
+                sb.append(line);
+                sb.append('\n');
+            }
             Gson gson = new Gson();
-            return gson.fromJson(new FileReader(file), Map.class);
+            return gson.fromJson(sb.toString(), Map.class);
         } catch (FileNotFoundException e) {
-            Gdx.app.log("Error in Level Loader", "File not found");
+            Gdx.app.log("Error in LevelLoader", "File not found");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Gdx.app.log("Error in LevelLoader", "IO Exception");
+            e.printStackTrace();
         }
         return null;
     }
 
-    public static ECSManager loadLevel(String levelName){
-        Map map = loadMap(levelName);
+    public static ECSManager loadLevel(String levelName, GameUtils gameUtils){
+        Map map = loadMap(levelName, gameUtils);
         ECSManager ecsManager = new ECSManager();
 
         for(Tile floorTile : map.getFloorTiles()){
@@ -73,7 +88,7 @@ public class LevelLoader {
         }
 
         // create systems
-        GraphicsSystem graphicsSystem = new GraphicsSystem();
+        GraphicsSystem graphicsSystem = new GraphicsSystem(gameUtils);
         ecsManager.addSystem(graphicsSystem);
 
         return ecsManager;

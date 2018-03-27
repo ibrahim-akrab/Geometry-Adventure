@@ -1,5 +1,6 @@
 package com.actionteam.geometryadventures.systems;
 
+import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
@@ -20,12 +21,15 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private FillViewport viewport;
     private SpriteBatch batch;
     private TextureAtlas textureAtlas;
+    private GameUtils gameUtils;
 
-    public GraphicsSystem() {
+    public GraphicsSystem(GameUtils gameUtils) {
         super(Components.GRAPHICS_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
         viewport = new FillViewport(15,15);
         batch = new SpriteBatch();
-        textureAtlas = new TextureAtlas(Gdx.files.internal("textureatlas/textures.atlas"));
+        this.gameUtils = gameUtils;
+        textureAtlas = new TextureAtlas(gameUtils.
+                getFile("textureatlas/textures.atlas").getPath());
     }
 
     @Override
@@ -39,7 +43,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         viewport.apply();
         batch.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-        for(int entity : entities){
+        for(int entity : entities) {
             GraphicsComponent graphicsComponent = (GraphicsComponent)ecsManager.getComponent(entity,
                     Components.GRAPHICS_COMPONENT_CODE);
             PhysicsComponent physicsComponent = (PhysicsComponent)ecsManager.getComponent(entity,
