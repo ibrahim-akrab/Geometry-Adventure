@@ -4,7 +4,9 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
+import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -69,6 +71,10 @@ public class LevelLoader {
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(collisionComponent, entity);
         }
+
+        // create systems
+        GraphicsSystem graphicsSystem = new GraphicsSystem();
+        ecsManager.addSystem(graphicsSystem);
 
         return ecsManager;
     }

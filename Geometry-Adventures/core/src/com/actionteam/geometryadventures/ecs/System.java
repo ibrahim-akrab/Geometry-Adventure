@@ -23,23 +23,26 @@ public abstract class System {
         entities = new ArrayList<Integer>();
     }
 
-    public void setEcsManager(ECSManager ecsManager){
+    void setEcsManager(ECSManager ecsManager){
         this.ecsManager = ecsManager;
+        ecsManagerAttached();
     }
+
+    protected abstract void ecsManagerAttached();
 
     private void subscribe(int eventCode, ECSEventListener listener){
         eventsMask |= (1L << eventCode);
         ecsManager.subscribe(eventCode, listener);
     }
 
-    public boolean addEntity(int entityId){
+    boolean addEntity(int entityId){
         for(int id : entities){
             if(entityId == id) return false;
         }
         return entities.add(entityId);
     }
 
-    public boolean removeEntity(int entityId){
+    boolean removeEntity(int entityId){
         for(Iterator<Integer> iterator = entities.iterator(); iterator.hasNext();){
             int id = iterator.next();
             if(id == entityId){
@@ -49,7 +52,7 @@ public abstract class System {
         return false;
     }
 
-    public long getComponentsMask(){
+    long getComponentsMask(){
         return componentsMask;
     }
 

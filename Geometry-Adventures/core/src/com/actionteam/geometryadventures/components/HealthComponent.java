@@ -10,6 +10,6 @@ public class HealthComponent extends Component {
     public int health;
 
     public HealthComponent() {
-        super(ComponentsConstants.HEALTH_COMPONENT_ID);
+        super(Components.HEALTH_COMPONENT_CODE);
     }
 }

@@ -19,6 +19,6 @@ public class CollisionComponent extends Component {
     public int id;
 
     public CollisionComponent() {
-        super(ComponentsConstants.COLLISION_COMPONENT_ID);
+        super(Components.COLLISION_COMPONENT_CODE);
     }
 }

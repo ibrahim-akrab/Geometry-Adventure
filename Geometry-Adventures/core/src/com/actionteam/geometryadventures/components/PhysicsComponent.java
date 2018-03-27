@@ -13,7 +13,7 @@ public class PhysicsComponent extends Component {
     public Vector2 acceleration;
 
     public PhysicsComponent() {
-        super(ComponentsConstants.PHYSICS_COMPONENT_ID);
+        super(Components.PHYSICS_COMPONENT_CODE);
         position = new Vector2(0, 0);
         velocity = new Vector2(0, 0);
         acceleration = new Vector2(0, 0);

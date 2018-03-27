@@ -9,33 +9,33 @@ import java.util.Stack;
  */
 
 public class ECSManager {
-    private List<com.actionteam.geometryadventures.ecs.Entity> entities;
+    private List<Entity> entities;
     private List<Component> components;
-    private List<com.actionteam.geometryadventures.ecs.System> systems;
-    private ArrayList<com.actionteam.geometryadventures.ecs.ECSEventListener> listenerLists[];
+    private List<System> systems;
+    private ArrayList<ECSEventListener> listenerLists[];
     private Stack<Integer> entityEmptySlots;
     private Stack<Integer> componentEmptySlots;
 
     public ECSManager(){
-        entities = new ArrayList<com.actionteam.geometryadventures.ecs.Entity>();
+        entities = new ArrayList<Entity>();
         components = new ArrayList<Component>();
-        systems = new ArrayList<com.actionteam.geometryadventures.ecs.System>();
+        systems = new ArrayList<System>();
         entityEmptySlots = new Stack<Integer>();
         componentEmptySlots = new Stack<Integer>();
         listenerLists = new ArrayList[64];
         for(int i = 0; i < 64; i++){
-            listenerLists[i] = new ArrayList<com.actionteam.geometryadventures.ecs.ECSEventListener>();
+            listenerLists[i] = new ArrayList<ECSEventListener>();
         }
     }
 
     public int createEntity(){
         if(entityEmptySlots.empty()) {
-            com.actionteam.geometryadventures.ecs.Entity entity = new com.actionteam.geometryadventures.ecs.Entity(entities.size());
+            Entity entity = new Entity(entities.size());
             entities.add(entity);
             return entity.getId();
         } else {
             int id = entityEmptySlots.pop();
-            com.actionteam.geometryadventures.ecs.Entity entity = new com.actionteam.geometryadventures.ecs.Entity(id);
+            Entity entity = new Entity(id);
             entities.set(id, entity);
             return id;
         }
@@ -49,7 +49,7 @@ public class ECSManager {
         return true;
     }
 
-    private com.actionteam.geometryadventures.ecs.Entity getEntity(int id){
+    private Entity getEntity(int id){
         if(id >= entities.size() || id < 0)
             return null;
         return entities.get(id);
@@ -62,14 +62,14 @@ public class ECSManager {
     }
 
     public Component getComponent(int entityId, int componentCode){
-        com.actionteam.geometryadventures.ecs.Entity entity = entities.get(entityId);
+        Entity entity = entities.get(entityId);
         int componentId = entity.getComponentId(componentCode);
         if(componentId == -1) return null;
         return components.get(componentId);
     }
 
     public boolean addComponent(Component component, int entityId){
-        com.actionteam.geometryadventures.ecs.Entity entity = getEntity(entityId);
+        Entity entity = getEntity(entityId);
         if(entity == null)
             return false;
 
@@ -83,7 +83,7 @@ public class ECSManager {
         }
         component.setId(componentId);
         long oldMask = entity.getComponentsMask();
-        boolean returnValue = entity.addComponent(component.getComponentCode(),componentId);
+        boolean returnValue = entity.addComponent(component.getCode(),componentId);
         long newMask = entity.getComponentsMask();
         updateEntitySystems(entity.getId(), oldMask, newMask);
         return returnValue;
@@ -92,9 +92,9 @@ public class ECSManager {
     public boolean removeComponent(int componentId) {
         Component component = getComponent(componentId);
         if(component == null) return false;
-        com.actionteam.geometryadventures.ecs.Entity entity = null;
-        for(com.actionteam.geometryadventures.ecs.Entity tmpEntity : entities){
-            if(tmpEntity.checkComponentAttached(component.getComponentCode(), componentId)){
+        Entity entity = null;
+        for(Entity tmpEntity : entities){
+            if(tmpEntity.checkComponentAttached(component.getCode(), componentId)){
                 entity = tmpEntity;
                 break;
             }
@@ -103,19 +103,19 @@ public class ECSManager {
         return _removeComponent(component, entity);
     }
 
-    private boolean _removeComponent(Component component, com.actionteam.geometryadventures.ecs.Entity entity){
+    private boolean _removeComponent(Component component, Entity entity){
         if(entity == null) return false;
         if(component == null) return false;
         componentEmptySlots.push(component.getId());
         components.set(component.getId(), null);
         long oldMask = entity.getComponentsMask();
-        boolean returnValue = entity.removeComponent(component.getComponentCode());
+        boolean returnValue = entity.removeComponent(component.getCode());
         long newMask = entity.getComponentsMask();
         updateEntitySystems(entity.getId(), oldMask, newMask);
         return returnValue;
     }
 
-    public boolean addSystem(com.actionteam.geometryadventures.ecs.System system){
+    public boolean addSystem(System system){
         if(system == null) return false;
         systems.add(system);
         system.setEcsManager(this);
@@ -123,8 +123,8 @@ public class ECSManager {
         return true;
     }
 
-    private void updateSystemEntities(com.actionteam.geometryadventures.ecs.System system){
-        for(com.actionteam.geometryadventures.ecs.Entity entity : entities){
+    private void updateSystemEntities(System system){
+        for(Entity entity : entities){
             if((entity.getComponentsMask() & system.getComponentsMask()) == system.getComponentsMask()){
                 system.addEntity(entity.getId());
             }
@@ -132,7 +132,7 @@ public class ECSManager {
     }
 
     private void updateEntitySystems(int entityId, long oldMask, long newMask){
-        for(com.actionteam.geometryadventures.ecs.System system : systems){
+        for(System system : systems){
             boolean oldQualify = ((system.getComponentsMask() & oldMask) == system.getComponentsMask());
             boolean newQualify = ((system.getComponentsMask() & newMask) == system.getComponentsMask());
             if(oldQualify && !newQualify){
@@ -144,29 +144,29 @@ public class ECSManager {
     }
 
 
-    public boolean subscribe(int eventCode, com.actionteam.geometryadventures.ecs.ECSEventListener listener) {
+    public boolean subscribe(int eventCode, ECSEventListener listener) {
         if(eventCode < 0 || eventCode > 63) {
             return false;
         }
         return listenerLists[eventCode].add(listener);
     }
 
-    public boolean unsubscribe(int eventCode, com.actionteam.geometryadventures.ecs.ECSEventListener listener) {
+    public boolean unsubscribe(int eventCode, ECSEventListener listener) {
         if(eventCode < 0 || eventCode > 63) {
             return false;
         }
         return listenerLists[eventCode].remove(listener);
     }
 
-    public void fireEvent(com.actionteam.geometryadventures.ecs.ECSEvent event) {
+    public void fireEvent(ECSEvent event) {
         int eventCode = event.eventCode;
-        for(com.actionteam.geometryadventures.ecs.ECSEventListener listener : listenerLists[eventCode]) {
-            listener.update(eventCode, event.message);
+        for(ECSEventListener listener : listenerLists[eventCode]) {
+            listener.handle(event.eventCode, event.message);
         }
     }
 
     public void update(float dt){
-        for(com.actionteam.geometryadventures.ecs.System system : systems){
+        for(System system : systems){
             system.update(dt);
         }
     }

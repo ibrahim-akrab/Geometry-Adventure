@@ -13,6 +13,12 @@ public class GraphicsComponent extends Component {
     public float height;
 
     public GraphicsComponent() {
-        super(ComponentsConstants.GRAPHICS_COMPONENT_ID);
+        super(Components.GRAPHICS_COMPONENT_CODE);
+    }
+
+    @Override
+    public String toString(){
+        return "GraphicsComponent - textureName:" + textureName + ", width: " + width +
+                ", height: " + height;
     }
 }
