@@ -2,10 +2,13 @@ package com.actionteam.geometryadventures.model;
 
 import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.CollisionComponent;
+import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
+import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
+import com.actionteam.geometryadventures.systems.PhysicsSystem;
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 
@@ -89,10 +92,28 @@ public class LevelLoader {
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(gameUtils);
+        PhysicsSystem physicsSystem = new PhysicsSystem();
+        ControlSystem controlSystem = new ControlSystem();
+        Gdx.input.setInputProcessor(controlSystem);
+
+        // temporary
+        int entity = ecsManager.createEntity();
+        GraphicsComponent gc = new GraphicsComponent();
+        gc.textureName = "man";
+        gc.textureIndex = -1;
+        gc.height = 1;
+        gc.width = 1;
+        PhysicsComponent pc = new PhysicsComponent();
+        ControlComponent cc = new ControlComponent();
+        ecsManager.addComponent(pc, entity);
+        ecsManager.addComponent(cc, entity);
+        ecsManager.addComponent(gc, entity);
+
         ecsManager.addSystem(graphicsSystem);
+        ecsManager.addSystem(physicsSystem);
+        ecsManager.addSystem(controlSystem);
 
         return ecsManager;
     }
-
 
 }

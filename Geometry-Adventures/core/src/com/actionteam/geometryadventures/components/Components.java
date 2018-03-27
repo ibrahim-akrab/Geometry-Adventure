@@ -9,4 +9,5 @@ public class Components {
     public static final int HEALTH_COMPONENT_CODE = 1;
     public static final int PHYSICS_COMPONENT_CODE = 2;
     public static final int COLLISION_COMPONENT_CODE = 3;
+    public static final int CONTROL_COMPONENT_CODE = 4;
 }

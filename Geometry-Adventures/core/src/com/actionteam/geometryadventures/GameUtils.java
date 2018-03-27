@@ -11,7 +11,6 @@ import java.io.InputStream;
 
 public abstract class GameUtils {
     // used for txt files
-    public abstract InputStream openFile(String fileName) throws FileNotFoundException,
-            IOException;
+    public abstract InputStream openFile(String fileName) throws IOException;
     public abstract File getFile(String fileName);
 }
