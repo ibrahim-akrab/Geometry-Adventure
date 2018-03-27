@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
+import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
@@ -90,12 +91,6 @@ public class LevelLoader {
             ecsManager.addComponent(collisionComponent, entity);
         }
 
-        // create systems
-        GraphicsSystem graphicsSystem = new GraphicsSystem(gameUtils);
-        PhysicsSystem physicsSystem = new PhysicsSystem();
-        ControlSystem controlSystem = new ControlSystem();
-        Gdx.input.setInputProcessor(controlSystem);
-
         // temporary
         int entity = ecsManager.createEntity();
         GraphicsComponent gc = new GraphicsComponent();
@@ -109,9 +104,17 @@ public class LevelLoader {
         ecsManager.addComponent(cc, entity);
         ecsManager.addComponent(gc, entity);
 
+        // create systems
+        GraphicsSystem graphicsSystem = new GraphicsSystem(gameUtils);
+        PhysicsSystem physicsSystem = new PhysicsSystem();
+        ControlSystem controlSystem = new ControlSystem();
+        HudSystem hudSystem = new HudSystem();
+        Gdx.input.setInputProcessor(controlSystem);
+
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
         ecsManager.addSystem(controlSystem);
+        ecsManager.addSystem(hudSystem);
 
         return ecsManager;
     }

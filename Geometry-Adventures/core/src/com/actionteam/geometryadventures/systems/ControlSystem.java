@@ -1,30 +1,38 @@
 package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.components.Components;
+import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
+import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 /**
  * Created by theartful on 3/27/18.
  */
 
-public class ControlSystem extends System implements InputProcessor {
-
-    private float initialX;
-    private float initialY;
-    private boolean isTouchDown;
-    private int speed;
+public class ControlSystem extends System implements InputProcessor, ECSEventListener {
 
     private GraphicsComponent graphicsComponent;
     private PhysicsComponent physicsComponent;
+    private ControlComponent controlComponent;
+
+    private int leftPointer;
+    private int rightPointer;
 
     public ControlSystem() {
         super(Components.PHYSICS_COMPONENT_CODE, Components.CONTROL_COMPONENT_CODE,
                 Components.GRAPHICS_COMPONENT_CODE);
-        isTouchDown = false;
-        speed = 3;
+        leftPointer = -1;
+        rightPointer = -1;
+    }
+
+    @Override
+    protected void ecsManagerAttached() {
+        ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
     }
 
     @Override
@@ -33,6 +41,10 @@ public class ControlSystem extends System implements InputProcessor {
                 ecsManager.getComponent(entityId, Components.GRAPHICS_COMPONENT_CODE);
         physicsComponent = (PhysicsComponent)
                 ecsManager.getComponent(entityId, Components.PHYSICS_COMPONENT_CODE);
+        controlComponent = (ControlComponent)
+                ecsManager.getComponent(entityId, Components.CONTROL_COMPONENT_CODE);
+        controlComponent.bigCircleRadius = (float) (0.06 * Math.sqrt(Gdx.graphics.getWidth() *
+                Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
     }
 
     @Override
@@ -42,28 +54,71 @@ public class ControlSystem extends System implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        isTouchDown = true;
-        initialX = screenX;
-        initialY = screenY;
+        if(screenX < Gdx.graphics.getWidth() / 2) {
+            Gdx.app.log("ControlSystem", "left touch");
+            if(controlComponent.isLeftTouchDown) return true;
+            controlComponent.isLeftTouchDown = true;
+            controlComponent.leftInitialX = screenX;
+            controlComponent.leftInitialY = screenY;
+            controlComponent.leftX = screenX;
+            controlComponent.leftY = screenY;
+            leftPointer = pointer;
+        } else {
+            Gdx.app.log("ControlSystem", "right touch");
+            if(controlComponent.isRightTouchDown) return true;
+            controlComponent.isRightTouchDown = true;
+            controlComponent.rightInitialX = screenX;
+            controlComponent.rightInitialY = screenY;
+            controlComponent.rightX = screenX;
+            controlComponent.rightY = screenY;
+            rightPointer = pointer;
+        }
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        isTouchDown = false;
-        physicsComponent.velocity.x = 0;
-        physicsComponent.velocity.y = 0;
+        if(pointer == leftPointer) {
+            controlComponent.isLeftTouchDown = false;
+            physicsComponent.velocity.x = 0;
+            physicsComponent.velocity.y = 0;
+            leftPointer = -1;
+        }
+        else if(pointer == rightPointer) {
+            controlComponent.isRightTouchDown = false;
+            rightPointer = -1;
+        }
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(!isTouchDown) return false;
-        float angle = (float)Math.atan2(screenY - initialY, screenX - initialX);
+        if(pointer == leftPointer){
+            leftTouchDragged(screenX, screenY);
+        } else {
+            rightTouchDragged(screenX, screenY);
+        }
+        return true;
+    }
+
+    private void leftTouchDragged(int screenX, int screenY) {
+        controlComponent.leftX = screenX;
+        controlComponent.leftY = screenY;
+        float deltaX = screenX - controlComponent.leftInitialX;
+        float deltaY = screenY - controlComponent.leftInitialY;
+        float speed = Math.min((deltaX * deltaX + deltaY * deltaY) /
+                (controlComponent.bigCircleRadius * controlComponent.bigCircleRadius), 1 ) *
+                controlComponent.maximumSpeed;
+        float angle = (float)Math.atan2(screenY - controlComponent.leftInitialY,
+                screenX - controlComponent.leftInitialX);
         physicsComponent.velocity.x = (float) (speed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (-speed * Math.sin(angle));
         graphicsComponent.rotationAngle = 360 - (float)Math.toDegrees(angle);
-        return true;
+    }
+
+    private void rightTouchDragged(int screenX, int screenY) {
+        controlComponent.rightX = screenX;
+        controlComponent.rightY = screenY;
     }
 
     @Override
@@ -92,4 +147,20 @@ public class ControlSystem extends System implements InputProcessor {
         return false;
     }
 
+    @Override
+    public boolean handle(int eventCode, Object message) {
+        switch (eventCode) {
+            case ECSEvents.RESIZE_EVENT:
+                int[] size = (int[]) message;
+                resize(size[0], size[1]);
+                break;
+        }
+        return false;
+    }
+
+    private void resize(int width, int height) {
+        if(controlComponent != null)
+        controlComponent.bigCircleRadius =
+                (float) (0.075 * Math.sqrt(width * width + height * height));
+    }
 }

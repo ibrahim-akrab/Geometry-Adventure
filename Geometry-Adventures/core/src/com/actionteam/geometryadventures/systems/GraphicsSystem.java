@@ -7,7 +7,6 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -35,7 +34,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     @Override
     protected void ecsManagerAttached() {
         // subscribe to events
-        ecsManager.subscribe(ECSEvents.RESIZE_EVENT_CODE, this);
+        ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
     }
 
     @Override
@@ -67,14 +66,13 @@ public class GraphicsSystem extends System implements ECSEventListener {
             batch.draw(textureAtlas.findRegion(graphicsComponent.textureName,
                     graphicsComponent.textureIndex), physicsComponent.position.x,
                     physicsComponent.position.y, graphicsComponent.width, graphicsComponent.height);
-
         }
     }
 
     @Override
     public boolean handle(int eventCode, Object message) {
         switch(eventCode){
-            case ECSEvents.RESIZE_EVENT_CODE:
+            case ECSEvents.RESIZE_EVENT:
                 int[] size = (int[])message;
                 resize(size[0], size[1]);
                 break;
