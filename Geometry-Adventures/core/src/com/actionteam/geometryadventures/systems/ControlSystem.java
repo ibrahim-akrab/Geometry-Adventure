@@ -49,7 +49,8 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
 
     @Override
     public void update(float dt) {
-
+        ecsManager.fireEvent(ECSEvents.playerMovedEvent(physicsComponent.position.x,
+                physicsComponent.position.y));
     }
 
     @Override

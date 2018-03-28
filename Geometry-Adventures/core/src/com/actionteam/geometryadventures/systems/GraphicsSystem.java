@@ -35,6 +35,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     protected void ecsManagerAttached() {
         // subscribe to events
         ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
+        ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
     }
 
     @Override
@@ -73,11 +74,18 @@ public class GraphicsSystem extends System implements ECSEventListener {
     public boolean handle(int eventCode, Object message) {
         switch(eventCode){
             case ECSEvents.RESIZE_EVENT:
-                int[] size = (int[])message;
+                int[] size = (int[]) message;
                 resize(size[0], size[1]);
                 break;
+            case ECSEvents.PLAYER_MOVED_EVENT:
+                float[] position = (float[]) message;
+                updateCameraPosition(position[0], position[1]);
         }
         return false;
+    }
+
+    private void updateCameraPosition(float x, float y) {
+        viewport.getCamera().position.set(x, y, 0);
     }
 
     private void resize(int width, int height) {
