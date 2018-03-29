@@ -8,14 +8,14 @@ import com.actionteam.geometryadventures.ecs.Component;
 
 public class ControlComponent extends Component {
 
-    public float bigCircleRadius;
-
+    public float leftBigCircleRadius;
     public float leftInitialX;
     public float leftInitialY;
     public float leftX;
     public float leftY;
     public boolean isLeftTouchDown;
 
+    public float rightBigCircleRadius;
     public float rightInitialX;
     public float rightInitialY;
     public float rightX;
