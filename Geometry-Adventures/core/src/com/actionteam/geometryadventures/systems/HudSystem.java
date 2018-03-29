@@ -102,6 +102,6 @@ public class HudSystem extends System implements ECSEventListener{
 
     private void resize(int width, int height){
         viewport.update(width, height, true);
-        smallCircleRadius = 0.5f * controlComponent.bigCircleRadius;
+        smallCircleRadius = 0.7f * controlComponent.bigCircleRadius;
     }
 }

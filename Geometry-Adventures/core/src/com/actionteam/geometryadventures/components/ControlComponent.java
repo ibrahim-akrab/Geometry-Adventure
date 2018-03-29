@@ -22,12 +22,12 @@ public class ControlComponent extends Component {
     public float rightY;
     public boolean isRightTouchDown;
 
-    public int maximumSpeed;
+    public float maximumSpeed;
 
     public ControlComponent() {
         super(Components.CONTROL_COMPONENT_CODE);
         isLeftTouchDown = false;
         isRightTouchDown = false;
-        maximumSpeed = 3;
+        maximumSpeed = 3.5f;
     }
 }

@@ -43,8 +43,9 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                 ecsManager.getComponent(entityId, Components.PHYSICS_COMPONENT_CODE);
         controlComponent = (ControlComponent)
                 ecsManager.getComponent(entityId, Components.CONTROL_COMPONENT_CODE);
-        controlComponent.bigCircleRadius = (float) (0.06 * Math.sqrt(Gdx.graphics.getWidth() *
+        controlComponent.bigCircleRadius = (float) (0.04 * Math.sqrt(Gdx.graphics.getWidth() *
                 Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
+        controlComponent.maximumSpeed = 3.5f;
     }
 
     @Override
@@ -162,6 +163,6 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     private void resize(int width, int height) {
         if(controlComponent != null)
         controlComponent.bigCircleRadius =
-                (float) (0.075 * Math.sqrt(width * width + height * height));
+                (float) (0.04 * Math.sqrt(width * width + height * height));
     }
 }

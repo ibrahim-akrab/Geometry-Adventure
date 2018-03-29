@@ -2,7 +2,6 @@ package com.actionteam.geometryadventures;
 
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.actionteam.geometryadventures.model.LevelLoader;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,7 +17,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		//TexturePacker.process("mysprites/", "textureatlas/", "textures");
-		ecsManager = LevelLoader.loadLevel("map", gameUtils);
+		ecsManager = gameUtils.loadLevel("map");
 	}
 
 	@Override
