@@ -15,7 +15,7 @@ public class Map {
     private ArrayList<Tile> wallTiles;
     private ArrayList<Tile> enemyTiles;
 
-    public Map(){
+    public Map() {
         floorTiles = new ArrayList<Tile>();
         wallTiles = new ArrayList<Tile>();
         enemyTiles = new ArrayList<Tile>();

@@ -10,4 +10,5 @@ public class Components {
     public static final int PHYSICS_COMPONENT_CODE = 2;
     public static final int COLLISION_COMPONENT_CODE = 3;
     public static final int CONTROL_COMPONENT_CODE = 4;
+    public static final int WEAPON_COMPONENT_CODE= 5;
 }
