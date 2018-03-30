@@ -47,23 +47,24 @@ public class HudSystem extends System implements ECSEventListener{
 
         if(controlComponent.isLeftTouchDown) {
             drawController(controlComponent.leftInitialX, controlComponent.leftInitialY,
-                    controlComponent.leftX, controlComponent.leftY);
+                    controlComponent.leftX, controlComponent.leftY, controlComponent.leftBigCircleRadius,
+                    smallCircleRadius);
         }
         if(controlComponent.isRightTouchDown) {
             drawController(controlComponent.rightInitialX, controlComponent.rightInitialY,
-                    controlComponent.rightX, controlComponent.rightY);
+                    controlComponent.rightX, controlComponent.rightY, controlComponent.rightBigCircleRadius,
+                    smallCircleRadius);
         }
     }
 
     private void drawController(float initialX, float initialY,
-                                float x, float y) {
+                                float x, float y, float bigRadius, float smallRadius) {
         float deltaX = x - initialX;
         float deltaY = y - initialY;
         float r = deltaX * deltaX + deltaY * deltaY;
         float alpha = 1;
-        if(r > controlComponent.bigCircleRadius * controlComponent.bigCircleRadius) {
-            alpha = (float)Math.sqrt(controlComponent.bigCircleRadius *
-                    controlComponent.bigCircleRadius / r);
+        if(r > bigRadius * bigRadius) {
+            alpha = (float)Math.sqrt(bigRadius * bigRadius / r);
         }
         x = x - deltaX + alpha * deltaX;
         y = y - deltaY + alpha * deltaY;
@@ -74,18 +75,17 @@ public class HudSystem extends System implements ECSEventListener{
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.circle(initialX,
-                viewport.getScreenHeight() - initialY,
-                controlComponent.bigCircleRadius);
+                viewport.getScreenHeight() - initialY, bigRadius);
         shapeRenderer.circle(x,
                 viewport.getScreenHeight() - y,
-                smallCircleRadius);
+                smallRadius);
         shapeRenderer.end();
 
         shapeRenderer.setColor(new Color(1,1,1,0.1f));
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.circle(initialX,
-                viewport.getScreenHeight() - initialY, controlComponent.bigCircleRadius);
-        shapeRenderer.circle(x,viewport.getScreenHeight() - y, smallCircleRadius);
+                viewport.getScreenHeight() - initialY, bigRadius);
+        shapeRenderer.circle(x,viewport.getScreenHeight() - y, smallRadius);
         shapeRenderer.end();
     }
 
@@ -102,6 +102,6 @@ public class HudSystem extends System implements ECSEventListener{
 
     private void resize(int width, int height){
         viewport.update(width, height, true);
-        smallCircleRadius = 0.7f * controlComponent.bigCircleRadius;
+        smallCircleRadius = 0.7f * controlComponent.leftBigCircleRadius;
     }
 }

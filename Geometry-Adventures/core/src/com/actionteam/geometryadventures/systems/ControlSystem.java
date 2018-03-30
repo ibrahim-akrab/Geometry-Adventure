@@ -43,7 +43,9 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                 ecsManager.getComponent(entityId, Components.PHYSICS_COMPONENT_CODE);
         controlComponent = (ControlComponent)
                 ecsManager.getComponent(entityId, Components.CONTROL_COMPONENT_CODE);
-        controlComponent.bigCircleRadius = (float) (0.04 * Math.sqrt(Gdx.graphics.getWidth() *
+        controlComponent.leftBigCircleRadius = (float) (0.04 * Math.sqrt(Gdx.graphics.getWidth() *
+                Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
+        controlComponent.rightBigCircleRadius = (float) (0.18 * Math.sqrt(Gdx.graphics.getWidth() *
                 Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
         controlComponent.maximumSpeed = 3.5f;
     }
@@ -109,18 +111,27 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         float deltaX = screenX - controlComponent.leftInitialX;
         float deltaY = screenY - controlComponent.leftInitialY;
         float speed = Math.min((deltaX * deltaX + deltaY * deltaY) /
-                (controlComponent.bigCircleRadius * controlComponent.bigCircleRadius), 1 ) *
+                (controlComponent.leftBigCircleRadius * controlComponent.leftBigCircleRadius), 1 ) *
                 controlComponent.maximumSpeed;
-        float angle = (float)Math.atan2(screenY - controlComponent.leftInitialY,
-                screenX - controlComponent.leftInitialX);
+        float angle = (float)Math.atan2(deltaY, deltaX);
         physicsComponent.velocity.x = (float) (speed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (-speed * Math.sin(angle));
-        graphicsComponent.rotationAngle = 360 - (float)Math.toDegrees(angle);
+        physicsComponent.rotationAngle = 360 - (float)Math.toDegrees(angle);
+
     }
 
     private void rightTouchDragged(int screenX, int screenY) {
         controlComponent.rightX = screenX;
         controlComponent.rightY = screenY;
+        float deltaX = screenX - controlComponent.rightInitialX;
+        float deltaY = screenY - controlComponent.rightInitialY;
+        float angle = (float)Math.atan2(deltaY, deltaX);
+        physicsComponent.rotationAngle = 360 - (float)Math.toDegrees(angle);
+        if (deltaX * deltaX + deltaY * deltaY >
+                controlComponent.rightBigCircleRadius * controlComponent.rightBigCircleRadius){
+
+        }
+
     }
 
     @Override
@@ -161,8 +172,11 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     }
 
     private void resize(int width, int height) {
-        if(controlComponent != null)
-        controlComponent.bigCircleRadius =
-                (float) (0.04 * Math.sqrt(width * width + height * height));
+        if(controlComponent != null) {
+            controlComponent.leftBigCircleRadius =
+                    (float) (0.04 * Math.sqrt(width * width + height * height));
+            controlComponent.rightBigCircleRadius =
+                    (float) (0.08 * Math.sqrt(width * width + height * height));
+        }
     }
 }

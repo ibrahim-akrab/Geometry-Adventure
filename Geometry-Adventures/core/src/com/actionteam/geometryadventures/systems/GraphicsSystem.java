@@ -55,14 +55,14 @@ public class GraphicsSystem extends System implements ECSEventListener {
 
     private void draw(GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
         // Gdx.app.log("GraphcisSystem", "Drawing " + graphicsComponent);
-        if(graphicsComponent.rotationAngle != 0) {
+        if(physicsComponent.rotationAngle != 0) {
             batch.draw(textureAtlas.findRegion(graphicsComponent.textureName,
                     graphicsComponent.textureIndex), physicsComponent.position.x,
                     physicsComponent.position.y,
                     graphicsComponent.width / 2f,
                     +graphicsComponent.height / 2f,
                     graphicsComponent.width, graphicsComponent.height,
-                    1, 1, graphicsComponent.rotationAngle);
+                    1, 1, physicsComponent.rotationAngle);
         } else {
             batch.draw(textureAtlas.findRegion(graphicsComponent.textureName,
                     graphicsComponent.textureIndex), physicsComponent.position.x,
