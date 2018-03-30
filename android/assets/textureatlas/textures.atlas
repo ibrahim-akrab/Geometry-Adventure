@@ -1,0 +1,328 @@
+
+textures.png
+size: 1024,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+grass
+  rotate: false
+  xy: 2, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+grass
+  rotate: false
+  xy: 2, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+grass
+  rotate: false
+  xy: 68, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+grass
+  rotate: false
+  xy: 2, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+icy
+  rotate: false
+  xy: 68, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+icy
+  rotate: false
+  xy: 134, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+icy
+  rotate: false
+  xy: 68, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+icy
+  rotate: false
+  xy: 134, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+man
+  rotate: false
+  xy: 2, 2
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+wall
+  rotate: false
+  xy: 200, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+wall
+  rotate: false
+  xy: 134, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+wall
+  rotate: false
+  xy: 200, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+wall
+  rotate: false
+  xy: 266, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+wall
+  rotate: false
+  xy: 200, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 4
+wall
+  rotate: false
+  xy: 266, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 5
+wall
+  rotate: false
+  xy: 332, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 6
+wall
+  rotate: false
+  xy: 266, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 7
+wall
+  rotate: false
+  xy: 332, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 8
+wall
+  rotate: false
+  xy: 398, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 9
+wall
+  rotate: false
+  xy: 332, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 10
+wall
+  rotate: false
+  xy: 398, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 11
+wall
+  rotate: false
+  xy: 464, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 12
+wall
+  rotate: false
+  xy: 398, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 13
+wall
+  rotate: false
+  xy: 464, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 14
+wall
+  rotate: false
+  xy: 530, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 15
+wall
+  rotate: false
+  xy: 464, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 16
+wall
+  rotate: false
+  xy: 530, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 17
+wall
+  rotate: false
+  xy: 596, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 18
+wall
+  rotate: false
+  xy: 530, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 19
+wall
+  rotate: false
+  xy: 596, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 20
+wall
+  rotate: false
+  xy: 662, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 21
+wall
+  rotate: false
+  xy: 596, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 22
+wall
+  rotate: false
+  xy: 662, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 23
+wall
+  rotate: false
+  xy: 728, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 24
+wall
+  rotate: false
+  xy: 662, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 25
+wall
+  rotate: false
+  xy: 728, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 26
+wall
+  rotate: false
+  xy: 794, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 27
+wall
+  rotate: false
+  xy: 728, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 28
+wall
+  rotate: false
+  xy: 794, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 29
+wall
+  rotate: false
+  xy: 860, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 30
+wall
+  rotate: false
+  xy: 794, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 31
+wall
+  rotate: false
+  xy: 860, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 32
+wood
+  rotate: false
+  xy: 926, 179
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+wood
+  rotate: false
+  xy: 860, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+wood
+  rotate: false
+  xy: 860, 47
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+wood
+  rotate: false
+  xy: 926, 113
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
