@@ -15,6 +15,7 @@ public class CollisionComponent extends Component {
     public float height;
     public float radius;
 
+
     public long mask;
     public int id;
 

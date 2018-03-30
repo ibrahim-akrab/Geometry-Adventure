@@ -7,6 +7,7 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.Tile;
+import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
@@ -81,7 +82,8 @@ public abstract class GameUtils {
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.width = 1;
             collisionComponent.height = 1;
-
+            collisionComponent.id = 0;
+            collisionComponent.mask = ~0;
             //TODO: Collision component needs id and mask
 
             ecsManager.addComponent(physicsComponent, entity);
@@ -98,21 +100,30 @@ public abstract class GameUtils {
         gc.width = 1;
         PhysicsComponent pc = new PhysicsComponent();
         ControlComponent cc = new ControlComponent();
+        CollisionComponent col = new CollisionComponent();
+        col.width = 0.7f;
+        col.height = 0.7f;
+        col.shapeType = CollisionComponent.RECTANGLE;
+        col.id = 0;
+        col.mask = ~0;
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
         ecsManager.addComponent(gc, entity);
+        ecsManager.addComponent(col, entity);
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);
         PhysicsSystem physicsSystem = new PhysicsSystem();
         ControlSystem controlSystem = new ControlSystem();
         HudSystem hudSystem = new HudSystem();
+        CollisionSystem collisionSystem = new CollisionSystem();
         Gdx.input.setInputProcessor(controlSystem);
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
         ecsManager.addSystem(controlSystem);
         ecsManager.addSystem(hudSystem);
+        ecsManager.addSystem(collisionSystem);
 
         return ecsManager;
     }
