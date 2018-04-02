@@ -33,8 +33,8 @@ public class EnemySystem extends System implements ECSEventListener {
 
     private void update(EnemyComponent ec, PhysicsComponent pc, float dt, int entity)
     {
+        /* FSM (Flying Spaghetti Monster) below. */
         Gdx.app.log("EnemySystem", "Updating shit " + dt);
-        /* This is a finite state machine. */
         switch (ec.currentState)
         {
             case STATE_COMBAT:
@@ -72,6 +72,25 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    private void checkPlayerVisibility(float playerX, float playerY) {
+        for(int entity : entities) {
+            EnemyComponent ec = (EnemyComponent)ecsManager.getComponent(entity,
+                    Components.ENEMY_COMPONENT_CODE);
+            PhysicsComponent pc = (PhysicsComponent)ecsManager.getComponent(entity,
+                    Components.PHYSICS_COMPONENT_CODE);
+
+            float deltaX = playerX - pc.position.x;
+            float deltaY = playerY - pc.position.y;
+            // Is the player in this enemy's view arc?
+            float lookAtAngle = (float)Math.atan2(deltaY, deltaX);
+            if (Math.abs(lookAtAngle - pc.rotationAngle) > ec.fieldOfView ||
+                    deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
+                continue;
+            // If we reached here, the player's in our view arc
+            // check for collisions between the line of sight and any vision-concealing object.
+        }
+    }
+
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT,this);
@@ -82,6 +101,10 @@ public class EnemySystem extends System implements ECSEventListener {
     public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
             case ECSEvents.PLAYER_MOVED_EVENT:
+                float[] position = (float[]) message;
+                Gdx.app.log("EnemySystem","Player position: " + position[0] + " " + position[1] + ").");
+                break;
+            case ECSEvents.LOUD_WEAPON_FIRED_EVENT:
                 break;
             default:
                 break;

@@ -20,6 +20,8 @@ public class EnemyComponent extends Component {
     public float remainingTime;
     public EnemyState currentState;
     public float speed; // Not sure if including speed here (and not in Physics) is good.
+    public float fieldOfView;
+    public float lineOfSightLength;
 
     public EnemyComponent() {
         super(Components.ENEMY_COMPONENT_CODE);
@@ -27,6 +29,7 @@ public class EnemyComponent extends Component {
         currentPointIndex = 0;
         remainingTime = 0;
         speed = 1.0f;
+        fieldOfView = 57.0f;
         currentState = EnemyState.STATE_WAITING;
     }
 }

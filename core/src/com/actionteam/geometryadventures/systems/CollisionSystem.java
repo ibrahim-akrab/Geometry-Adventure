@@ -126,8 +126,4 @@ public class CollisionSystem extends System implements ECSEventListener{
         boolean collided = (radSum <= dist);
         return collided;
     }
-
-
-
-
 }
