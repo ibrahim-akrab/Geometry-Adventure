@@ -9,12 +9,12 @@ import com.actionteam.geometryadventures.ecs.Component;
 public class CollisionComponent extends Component {
     public static final int CIRCLE = 0;
     public static final int RECTANGLE = 1;
+    public static boolean blocksVision = true;
 
     public int shapeType;
     public float width;
     public float height;
     public float radius;
-
 
     public long mask;
     public int id;

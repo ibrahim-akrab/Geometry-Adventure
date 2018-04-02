@@ -3,6 +3,7 @@ import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
+import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
@@ -86,8 +87,8 @@ public class EnemySystem extends System implements ECSEventListener {
             if (Math.abs(lookAtAngle - pc.rotationAngle) > ec.fieldOfView ||
                     deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
                 continue;
-            // If we reached here, the player's in our view arc
-            // check for collisions between the line of sight and any vision-concealing object.
+            // If we reach here, the player's in our view arc. We need to do collision detection on
+            // the player-enemy ray.
         }
     }
 

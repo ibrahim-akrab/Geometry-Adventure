@@ -3,11 +3,12 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by Omnia- on 30/03/2018.
@@ -18,7 +19,6 @@ import com.badlogic.gdx.Gdx;
 public class CollisionSystem extends System implements ECSEventListener{
 
     public CollisionSystem() { super(Components.COLLISION_COMPONENT_CODE ,Components.PHYSICS_COMPONENT_CODE);}
-
 
 
     @Override
@@ -125,5 +125,40 @@ public class CollisionSystem extends System implements ECSEventListener{
         double radSum = Math.pow(CC1.radius + CC2.radius, 2);
         boolean collided = (radSum <= dist);
         return collided;
+    }
+
+    public boolean lineSegmentCollision(float startX, float startY, float endX, float endY)
+    {
+        for (int e : entities)
+        {
+            CollisionComponent cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
+            if (!cc.blocksVision)
+                continue;
+            PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
+            Vector2 start = new Vector2(startX, startY);
+            Vector2 end = new Vector2(endX, endY);
+            switch(cc.shapeType) {
+                case CollisionComponent.CIRCLE:
+                    if (Intersector.intersectSegmentCircle(start, end, pc.position, cc.radius*cc.radius))
+                        return true;
+                    break;
+                case CollisionComponent.RECTANGLE:
+                    float xmin = pc.position.x - cc.width/2;
+                    float xmax = pc.position.x + cc.width/2;
+                    float ymin = pc.position.y - cc.height/2;
+                    float ymax = pc.position.y + cc.height/2;
+                    // check intersection with all four lines.
+                    if (   Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymin, xmin, ymax, null)
+                        || Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymin, xmax, ymin, null)
+                        || Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymax, xmax, ymax, null)
+                        || Intersector.intersectSegments(startX, startY, endX, endY, xmax, ymin, xmax, ymax, null))
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+        }
+        return false;
     }
 }
