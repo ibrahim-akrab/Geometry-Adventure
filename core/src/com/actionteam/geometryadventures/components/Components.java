@@ -12,5 +12,5 @@ public class Components {
     public static final int CONTROL_COMPONENT_CODE = 4;
     public static final int WEAPON_COMPONENT_CODE= 5;
     public static final int LETHAL_COMPONENT_CODE= 6;
-
+    public static final int ENEMY_COMPONENT_CODE = 7;
 }
