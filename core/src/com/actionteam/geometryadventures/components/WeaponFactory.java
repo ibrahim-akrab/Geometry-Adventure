@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import java.util.ArrayList;
 
 /**
- * Created by ibrahim on 3/29/18.
+ * Created by Ibrahim on 3/29/18.
  */
 
 public class WeaponFactory {
