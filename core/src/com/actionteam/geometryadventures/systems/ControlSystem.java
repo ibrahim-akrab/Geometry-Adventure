@@ -58,6 +58,8 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     public void update(float dt) {
         ecsManager.fireEvent(ECSEvents.playerMovedEvent(physicsComponent.position.x,
                 physicsComponent.position.y));
+        if (controlComponent.isRightTouchDown)
+            rightTouchDragged((int) controlComponent.rightX, (int) controlComponent.rightY);
     }
 
     @Override
@@ -137,10 +139,9 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                 controlComponent.rightBigCircleRadius * controlComponent.rightBigCircleRadius) {
             Component weaponComponent = ecsManager.getComponent(entityId, Components.WEAPON_COMPONENT_CODE);
             if (weaponComponent != null) {
-                Gdx.app.log("weapon", "fired");
+//                Gdx.app.log("weapon", "fired");
                 Vector2 position = physicsComponent.position;
-                ecsManager.fireEvent(ECSEvents.attackEvent(position.x, position.y, angle, weaponComponent.getId()));
-                //TODO add firing weapon action
+                ecsManager.fireEvent(ECSEvents.attackEvent(position.x, position.y, angle, weaponComponent.getId(), entityId));
             }
         }
 

@@ -13,6 +13,7 @@ import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
+import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
@@ -127,6 +128,7 @@ public abstract class GameUtils {
         Gdx.input.setInputProcessor(controlSystem);
 
         WeaponSystem weaponSystem = new WeaponSystem();
+        LifetimeSystem lifetimeSystem = new LifetimeSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -134,6 +136,7 @@ public abstract class GameUtils {
         ecsManager.addSystem(hudSystem);
         ecsManager.addSystem(collisionSystem);
         ecsManager.addSystem(weaponSystem);
+        ecsManager.addSystem(lifetimeSystem);
 
         return ecsManager;
     }
