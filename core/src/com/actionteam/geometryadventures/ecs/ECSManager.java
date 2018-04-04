@@ -46,7 +46,18 @@ public class ECSManager {
         if(entities.get(entityId) == null) return false;
         entityEmptySlots.push(entityId);
         entities.set(entityId, null);
+        removeEntitiesInSystems(entityId);
         return true;
+    }
+    
+    private void removeEntitiesInSystems(int removedEntityId){
+        for (System system :
+                systems) {
+            Integer entityId = removedEntityId;
+            if (system.entities.contains(entityId)){
+                system.entities.remove(entityId);
+            }
+        }
     }
 
     private Entity getEntity(int id){

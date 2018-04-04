@@ -34,7 +34,7 @@ public class ECSEvents {
         return new ECSEvent(COLLISION_EVENT,collided);
     }
 
-    public static ECSEvent attackEvent(float x, float y, float angle, int componentId){
-        return new ECSEvent(ATTACK_EVENT, new float[] {x, y, angle, componentId});
+    public static ECSEvent attackEvent(float x, float y, float angle, int componentId, int entityId){
+        return new ECSEvent(ATTACK_EVENT, new float[] {x, y, angle, componentId, entityId});
     }
 }

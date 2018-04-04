@@ -18,8 +18,8 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		GameUtils gameUtils = new GameUtils() {
 			@Override
-			public InputStream openFile(String fileName) throws FileNotFoundException,
-					IOException {
+			public InputStream openFile(String fileName) throws
+                    IOException {
 				return getAssets().open(fileName);
 			}
 

@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.Component;
 
 public class LethalComponent extends Component {
     public int damage;
+    public int owner;
 
     public LethalComponent() {
         super(Components.LETHAL_COMPONENT_CODE);
