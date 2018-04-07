@@ -36,6 +36,7 @@ public class PhysicsSystem extends System implements ECSEventListener {
     }
 
     private void update(PhysicsComponent physicsComponent, float dt,int entityID) {
+        physicsComponent.rotationAngle += physicsComponent.angularVelocity;
 
         physicsComponent.velocity.x += dt * physicsComponent.acceleration.x;
         physicsComponent.velocity.y += dt * physicsComponent.acceleration.y;

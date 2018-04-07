@@ -126,39 +126,4 @@ public class CollisionSystem extends System implements ECSEventListener{
         boolean collided = (radSum <= dist);
         return collided;
     }
-
-    public boolean lineSegmentCollision(float startX, float startY, float endX, float endY)
-    {
-        for (int e : entities)
-        {
-            CollisionComponent cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
-            if (!cc.blocksVision)
-                continue;
-            PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
-            Vector2 start = new Vector2(startX, startY);
-            Vector2 end = new Vector2(endX, endY);
-            switch(cc.shapeType) {
-                case CollisionComponent.CIRCLE:
-                    if (Intersector.intersectSegmentCircle(start, end, pc.position, cc.radius*cc.radius))
-                        return true;
-                    break;
-                case CollisionComponent.RECTANGLE:
-                    float xmin = pc.position.x - cc.width/2;
-                    float xmax = pc.position.x + cc.width/2;
-                    float ymin = pc.position.y - cc.height/2;
-                    float ymax = pc.position.y + cc.height/2;
-                    // check intersection with all four lines.
-                    if (   Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymin, xmin, ymax, null)
-                        || Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymin, xmax, ymin, null)
-                        || Intersector.intersectSegments(startX, startY, endX, endY, xmin, ymax, xmax, ymax, null)
-                        || Intersector.intersectSegments(startX, startY, endX, endY, xmax, ymin, xmax, ymax, null))
-                    {
-                        return true;
-                    }
-                    break;
-            }
-
-        }
-        return false;
-    }
 }

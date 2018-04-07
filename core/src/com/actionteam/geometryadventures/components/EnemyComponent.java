@@ -12,6 +12,7 @@ public class EnemyComponent extends Component {
     public enum EnemyState {
         STATE_WAITING,
         STATE_WALKING,
+        STATE_CHASING,
         STATE_COMBAT
     }
     // Arrays of Float. [0]: x, [1]: y, [2]: angle at point, [3]: time standing in seconds.
@@ -28,8 +29,9 @@ public class EnemyComponent extends Component {
         pathPoints = new ArrayList<Float[]>();
         currentPointIndex = 0;
         remainingTime = 0;
-        speed = 1.0f;
+        speed = 3.0f;
         fieldOfView = 57.0f;
-        currentState = EnemyState.STATE_WAITING;
+        lineOfSightLength = 3.0f;
+        currentState = EnemyState.STATE_CHASING;
     }
 }
