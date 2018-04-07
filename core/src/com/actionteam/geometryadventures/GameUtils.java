@@ -7,6 +7,8 @@ import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.model.Map;
+import com.actionteam.geometryadventures.model.MapGraph;
+import com.actionteam.geometryadventures.model.MapGraphNode;
 import com.actionteam.geometryadventures.model.Tile;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
@@ -15,6 +17,7 @@ import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -29,6 +32,7 @@ import java.io.InputStreamReader;
  */
 
 public abstract class GameUtils {
+    public static AIUtils aiUtils;
     // used for txt files
     public abstract InputStream openFile(String fileName) throws IOException;
     public abstract File getFile(String fileName);
@@ -57,6 +61,7 @@ public abstract class GameUtils {
 
     public ECSManager loadLevel(String levelName){
         Map map = loadMap(levelName);
+        aiUtils = new AIUtils(map);
         ECSManager ecsManager = new ECSManager();
 
         for(Tile floorTile : map.getFloorTiles()){
@@ -148,13 +153,13 @@ public abstract class GameUtils {
         HudSystem hudSystem = new HudSystem();
         CollisionSystem collisionSystem = new CollisionSystem();
         Gdx.input.setInputProcessor(controlSystem);
-        EnemySystem enemySystem = new EnemySystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
         ecsManager.addSystem(controlSystem);
         ecsManager.addSystem(hudSystem);
         ecsManager.addSystem(collisionSystem);
+        EnemySystem enemySystem = new EnemySystem();
         ecsManager.addSystem(enemySystem);
         return ecsManager;
     }
