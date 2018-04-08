@@ -41,6 +41,9 @@ public class PhysicsSystem extends System implements ECSEventListener {
         physicsComponent.velocity.x += dt * physicsComponent.acceleration.x;
         physicsComponent.velocity.y += dt * physicsComponent.acceleration.y;
 
+        if (physicsComponent.velocity.x == 0 && physicsComponent.velocity.y == 0)
+            return;
+
         float beginX = physicsComponent.position.x;
         float beginY = physicsComponent.position.y;
         float endX = beginX + dt * physicsComponent.velocity.x;
@@ -56,6 +59,8 @@ public class PhysicsSystem extends System implements ECSEventListener {
             if (!didCollide) {
                 beginX = endX;
             } else {
+                Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
+                        + physicsComponent.velocity.y + ").");
                 endX = beginX;
             }
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));

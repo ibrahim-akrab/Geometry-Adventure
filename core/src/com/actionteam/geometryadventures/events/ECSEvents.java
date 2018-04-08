@@ -19,6 +19,7 @@ public class ECSEvents {
     public static final int COLLISION_EVENT = 4;
     public static final int ATTACK_EVENT = 5;
     public static final int LOUD_WEAPON_FIRED_EVENT = 6;
+    public static final int ENEMY_COLLIDED_EVENT = 7;
 
     public static ECSEvent resizeEvent(int width, int height) {
         return new ECSEvent(RESIZE_EVENT, new int[]{width, height});
@@ -42,5 +43,10 @@ public class ECSEvents {
 
     public static ECSEvent attackEvent(float x, float y, float angle, int componentId, int entityId) {
         return new ECSEvent(ATTACK_EVENT, new float[]{x, y, angle, componentId, entityId});
+    }
+
+    public static ECSEvent enemyCollisionEvent(Integer entityID)
+    {
+        return new ECSEvent(ENEMY_COLLIDED_EVENT, entityID);
     }
 }

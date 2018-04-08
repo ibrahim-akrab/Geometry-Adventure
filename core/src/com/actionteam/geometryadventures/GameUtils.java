@@ -91,8 +91,8 @@ public abstract class GameUtils {
             graphicsComponent.textureName = wallTile.textureName;
             graphicsComponent.textureIndex = wallTile.textureIndex;
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
-            collisionComponent.width = 1;
-            collisionComponent.height = 1;
+            collisionComponent.width = 0.9f;
+            collisionComponent.height = 0.9f;
             collisionComponent.id = 0;
             collisionComponent.mask = ~0;
             //TODO: Collision component needs id and mask
@@ -135,10 +135,16 @@ public abstract class GameUtils {
             enemyGC.textureIndex = -1;
             enemyGC.height = 1;
             enemyGC.width = 1;
-            // no collision component, for now
+            CollisionComponent enemyCC = new CollisionComponent();
+            enemyCC.shapeType = CollisionComponent.RECTANGLE;
+            enemyCC.width = 0.7f;
+            enemyCC.height = 0.7f;
+            enemyCC.radius = 0.7f;
+            enemyCC.id = 0;
+            enemyCC.mask = ~0;
             PhysicsComponent enemyPC = new PhysicsComponent();
-            enemyPC.position.x = 5;
-            enemyPC.position.y = 5;
+            enemyPC.position.x = 5.01f;
+            enemyPC.position.y = 5.01f;
 
             EnemyComponent enemyComponent = new EnemyComponent();
             // The enemy's path. Automate this!!
@@ -151,6 +157,7 @@ public abstract class GameUtils {
             enemyComponent.remainingTime = (enemyComponent.pathPoints.get(0))[3].floatValue();
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
+            ecsManager.addComponent(enemyCC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
         }
 
