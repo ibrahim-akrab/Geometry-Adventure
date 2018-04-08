@@ -35,7 +35,7 @@ public class EnemyComponent extends Component {
         currentPointIndex = 0;
         remainingTime = 0;
         speed = 3.0f;
-        fieldOfView = 180.0f;
+        fieldOfView = 57.0f;
         lineOfSightLength = 10.0f;
         currentState = EnemyState.STATE_WAITING;
         previousState = EnemyState.STATE_MID_MOTION;
