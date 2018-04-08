@@ -7,12 +7,14 @@ import com.actionteam.geometryadventures.ecs.ECSEvent;
  */
 
 public class ECSEvents {
+
     public static final int RESIZE_EVENT            = 0;
     public static final int DISPOSE_EVENT           = 1;
     public static final int PLAYER_MOVED_EVENT      = 2;
     public static final int COLLIDABLE_MOVED_EVENT  = 3;
     public static final int COLLISION_EVENT         = 4;
     public static final int ATTACK_EVENT            = 5;
+    public static final int LOUD_WEAPON_FIRED_EVENT = 6;
 
     public static ECSEvent resizeEvent(int width, int height){
         return new ECSEvent(RESIZE_EVENT, new int[]{width, height});

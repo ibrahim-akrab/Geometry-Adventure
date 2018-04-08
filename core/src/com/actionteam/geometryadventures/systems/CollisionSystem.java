@@ -3,11 +3,12 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by Omnia- on 30/03/2018.
@@ -20,7 +21,6 @@ public class CollisionSystem extends System implements ECSEventListener {
     public CollisionSystem() {
         super(Components.COLLISION_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
     }
-
 
     @Override
     public void update(float dt) {
@@ -147,6 +147,5 @@ public class CollisionSystem extends System implements ECSEventListener {
         boolean collided = (radSum <= dist);
         return collided;
     }
-
 
 }
