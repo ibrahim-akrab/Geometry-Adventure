@@ -9,6 +9,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
@@ -26,11 +27,16 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     private int rightPointer;
     private int entityId;
 
+    private float prevMouseX;
+    private float prevMouseY;
+
     public ControlSystem() {
         super(Components.PHYSICS_COMPONENT_CODE, Components.CONTROL_COMPONENT_CODE,
                 Components.GRAPHICS_COMPONENT_CODE);
         leftPointer = -1;
         rightPointer = -1;
+        prevMouseX = 0;
+        prevMouseY = 0;
     }
 
     @Override
@@ -122,10 +128,10 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         float angle = (float)Math.atan2(deltaY, deltaX);
         physicsComponent.velocity.x = (float) (speed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (-speed * Math.sin(angle));
+
         if (!controlComponent.isRightTouchDown){
             physicsComponent.rotationAngle = 360 - (float)Math.toDegrees(angle);
         }
-
     }
 
     private void rightTouchDragged(int screenX, int screenY) {
@@ -145,29 +151,20 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                         (position.x, position.y, angle, weaponComponent.getId(), entityId));
             }
         }
-
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+    public boolean mouseMoved(int screenX, int screenY) { return false; }
 
     @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
+    public boolean scrolled(int amount) { return false; }
 
 
     @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
+    public boolean keyDown(int keycode) { return false; }
 
     @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
+    public boolean keyUp(int keycode) { return false; }
 
     @Override
     public boolean keyTyped(char character) {

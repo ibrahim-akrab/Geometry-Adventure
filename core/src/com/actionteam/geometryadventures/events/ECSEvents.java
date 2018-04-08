@@ -18,6 +18,7 @@ public class ECSEvents {
     public static final int COLLIDABLE_MOVED_EVENT = 3;
     public static final int COLLISION_EVENT = 4;
     public static final int ATTACK_EVENT = 5;
+    public static final int LOUD_WEAPON_FIRED_EVENT = 6;
 
     public static ECSEvent resizeEvent(int width, int height) {
         return new ECSEvent(RESIZE_EVENT, new int[]{width, height});

@@ -15,10 +15,13 @@ public class Map {
     private ArrayList<Tile> wallTiles;
     private ArrayList<Tile> enemyTiles;
 
+    private int[] dimensions;
+
     public Map() {
         floorTiles = new ArrayList<Tile>();
         wallTiles = new ArrayList<Tile>();
         enemyTiles = new ArrayList<Tile>();
+        dimensions = null;
     }
 
     public void addTile(Tile tile) {
@@ -55,7 +58,6 @@ public class Map {
         }
         return null;
     }
-
     public ArrayList<Tile> getFloorTiles(){
         return floorTiles;
     }
@@ -73,5 +75,40 @@ public class Map {
         else if(tile.type.equals(WALL)) wallTiles.remove(tile);
         else if(tile.type.equals(ENEMY)) enemyTiles.remove(tile);
         Gdx.app.log("Removing tile", "x: " + tile.x + ", y : " + tile.y);
+    }
+
+    /* These are the tiles the enemy can not traverse. */
+    public ArrayList<Tile> getBlockedTiles() {
+        return getWallTiles(); // should be extended when there are other blockes tiles.
+    }
+
+    /* Get the dimensions of the map. */
+    public int[] getMapDimensions() {
+        if (dimensions != null)
+            return dimensions;
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+        ArrayList<ArrayList<Tile>> tileArrays = new ArrayList<ArrayList<Tile>>(3);
+        tileArrays.add(floorTiles);
+        tileArrays.add(enemyTiles);
+        tileArrays.add(wallTiles);
+        for (ArrayList<Tile> tileArray : tileArrays)
+        {
+            for (Tile tile : tileArray)
+            {
+                if(tile.x < minX)
+                    minX = (int)(tile.x);
+                if (tile.y < minY)
+                    minY = (int)(tile.y);
+                if(tile.x > maxX)
+                    maxX = (int)(tile.x);
+                if (tile.y > maxY)
+                    maxY = (int)(tile.y);
+            }
+        }
+        dimensions = new int[] { minX, maxX, minY, maxY };
+        return dimensions;
     }
 }
