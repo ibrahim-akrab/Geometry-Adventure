@@ -49,6 +49,8 @@ public class EnemySystem extends System implements ECSEventListener {
         /* FSM (Flying Spaghetti Monster) below. */
         CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
                 Components.COLLISION_COMPONENT_CODE);
+
+        checkPlayerVisibility(playerPosition[0], playerPosition[1]);
         switch (ec.currentState)
         {
             case STATE_MID_MOTION:
@@ -113,6 +115,11 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    private boolean areClockwise(float x1, float y1, float x2, float y2)
+    {
+        return (-x1*y2 + y1*x2) > 0;
+    }
+
     private void checkPlayerVisibility(float playerX, float playerY) {
         for(int entity : entities) {
             EnemyComponent ec = (EnemyComponent)ecsManager.getComponent(entity,
@@ -125,12 +132,9 @@ public class EnemySystem extends System implements ECSEventListener {
             float enemyY = pc.position.y + cc.height/2;
             float deltaX = playerX - enemyY;
             float deltaY = playerY - enemyY;
-            // Is the player in this enemy's view arc?
-            float lookAtAngle = (float)Math.atan2(deltaY, deltaX);
-            if (Math.abs(lookAtAngle - pc.rotationAngle) > ec.fieldOfView ||
-                    deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
+            if (deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
                 continue;
-            Gdx.app.log("EnemySystem", "Player seen");
+            Gdx.app.log("EnemySystem", "Player within range");
             // If we reach here, the player's in our view arc. We need to do collision detection on
             // the player-enemy ray.
             Vector2 start = new Vector2 (enemyX, enemyY);
@@ -154,11 +158,8 @@ public class EnemySystem extends System implements ECSEventListener {
         switch (eventCode) {
             case ECSEvents.PLAYER_MOVED_EVENT:
                 float[] position = (float[]) message;
-                //Gdx.app.log("EnemySystem","Player position: " + position[0] + " " + position[1] + ").");
-                // Chase after the player.
                 playerPosition[0] = (int)Math.floor(position[0]  + 0.35f);
                 playerPosition[1] = (int)Math.floor(position[1]  + 0.35f);
-                checkPlayerVisibility(playerPosition[0], playerPosition[1]);
                 break;
             case ECSEvents.LOUD_WEAPON_FIRED_EVENT:
                 break;

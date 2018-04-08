@@ -70,7 +70,10 @@ public class AIUtils {
             for(int i = xmin; i < xmax; i++)
             {
                 int yi = (int)Math.floor(m*i + c);
-                MapGraphNode node = mapGraph.nodes.get(mapGraph.xyToIndex(i, yi));
+                int index = mapGraph.xyToIndex(i, yi);
+                if (index == -1)
+                    continue;
+                MapGraphNode node = mapGraph.nodes.get(index);
                 if (node.edges.size == 0)
                     return true;
             }
