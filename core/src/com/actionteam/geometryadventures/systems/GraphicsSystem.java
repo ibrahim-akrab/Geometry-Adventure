@@ -30,7 +30,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         textureAtlas = new TextureAtlas(gameUtils.
                 getFile("textureatlas/textures.atlas").getPath());
     }
-
+    
     @Override
     protected void ecsManagerAttached() {
         // subscribe to events

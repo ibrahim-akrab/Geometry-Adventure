@@ -1,11 +1,7 @@
 package com.actionteam.geometryadventures.components;
 
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
-
-import java.util.ArrayList;
-
 /**
- * Created by ibrahim on 3/29/18.
+ * Created by Ibrahim on 3/29/18.
  */
 
 public class WeaponFactory {
@@ -33,11 +29,12 @@ public class WeaponFactory {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.MELEE;
         weaponComponent.magazineSize = 0;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 1;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.weaponDamageRegionParameters = new ArrayList<Integer>();
-        weaponComponent.weaponDamageRegionParameters.add(5);    // radius of the semicircle
-        weaponComponent.cooldownTime = 2;
+        weaponComponent.radius = 5;
+        weaponComponent.coolDownTime = 2;
         return weaponComponent;
     }
 
@@ -45,11 +42,12 @@ public class WeaponFactory {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.KNIFE;
         weaponComponent.magazineSize = 0;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.weaponDamageRegionParameters = new ArrayList<Integer>();
-        weaponComponent.weaponDamageRegionParameters.add(5);    // radius of the semicircle
-        weaponComponent.cooldownTime = 2;
+        weaponComponent.radius = 5;
+        weaponComponent.coolDownTime = 2;
         return weaponComponent;
     }
 
@@ -57,11 +55,12 @@ public class WeaponFactory {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.SWORD;
         weaponComponent.magazineSize = 0;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.weaponDamageRegionParameters = new ArrayList<Integer>();
-        weaponComponent.weaponDamageRegionParameters.add(15);    // radius of the semicircle
-        weaponComponent.cooldownTime = 4;
+        weaponComponent.radius = 15;
+        weaponComponent.coolDownTime = 4;
         return weaponComponent;
     }
 
@@ -69,9 +68,13 @@ public class WeaponFactory {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.RIFLE;
         weaponComponent.magazineSize = 4;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.LINE;
-        weaponComponent.cooldownTime = 5;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.numberOfLethalObjectsAtTime = 3;
+        weaponComponent.coolDownTime = 500;
+        weaponComponent.speed = 20;
         return weaponComponent;
     }
 
@@ -79,20 +82,26 @@ public class WeaponFactory {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.RIOT_GUN;
         weaponComponent.magazineSize = 6;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.LINES;
-        weaponComponent.weaponDamageRegionParameters = new ArrayList<Integer>();
-        weaponComponent.weaponDamageRegionParameters.add(4);    // number of lines of damage
-        weaponComponent.cooldownTime = 5;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.numberOfLethalObjectsAtTime = 5;
+        weaponComponent.coolDownTime = 500;
+        weaponComponent.speed = 20;
         return weaponComponent;
     }
+
     public static WeaponComponent createHandGun(){
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.HAND_GUN;
         weaponComponent.magazineSize = 24;
+        weaponComponent.currentMagazine = weaponComponent.magazineSize;
+        weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.LINE;
-        weaponComponent.cooldownTime = 4;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.coolDownTime = 400;
+        weaponComponent.speed = 20;
         return weaponComponent;
     }
 

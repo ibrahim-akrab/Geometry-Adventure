@@ -14,12 +14,13 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Omnia- on 30/03/2018.
  */
 
-/** TODO :: circle collision , naming convention , comments **/
 
-public class CollisionSystem extends System implements ECSEventListener{
 
-    public CollisionSystem() { super(Components.COLLISION_COMPONENT_CODE ,Components.PHYSICS_COMPONENT_CODE);}
+public class CollisionSystem extends System implements ECSEventListener {
 
+    public CollisionSystem() {
+        super(Components.COLLISION_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
+    }
 
     @Override
     public void update(float dt) {
@@ -28,102 +29,123 @@ public class CollisionSystem extends System implements ECSEventListener{
 
     @Override
     public void ecsManagerAttached() {
-        ecsManager.subscribe(ECSEvents.COLLIDABLE_MOVED_EVENT,this);
+        ecsManager.subscribe(ECSEvents.COLLIDABLE_MOVED_EVENT, this);
 
     }
 
+
+    /*
+    handles the collision event fired by the physics system.  sends the collision data to collide
+     to check if a collision occurred.
+    collision data : beginX ,beginY , endX,endY,entityID all stored in an array.
+    */
     @Override
-    public boolean handle(int eventCode, Object message) {
+       public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
             case ECSEvents.COLLIDABLE_MOVED_EVENT:
-                float [] collisionData = (float[]) message;
-                collide(collisionData[0],collisionData[1],collisionData[2],collisionData[3],
-                        (int)collisionData[4]);
+                float[] collisionData = (float[]) message;
+                collide(collisionData[0], collisionData[1], collisionData[2], collisionData[3],
+                        (int) collisionData[4]);
 
 
         }
         return true;
     }
-
-    public void collide (float beginX, float beginY , float endX ,float endY , int entityID)
-    {
+    /*
+      does the actual collision by checking the spacing between the bounding volumes of the two colliding objects
+      using the parameters previously sent by handle.
+     */
+    public void collide(float beginX, float beginY, float endX, float endY, int entityID) {
         CollisionComponent myCc = (CollisionComponent) ecsManager.getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
         PhysicsComponent myPc = (PhysicsComponent) ecsManager.getComponent(entityID, Components.PHYSICS_COMPONENT_CODE);
         CollisionComponent cc;
         PhysicsComponent pc;
 
-        boolean EntityColided = false ;
+        boolean entityCollided = false;
 
-        for(int e : entities) {
+        for (int e : entities) {
             cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
             pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
 
-            if(e == entityID || (cc.mask & (1L << myCc.id)) == 0) continue;
+            if (e == entityID || (cc.mask & (1L << myCc.id)) == 0) continue;
 
             if (myCc.shapeType == CollisionComponent.RECTANGLE) {
                 switch (cc.shapeType) {
                     case CollisionComponent.RECTANGLE:
-                        EntityColided = rectRectCollision(endX, endY, myCc.width , myCc.height, pc.position.x, pc.position.y,
-                               cc.width,cc.height );
+                        entityCollided = rectRectCollision(endX, endY, myCc.width, myCc.height, pc.position.x, pc.position.y,
+                                cc.width, cc.height);
                         break;
                     case CollisionComponent.CIRCLE:
-                        EntityColided = circRectCollision(pc, myPc, cc, myCc);
+                        entityCollided = circRectCollision(endX,endY, myCc.width, myCc.height, pc.position.x,pc.position.y,cc.radius);
                         break;
                 }
             } else {
                 switch (cc.shapeType) {
                     case CollisionComponent.RECTANGLE:
-                        EntityColided = circRectCollision(myPc, pc, myCc, cc);
+                        entityCollided = circRectCollision(pc.position.x,pc.position.y,cc.width,cc.height,endX,endY,myCc.radius);
                         break;
                     case CollisionComponent.CIRCLE:
-                        EntityColided = circCircCollision(myPc, pc, myCc, cc);
+                        entityCollided = circCircCollision(pc.position.x,pc.position.y,cc.radius,endX,endY,myCc.radius);
                         break;
                 }
             }
 
-            if (EntityColided) {
-                ecsManager.fireEvent(ECSEvents.collisionEvent(EntityColided));
+            if (entityCollided) {
+                ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
                 Gdx.app.log("Collision", entityID + " " + e);
                 return;
             }
         }
 
-        ecsManager.fireEvent(ECSEvents.collisionEvent(EntityColided));
+        ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
 
     }
 
-    public boolean rectRectCollision(float X1 , float Y1 , float width1 , float height1 , float X2, float Y2,
-                                     float width2, float height2)
-    {
-        float middleX1 = X1 + width1/ 2.0f;
-        float middleY1 = Y1 + height1/ 2.0f;
-        float middleX2 = X2 + width2 / 2.0f;
-        float middleY2 =  Y2+ height2 / 2.0f;
-        boolean UpDownCollision = (Math.abs(middleY1 - middleY2) < height1/2+height2/2)
-                &&(Math.abs(middleX1- middleX2) < width1/2 + width2/2);
+    /*
+    the collision handling differs according to the shapes of bounding volumes.
+    */
 
-        boolean LeftRightCollision = ( Math.abs(middleX1 - middleX2) < width1/2 + width2/2)
-                &&(Math.abs(middleY1 - middleY2) < height1/2 + height2/2 );
+    public boolean rectRectCollision(float X1, float Y1, float width1, float height1, float X2, float Y2,
+                                     float width2, float height2) {
+        float middleX1 = X1 + width1 / 2.0f;
+        float middleY1 = Y1 + height1 / 2.0f;
+        float middleX2 = X2 + width2 / 2.0f;
+        float middleY2 = Y2 + height2 / 2.0f;
+        boolean UpDownCollision = (Math.abs(middleY1 - middleY2) < height1 / 2 + height2 / 2)
+                && (Math.abs(middleX1 - middleX2) < width1 / 2 + width2 / 2);
+
+        boolean LeftRightCollision = (Math.abs(middleX1 - middleX2) < width1 / 2 + width2 / 2)
+                && (Math.abs(middleY1 - middleY2) < height1 / 2 + height2 / 2);
 
         return (LeftRightCollision || UpDownCollision);
     }
 
-    public boolean circRectCollision(PhysicsComponent PC1, PhysicsComponent PC2, CollisionComponent CC1
-            , CollisionComponent CC2) {
-        boolean upDownCollision = ( Math.abs(PC1.position.y - PC2 .position.y) == CC1.radius + CC2.height/2)
-                &&(Math.abs(PC1.position.x - PC2.position.x) < CC1.radius+ CC2.width/2 );
+    public boolean circRectCollision(float X1, float Y1, float width, float height, float X2, float Y2,
+                                     float radius) {
 
-        boolean leftRightColision = ( Math.abs(PC1.position.x - PC2 .position.x) == CC1.radius/2 + CC2.width/2)
-                &&(Math.abs(PC1.position.y - PC2.position.y) < CC1.radius + CC2.height/2 );
+        float middleX1 = X1 + width / 2.0f;
+        float middleY1 = Y1 + height / 2.0f;
+        float middleX2 = X2 + radius;
+        float middleY2 = Y2 + radius;
+        boolean upDownCollision = (Math.abs(middleY1 - middleY2) == radius + height / 2.0f)
+                && (Math.abs(middleX1 - middleX2) < radius + width / 2.0f);
 
+        boolean leftRightColision = (Math.abs(middleX1 - middleX2) == radius + width / 2.0f)
+                && (Math.abs(middleY1 - middleY2) < radius + height / 2.0f);
         return (leftRightColision || upDownCollision);
     }
 
-    public boolean circCircCollision(PhysicsComponent PC1, PhysicsComponent PC2, CollisionComponent CC1
-            , CollisionComponent CC2) {
-        double dist = Math.pow(PC1.position.x - PC2.position.x, 2) + Math.pow(PC1.position.y - PC2.position.y, 2);
-        double radSum = Math.pow(CC1.radius + CC2.radius, 2);
+    public boolean circCircCollision(float X1, float Y1, float radius1, float X2, float Y2,
+                                     float radius2) {
+        double middleX1 = X1 + radius1;
+        double middleY1 = Y1 + radius1;
+        double middleX2 = X2 + radius2;
+        double middleY2 = Y2 + radius2;
+
+        double dist = Math.pow(middleX1-middleX2,2) + Math.pow(middleY1-middleY2, 2);
+        double radSum = Math.pow(radius1 + radius2, 2);
         boolean collided = (radSum <= dist);
         return collided;
     }
+
 }

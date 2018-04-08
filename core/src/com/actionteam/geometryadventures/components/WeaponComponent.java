@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.List;
 
@@ -18,22 +19,28 @@ public class WeaponComponent extends Component {
     public static final int HAND_GUN = 5;
 
     // weapon damage region types
-    public static final int LINE = 0;
-    public static final int LINES = 1;
-    public static final int SEMICIRCLE= 2;
+    public static final int CIRCLE = 0;
+    public static final int SEMICIRCLE= 1;
 
+    public int weaponType;
     public int magazineSize;
     public int currentMagazine;
     public int currentAmmo;
     public int damage;
-    public int weaponType;
     public int weaponDamageRegion;
-    public List<Integer> weaponDamageRegionParameters;
-    public int timeOfLastFire;
-    public int cooldownTime;
+    public int numberOfLethalObjectsAtTime;
+    public float radius;
+    public long timeOfLastFire;
+    public long coolDownTime;
+    public float speed;
+    public float angleOfSpreading;
 
 
     public WeaponComponent() {
         super(Components.WEAPON_COMPONENT_CODE);
+        timeOfLastFire = TimeUtils.millis();
+        speed = 0;
+        numberOfLethalObjectsAtTime = 1;
+        angleOfSpreading = 0.1f;
     }
 }

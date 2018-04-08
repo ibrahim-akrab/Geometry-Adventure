@@ -28,7 +28,7 @@ public abstract class System {
         ecsManagerAttached();
     }
 
-    protected void ecsManagerAttached(){};
+    protected void ecsManagerAttached(){}
 
     private void subscribe(int eventCode, ECSEventListener listener){
         eventsMask |= (1L << eventCode);
@@ -43,7 +43,7 @@ public abstract class System {
         return entities.add(entityId);
     }
 
-    protected void entityAdded(int entityId){};
+    protected void entityAdded(int entityId){}
 
     boolean removeEntity(int entityId){
         for(Iterator<Integer> iterator = entities.iterator(); iterator.hasNext();){

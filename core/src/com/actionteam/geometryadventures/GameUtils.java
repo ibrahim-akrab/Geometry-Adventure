@@ -5,6 +5,8 @@ import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.WeaponComponent;
+import com.actionteam.geometryadventures.components.WeaponFactory;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.MapGraph;
@@ -15,7 +17,9 @@ import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.EnemySystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
+import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
+import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.google.gson.Gson;
@@ -113,10 +117,14 @@ public abstract class GameUtils {
         col.shapeType = CollisionComponent.RECTANGLE;
         col.id = 0;
         col.mask = ~0;
+
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
+
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
         ecsManager.addComponent(gc, entity);
         ecsManager.addComponent(col, entity);
+        ecsManager.addComponent(wc, entity);
 
         for(int i = 0; i < 1; i++)
         {
@@ -154,13 +162,20 @@ public abstract class GameUtils {
         CollisionSystem collisionSystem = new CollisionSystem();
         Gdx.input.setInputProcessor(controlSystem);
 
+        WeaponSystem weaponSystem = new WeaponSystem();
+        LifetimeSystem lifetimeSystem = new LifetimeSystem();
+        EnemySystem enemySystem = new EnemySystem();
+
+
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
         ecsManager.addSystem(controlSystem);
         ecsManager.addSystem(hudSystem);
         ecsManager.addSystem(collisionSystem);
-        EnemySystem enemySystem = new EnemySystem();
         ecsManager.addSystem(enemySystem);
+        ecsManager.addSystem(weaponSystem);
+        ecsManager.addSystem(lifetimeSystem);
+
         return ecsManager;
     }
 }
