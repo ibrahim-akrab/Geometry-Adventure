@@ -93,7 +93,7 @@ public class AIUtils {
         pathFinder.searchNodePath(startNode, endNode, distanceHeuristic, graphPath);
         for(MapGraphNode node : graphPath.nodes)
         {
-            Gdx.app.log("Path", "(" + node.x + ", " + node.y + ").");
+            // Gdx.app.log("Path", "(" + node.x + ", " + node.y + ").");
         }
         MapGraphNode nextNode = (graphPath.nodes.size > 1) ? graphPath.get(1) : endNode;
         float[] nextNodePosition = new float[] {(float)nextNode.x, (float)nextNode.y};

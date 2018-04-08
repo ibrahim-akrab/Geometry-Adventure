@@ -173,7 +173,6 @@ public abstract class GameUtils {
         LifetimeSystem lifetimeSystem = new LifetimeSystem();
         EnemySystem enemySystem = new EnemySystem();
 
-
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
         ecsManager.addSystem(controlSystem);
@@ -182,6 +181,7 @@ public abstract class GameUtils {
         ecsManager.addSystem(enemySystem);
         ecsManager.addSystem(weaponSystem);
         ecsManager.addSystem(lifetimeSystem);
+        
 
         return ecsManager;
     }
