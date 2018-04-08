@@ -81,8 +81,8 @@ public class WeaponSystem extends System implements ECSEventListener{
             }
             ecsManager.addComponent(physicsComponent, entity);
             GraphicsComponent graphicsComponent = new GraphicsComponent();
-            graphicsComponent.width = 0.3f;
-            graphicsComponent.height = 0.3f;
+            graphicsComponent.width = weaponComponent.radius;
+            graphicsComponent.height = weaponComponent.radius;
             graphicsComponent.textureIndex = 0;
             graphicsComponent.textureName = "wall";
             ecsManager.addComponent(graphicsComponent, entity);

@@ -32,9 +32,10 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 1;
-        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.radius = 5;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.radius = 1;
         weaponComponent.coolDownTime = 2;
+        weaponComponent.speed = 10;
         return weaponComponent;
     }
 
@@ -45,9 +46,10 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.radius = 5;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.radius = 1;
         weaponComponent.coolDownTime = 2;
+        weaponComponent.speed = 10;
         return weaponComponent;
     }
 
@@ -58,9 +60,10 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
-        weaponComponent.radius = 15;
-        weaponComponent.coolDownTime = 4;
+        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.radius = 1.5f;
+        weaponComponent.coolDownTime = 200;
+        weaponComponent.speed = 10;
         return weaponComponent;
     }
 
@@ -73,6 +76,7 @@ public class WeaponFactory {
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.numberOfLethalObjectsAtTime = 3;
+        weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 20;
         return weaponComponent;
@@ -87,6 +91,7 @@ public class WeaponFactory {
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.numberOfLethalObjectsAtTime = 5;
+        weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 20;
         return weaponComponent;
@@ -100,6 +105,7 @@ public class WeaponFactory {
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
+        weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 400;
         weaponComponent.speed = 20;
         return weaponComponent;
