@@ -15,7 +15,9 @@ import java.util.List;
  * ibrahim.m.akrab@gmail.com
  */
 public class LifetimeSystem extends System {
-    public LifetimeSystem(){ super((Components.LIFETIME_COMPONENT_CODE));}
+    public LifetimeSystem() {
+        super((Components.LIFETIME_COMPONENT_CODE));
+    }
 
     @Override
     public void update(float dt) {
@@ -26,7 +28,7 @@ public class LifetimeSystem extends System {
             LifetimeComponent lifetimeComponent = (LifetimeComponent)
                     ecsManager.getComponent(entity, Components.LIFETIME_COMPONENT_CODE);
             if (TimeUtils.timeSinceMillis(lifetimeComponent.timeOfCreation)
-                    > lifetimeComponent.lifetime){
+                    > lifetimeComponent.lifetime) {
 //                boolean returnValue = ecsManager.removeEntity(entity);
                 entitiesToBeRemoved.add(entity);
             }

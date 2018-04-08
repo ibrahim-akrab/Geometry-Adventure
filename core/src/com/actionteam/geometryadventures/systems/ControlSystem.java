@@ -139,9 +139,10 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                 controlComponent.rightBigCircleRadius * controlComponent.rightBigCircleRadius) {
             Component weaponComponent = ecsManager.getComponent(entityId, Components.WEAPON_COMPONENT_CODE);
             if (weaponComponent != null) {
-//                Gdx.app.log("weapon", "fired");
+                // Gdx.app.log("weapon", "fired");
                 Vector2 position = physicsComponent.position;
-                ecsManager.fireEvent(ECSEvents.attackEvent(position.x, position.y, angle, weaponComponent.getId(), entityId));
+                ecsManager.fireEvent(ECSEvents.attackEvent
+                        (position.x, position.y, angle, weaponComponent.getId(), entityId));
             }
         }
 

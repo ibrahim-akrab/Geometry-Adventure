@@ -13,14 +13,11 @@ import com.badlogic.gdx.Gdx;
  * Created by Omnia- on 30/03/2018.
  */
 
-
-
 public class CollisionSystem extends System implements ECSEventListener {
 
     public CollisionSystem() {
         super(Components.COLLISION_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
     }
-
 
     @Override
     public void update(float dt) {
@@ -30,7 +27,6 @@ public class CollisionSystem extends System implements ECSEventListener {
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.COLLIDABLE_MOVED_EVENT, this);
-
     }
 
 
