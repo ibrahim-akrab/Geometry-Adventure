@@ -5,7 +5,6 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
-import com.actionteam.geometryadventures.ecs.Component;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
@@ -51,18 +50,22 @@ public class EnemySystem extends System implements ECSEventListener {
                 Components.COLLISION_COMPONENT_CODE);
 
         checkPlayerVisibility(playerPosition[0], playerPosition[1]);
+        float[] nextPos;
+        float   angle;
+        float   deltaX;
+        float   deltaY;
         switch (ec.currentState)
         {
             case STATE_MID_MOTION:
                 float midX = pc.position.x + eCC.width / 2;
                 float midY = pc.position.y + eCC.height / 2;
-                float[] nextPos = aiUtils.calculatePath((int)Math.floor(midX),
+                nextPos = aiUtils.calculatePath((int)Math.floor(midX),
                         (int)Math.floor(midY), playerPosition[0], playerPosition[1]);
                 ec.nextTilePosition.x = nextPos[0];
                 ec.nextTilePosition.y = nextPos[1];
-                float deltaX = (ec.nextTilePosition.x + 0.5f) - midX;
-                float deltaY = (ec.nextTilePosition.y + 0.5f) - midY;
-                float angle = (float)Math.atan2(deltaY, deltaX);
+                deltaX = (ec.nextTilePosition.x + 0.5f) - midX;
+                deltaY = (ec.nextTilePosition.y + 0.5f) - midY;
+                angle = (float)Math.atan2(deltaY, deltaX);
                 pc.velocity.x = ec.speed * (float)Math.cos(angle);
                 pc.velocity.y = ec.speed * (float)Math.sin(angle);
                 angle = (float)Math.toDegrees(angle);
@@ -132,8 +135,16 @@ public class EnemySystem extends System implements ECSEventListener {
             float enemyY = pc.position.y + cc.height/2;
             float deltaX = playerX - enemyY;
             float deltaY = playerY - enemyY;
+
+            float angle = (float)Math.toDegrees(Math.atan2(deltaY, deltaX));
+            float startAngle = pc.rotationAngle - ec.fieldOfView;
+            float endAngle   = pc.rotationAngle + ec.fieldOfView;
+            if (angle < startAngle || angle > endAngle)
+                continue;
             if (deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
                 continue;
+            Gdx.app.log("Visibility", "Angle = " + angle + ", startAngle = "
+                    + startAngle + ", endAngle = " + endAngle);
             Gdx.app.log("EnemySystem", "Player within range");
             // If we reach here, the player's in our view arc. We need to do collision detection on
             // the player-enemy ray.
@@ -142,6 +153,8 @@ public class EnemySystem extends System implements ECSEventListener {
             if(!aiUtils.checkLineSegmentCollision(start, end))
             {
                 Gdx.app.log("EnemySystem", "Path to player available!");
+                ec.previousState = ec.currentState;
+                ec.currentState = STATE_CHASING;
             }
         }
     }
