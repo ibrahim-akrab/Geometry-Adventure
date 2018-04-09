@@ -19,6 +19,10 @@ public class LifetimeSystem extends System {
         super((Components.LIFETIME_COMPONENT_CODE));
     }
 
+    /**
+     * delete entities that needs to be deleted (its lifetime is over)
+     * @param dt
+     */
     @Override
     public void update(float dt) {
         List<Integer> entitiesToBeRemoved = new ArrayList<Integer>();
@@ -36,8 +40,7 @@ public class LifetimeSystem extends System {
         for (Integer entityId :
                 entitiesToBeRemoved) {
 //            Gdx.app.log("lifetime system", "removing entity");
-            boolean returnValue = ecsManager.removeEntity(entityId);
-//            if (returnValue) Gdx.app.log("lifetime system", "removed entity successfully");
+            ecsManager.removeEntity(entityId);
         }
         // TODO ask whether the list of entities IDs needs to be deleted or set to null to be deleted
     }
