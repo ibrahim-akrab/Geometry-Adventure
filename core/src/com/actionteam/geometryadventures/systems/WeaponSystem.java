@@ -41,6 +41,15 @@ public class WeaponSystem extends System implements ECSEventListener{
         ecsManager.subscribe(ECSEvents.ATTACK_EVENT, this);
     }
 
+    /**
+     * called when an entity attacks
+     * @param x x-position of entity when fired
+     * @param y y-position of entity when fired
+     * @param angle rotation angle of entity
+     * @param componentId   the id of the weapon component that was used to attack
+     * @param entityId  the id of the entity that attacked
+     * @return  creates entities that has the properities of the bullet or the lethal object being shot
+     */
     private boolean entityAttacked(float x, float y, float angle, int componentId, int entityId){
         WeaponComponent weaponComponent = (WeaponComponent) ecsManager.getComponent(componentId);
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
@@ -52,45 +61,95 @@ public class WeaponSystem extends System implements ECSEventListener{
 
         for (int i = 0; i < weaponComponent.numberOfLethalObjectsAtTime; i++){
             int entity = ecsManager.createEntity();
-            LethalComponent lethalComponent = new LethalComponent();
-            lethalComponent.damage = weaponComponent.damage;
-            lethalComponent.owner = entityId;
             //TODO handle if ecsManager can't add component
-            ecsManager.addComponent(lethalComponent, entity);
-            CollisionComponent collisionComponent = new CollisionComponent();
-            switch (weaponComponent.weaponDamageRegion){
-                case WeaponComponent.CIRCLE:
-                    collisionComponent.shapeType = CollisionComponent.CIRCLE;
-                    break;
-                case WeaponComponent.SEMICIRCLE:
-                    // TODO change to semicircle when omnia finishes it
-                    collisionComponent.shapeType = CollisionComponent.CIRCLE;
-                    break;
-            }
-            collisionComponent.radius = weaponComponent.radius;
-            //TODO customize collision component ID and Mask
-            ecsManager.addComponent(collisionComponent, entity);
-            PhysicsComponent physicsComponent = new PhysicsComponent();
-            physicsComponent.position.x = x;
-            physicsComponent.position.y = y;
-            angle += i * (float)Math.pow(-1, i) * weaponComponent.angleOfSpreading;
-            physicsComponent.rotationAngle = angle;
-            if (weaponComponent.speed != 0){
-                physicsComponent.velocity.x = weaponComponent.speed * (float)Math.cos(angle);
-                physicsComponent.velocity.y = weaponComponent.speed * (float)Math.sin(Math.PI + angle);
-            }
-            ecsManager.addComponent(physicsComponent, entity);
-            GraphicsComponent graphicsComponent = new GraphicsComponent();
-            graphicsComponent.width = weaponComponent.radius;
-            graphicsComponent.height = weaponComponent.radius;
-            graphicsComponent.textureIndex = 0;
-            graphicsComponent.textureName = "wall";
-            ecsManager.addComponent(graphicsComponent, entity);
-
-            LifetimeComponent lifetimeComponent = new LifetimeComponent();
-            lifetimeComponent.lifetime = 200;
-            ecsManager.addComponent(lifetimeComponent, entity);
+            ecsManager.addComponent(createLethalComponent(weaponComponent,entityId), entity);
+            ecsManager.addComponent(createCollisionComponent(weaponComponent), entity);
+            ecsManager.addComponent(createPhysicsComponent(weaponComponent, x, y, angle, i), entity);
+            ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
+            ecsManager.addComponent(createLifetimeComponent(), entity);
         }
         return true;
+    }
+
+    /**
+     * creates lethal component that is suitable to the weapon component in question
+     * @param weaponComponent   the weapon component in question
+     * @param entityId          the id of the entity that the weapon component belongs to
+     * @return                  the created lethal component
+     */
+    private LethalComponent createLethalComponent(WeaponComponent weaponComponent, int entityId){
+        LethalComponent lethalComponent = new LethalComponent();
+        lethalComponent.damage = weaponComponent.damage;
+        lethalComponent.owner = entityId;
+        return lethalComponent;
+    }
+
+    /**
+     * creates collision component that is suitable to the weapon component in question
+     * @param weaponComponent   the weapon component in question
+     * @return                  the created collision component
+     */
+    private CollisionComponent createCollisionComponent(WeaponComponent weaponComponent){
+        CollisionComponent collisionComponent = new CollisionComponent();
+        switch (weaponComponent.weaponDamageRegion){
+            case WeaponComponent.CIRCLE:
+                collisionComponent.shapeType = CollisionComponent.CIRCLE;
+                break;
+            case WeaponComponent.SEMICIRCLE:
+                // TODO change to semicircle when omnia finishes it
+                collisionComponent.shapeType = CollisionComponent.CIRCLE;
+                break;
+        }
+        collisionComponent.radius = weaponComponent.radius;
+        //TODO customize collision component ID and Mask
+        return collisionComponent;
+    }
+
+    /**
+     * creates physics component that is suitable to the weapon component in question
+     * @param weaponComponent   the weapon component in question
+     * @param x                 the x-position of entity when firing
+     * @param y                 the y-position of entity when firing
+     * @param angle             the rotation angle of entity when firing
+     * @param index             the index of the bullet or lethal objects (in order of creation)
+     * @return                  the created physics component
+     */
+    private PhysicsComponent createPhysicsComponent(WeaponComponent weaponComponent, float x,
+                                                    float y, float angle, int index){
+        PhysicsComponent physicsComponent = new PhysicsComponent();
+        physicsComponent.position.x = x;
+        physicsComponent.position.y = y;
+        angle += index * (float)Math.pow(-1, index) * weaponComponent.angleOfSpreading;
+        physicsComponent.rotationAngle = angle;
+        if (weaponComponent.speed != 0){
+            physicsComponent.velocity.x = weaponComponent.speed * (float)Math.cos(angle);
+            physicsComponent.velocity.y = weaponComponent.speed * (float)Math.sin(Math.PI + angle);
+        }
+        return physicsComponent;
+
+    }
+
+    /**
+     * creates graphics component that is suitable to the weapon component in question
+     * @param weaponComponent   the weapon component in question
+     * @return                  the created graphics component
+     */
+    private GraphicsComponent createGraphicsComponent(WeaponComponent weaponComponent){
+        GraphicsComponent graphicsComponent = new GraphicsComponent();
+        graphicsComponent.width = weaponComponent.radius;
+        graphicsComponent.height = weaponComponent.radius;
+        graphicsComponent.textureIndex = 0;
+        graphicsComponent.textureName = "wall";
+        return graphicsComponent;
+    }
+
+    /**
+     * creates lifetime component for the bullets or lethal objects
+     * @return  the created lifetime component
+     */
+    private LifetimeComponent createLifetimeComponent(){
+        LifetimeComponent lifetimeComponent = new LifetimeComponent();
+        lifetimeComponent.lifetime = 200;
+        return lifetimeComponent;
     }
 }
