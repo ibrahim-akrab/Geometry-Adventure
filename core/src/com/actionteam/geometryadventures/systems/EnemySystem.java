@@ -22,14 +22,13 @@ import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyS
 
 public class EnemySystem extends System implements ECSEventListener {
     int[] playerPosition;
+    private AIUtils aiUtils;
 
     public EnemySystem() {
         super(Components.ENEMY_COMPONENT_CODE);
         aiUtils = GameUtils.aiUtils;
         playerPosition = new int[2];
     }
-
-    private AIUtils aiUtils;
 
     @Override
     public void update(float dt) {
@@ -48,8 +47,6 @@ public class EnemySystem extends System implements ECSEventListener {
         /* FSM (Flying Spaghetti Monster) below. */
         CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
                 Components.COLLISION_COMPONENT_CODE);
-
-        checkPlayerVisibility(playerPosition[0], playerPosition[1]);
         float[] nextPos;
         float   angle;
         float   deltaX;
@@ -115,47 +112,6 @@ public class EnemySystem extends System implements ECSEventListener {
                 break;
             default:
                 break;
-        }
-    }
-
-    private boolean areClockwise(float x1, float y1, float x2, float y2)
-    {
-        return (-x1*y2 + y1*x2) > 0;
-    }
-
-    private void checkPlayerVisibility(float playerX, float playerY) {
-        for(int entity : entities) {
-            EnemyComponent ec = (EnemyComponent)ecsManager.getComponent(entity,
-                    Components.ENEMY_COMPONENT_CODE);
-            PhysicsComponent pc = (PhysicsComponent)ecsManager.getComponent(entity,
-                    Components.PHYSICS_COMPONENT_CODE);
-            CollisionComponent cc = (CollisionComponent)ecsManager.getComponent(entity,
-                    Components.COLLISION_COMPONENT_CODE);
-            float enemyX = pc.position.x + cc.width/2;
-            float enemyY = pc.position.y + cc.height/2;
-            float deltaX = playerX - enemyY;
-            float deltaY = playerY - enemyY;
-
-            float angle = (float)Math.toDegrees(Math.atan2(deltaY, deltaX));
-            float startAngle = pc.rotationAngle - ec.fieldOfView;
-            float endAngle   = pc.rotationAngle + ec.fieldOfView;
-            if (angle < startAngle || angle > endAngle)
-                continue;
-            if (deltaX * deltaX + deltaY * deltaY > ec.lineOfSightLength * ec.lineOfSightLength)
-                continue;
-            Gdx.app.log("Visibility", "Angle = " + angle + ", startAngle = "
-                    + startAngle + ", endAngle = " + endAngle);
-            Gdx.app.log("EnemySystem", "Player within range");
-            // If we reach here, the player's in our view arc. We need to do collision detection on
-            // the player-enemy ray.
-            Vector2 start = new Vector2 (enemyX, enemyY);
-            Vector2 end = new Vector2 (playerX, playerY);
-            if(!aiUtils.checkLineSegmentCollision(start, end))
-            {
-                Gdx.app.log("EnemySystem", "Path to player available!");
-                ec.previousState = ec.currentState;
-                ec.currentState = STATE_CHASING;
-            }
         }
     }
 

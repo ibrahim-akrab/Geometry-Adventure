@@ -19,6 +19,7 @@ import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
+import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
@@ -172,6 +173,7 @@ public abstract class GameUtils {
         WeaponSystem weaponSystem = new WeaponSystem();
         LifetimeSystem lifetimeSystem = new LifetimeSystem();
         EnemySystem enemySystem = new EnemySystem();
+        VisionSystem visionSystem = new VisionSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -181,7 +183,7 @@ public abstract class GameUtils {
         ecsManager.addSystem(enemySystem);
         ecsManager.addSystem(weaponSystem);
         ecsManager.addSystem(lifetimeSystem);
-        
+        ecsManager.addSystem(visionSystem);
 
         return ecsManager;
     }
