@@ -181,7 +181,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(enemySystem);
         ecsManager.addSystem(weaponSystem);
         ecsManager.addSystem(lifetimeSystem);
-        
 
         return ecsManager;
     }
