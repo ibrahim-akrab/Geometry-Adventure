@@ -60,10 +60,10 @@ public abstract class GameUtils {
         return null;
     }
 
-    public ECSManager loadLevel(String levelName){
+    public void loadLevel(String levelName){
         Map map = loadMap(levelName);
         aiUtils = new AIUtils(map);
-        ECSManager ecsManager = new ECSManager();
+        ECSManager ecsManager = ECSManager.getInstance();
 
         for(Tile floorTile : map.getFloorTiles()){
             int entity = ecsManager.createEntity();
@@ -186,6 +186,5 @@ public abstract class GameUtils {
         ecsManager.addSystem(weaponSystem);
         ecsManager.addSystem(lifetimeSystem);
         ecsManager.addSystem(visionSystem);
-        return ecsManager;
     }
 }

@@ -34,8 +34,8 @@ public abstract class System {
         entities = new ArrayList<Integer>();
     }
 
-    void setEcsManager(ECSManager ecsManager) {
-        this.ecsManager = ecsManager;
+    void setEcsManager() {
+        this.ecsManager = ECSManager.getInstance();
         ecsManagerAttached();
     }
 

@@ -26,7 +26,10 @@ public class ECSManager {
     private Stack<Integer> entityEmptySlots;
     private Stack<Integer> componentEmptySlots;
 
-    public ECSManager() {
+    // an instance of the singleton class
+    private static final ECSManager instance = new ECSManager();
+
+    private ECSManager() {
         entities = new ArrayList<Entity>();
         components = new ArrayList<Component>();
         systems = new ArrayList<System>();
@@ -36,6 +39,10 @@ public class ECSManager {
         for (int i = 0; i < 64; i++) {
             listenerLists[i] = new ArrayList<ECSEventListener>();
         }
+    }
+
+    public static ECSManager getInstance(){
+        return instance;
     }
 
     /**
@@ -172,7 +179,7 @@ public class ECSManager {
         if (system == null) return false;
         if (systems.contains(system)) return false;
         if (!systems.add(system)) return false;
-        system.setEcsManager(this);
+        system.setEcsManager();
         updateSystemEntities(system);
         return true;
     }

@@ -17,7 +17,8 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		//TexturePacker.process("mysprites/", "textureatlas/", "textures");
-		ecsManager = gameUtils.loadLevel("map");
+		gameUtils.loadLevel("map");
+		ecsManager = ECSManager.getInstance();
 	}
 
 	@Override
