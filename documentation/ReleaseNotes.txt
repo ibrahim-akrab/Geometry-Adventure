@@ -1,0 +1,22 @@
+Action Team (Team 12)
+Geometry Adventures
+Version 0.1
+
+New Features
+	1. Maps can be loaded, three types of tiles are supported.
+	2. Players can walk around the map.
+	3. Physics and collision are implemented and working.
+	4. Enemies can patrol the map according to predetermined paths, can detect players inside their vision cone and chase them accordingly.
+	5. Players can fire a ranged weapon.
+	6. Tiles (floor/wall/enemy) can be added from the map creator.
+
+Enhanced Look-and-Feel
+	1. Enemy motion no longer feels jerky.
+	
+Unsupported Functionality
+	1. No background music.
+	2. Not a real level.
+	3. The enemy can't really attack yet, only chase.
+	4. The art used is placeholder art.
+	5. Only one type of weapon, can't kill enemy yet.
+	6. Map creator can't load previously created maps.
