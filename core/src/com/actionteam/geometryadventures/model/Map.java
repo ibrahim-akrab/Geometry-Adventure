@@ -79,7 +79,7 @@ public class Map {
 
     /* These are the tiles the enemy can not traverse. */
     public ArrayList<Tile> getBlockedTiles() {
-        return getWallTiles(); // should be extended when there are other blockes tiles.
+        return getWallTiles(); // should be extended when there are other blocked tiles.
     }
 
     /* Get the dimensions of the map. */
