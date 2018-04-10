@@ -85,6 +85,7 @@ public class EnemySystem extends System implements ECSEventListener {
             case STATE_WAITING:
                 ec.remainingTime -= dt;
                 if (ec.remainingTime <= 0) {
+                    if(ec.pathPoints.isEmpty()) return;
                     ec.currentState = EnemyComponent.EnemyState.STATE_WALKING;
                     ec.currentPointIndex = (ec.currentPointIndex + 1) % ec.pathPoints.size();
                     Float[] nextPosition = ec.pathPoints.get(ec.currentPointIndex);

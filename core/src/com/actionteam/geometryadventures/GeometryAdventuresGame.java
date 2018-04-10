@@ -31,7 +31,8 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
                 mainMenu = new MainMenuScreen();
                 break;
             case SCREEN_GAME_LEVEL:
-                ecsManager = gameUtils.loadLevel("map");
+                gameUtils.loadLevel("map");
+                ecsManager = ECSManager.getInstance();
                 break;
             default:
                 break;
