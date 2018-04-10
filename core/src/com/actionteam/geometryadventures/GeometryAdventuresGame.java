@@ -1,5 +1,6 @@
 package com.actionteam.geometryadventures;
 
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -7,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
 public class GeometryAdventuresGame extends ApplicationAdapter {
-    private enum ChosenScreen {
+    public enum ChosenScreen {
         SCREEN_MAIN_MENU,
         SCREEN_GAME_LEVEL
     }
@@ -15,10 +16,11 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	private ECSManager ecsManager;
 	private GameUtils gameUtils;
     private MainMenuScreen mainMenu;
-    private ChosenScreen currentScreen;
+    public static ChosenScreen currentScreen;
 
 	public GeometryAdventuresGame(GameUtils gameUtils){
 		this.gameUtils = gameUtils;
+        ecsManager = null;
 		currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
 	}
 
@@ -50,6 +52,11 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
                 mainMenu.render(0);
                 break;
             case SCREEN_GAME_LEVEL:
+                if (ecsManager == null) {
+                    this.create();
+                    // to update the viewport
+                    this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                }
                 ecsManager.update(Gdx.graphics.getDeltaTime());
                 break;
             default:
@@ -59,15 +66,28 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
-		if(mainMenu != null)
-		    mainMenu = null;
-	    ecsManager.fireEvent(ECSEvents.disposeEvent());
+		if(mainMenu != null) {
+            mainMenu.dispose();
+            mainMenu = null;
+        }
+	    if (ecsManager != null) {
+            ecsManager.fireEvent(ECSEvents.disposeEvent());
+        }
 	}
 
 	@Override
 	public void resize(int width, int height) {
-	    mainMenu.resize(width, height);
-		ecsManager.fireEvent(ECSEvents.resizeEvent(width,height));
+	    switch(currentScreen)
+        {
+            case SCREEN_MAIN_MENU:
+                mainMenu.resize(width, height);
+                break;
+            case SCREEN_GAME_LEVEL:
+                ecsManager.fireEvent(ECSEvents.resizeEvent(width, height));
+                break;
+            default:
+                break;
+        }
 	}
 
 }

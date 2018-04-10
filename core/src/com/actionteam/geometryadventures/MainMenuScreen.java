@@ -2,11 +2,14 @@ package com.actionteam.geometryadventures;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -25,11 +28,28 @@ public class MainMenuScreen implements Screen {
         table.setBackground(skin.getTiledDrawable("tile-a"));
         table.setFillParent(true);
         table.setDebug(true);
-        ImageTextButton imageTextButton = new ImageTextButton("Yep", skin);
-        table.add(imageTextButton).expandX().right();
-        imageTextButton = new ImageTextButton("Nope", skin);
-        table.add(imageTextButton).padLeft(10.0f);
+        ImageTextButton startButton = new ImageTextButton("Start Game", skin);
+        startButton.setSize(400, 400);
+        table.add(startButton).expandX().right();
+        table.row();
+        ImageTextButton quitButton = new ImageTextButton("Quit", skin);
+        startButton.setSize(400, 400);
+        table.add(quitButton).expandX().left().expand(0, 50);;
         stage.addActor(table);
+
+        quitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
+
+        startButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GeometryAdventuresGame.currentScreen = GeometryAdventuresGame.ChosenScreen.SCREEN_GAME_LEVEL;
+            }
+        });
     }
 
     @Override
@@ -68,5 +88,7 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        stage = null;
+        skin = null;
     }
 }

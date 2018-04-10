@@ -74,14 +74,14 @@ public class VisionSystem extends System implements ECSEventListener {
         {
             return;
         }
-        Gdx.app.log("EnemySystem", "Player within range");
+        // Gdx.app.log("EnemySystem", "Player within range");
         // If we reach here, the player's in our view arc. We need to do collision detection on
         // the player-enemy ray.
         Vector2 start = new Vector2 (enemyPosition.x, enemyPosition.y);
         Vector2 end = new Vector2 (playerPosition.x, playerPosition.y);
         if(!aiUtils.checkLineSegmentCollision(start, end))
         {
-            Gdx.app.log("EnemySystem", "Path to player available!");
+            // Gdx.app.log("EnemySystem", "Path to player available!");
             /* Change this part later. */
             ec.previousState = ec.currentState;
             ec.currentState = STATE_CHASING;
