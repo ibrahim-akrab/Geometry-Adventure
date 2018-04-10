@@ -17,8 +17,8 @@ public class GraphicsComponent extends Component {
     public GraphicsComponent() {
         super(Components.GRAPHICS_COMPONENT_CODE);
         textureIndex = 0;
-        width = 1.05f;
-        height = 1.05f;
+        width = 1.02f;
+        height = 1.02f;
     }
 
     @Override

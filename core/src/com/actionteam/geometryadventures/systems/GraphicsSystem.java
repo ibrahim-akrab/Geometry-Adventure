@@ -34,7 +34,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         viewport = new ScreenViewport();
         batch = new SpriteBatch();
         textureAtlas = new TextureAtlas(gameUtils.
-                getFile("textureatlas/textures.atlas").getPath());
+                getFile("textureatlas/textureatlas.atlas").getPath());
         graphicsComponentList = new ArrayList<GraphicsComponent>();
         physicsComponentList = new ArrayList<PhysicsComponent>();
     }

@@ -1,85 +1,91 @@
 package com.actionteam.geometryadventures.model;
 
-/**
- * Created by theartful on 3/27/18.
- */
 import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by theartful on 4/1/18.
+ */
 
 public class Map {
+
     private final String WALL = "Wall";
     private final String FLOOR = "Floor";
     private final String ENEMY = "Enemy";
 
-    private ArrayList<Tile> floorTiles;
-    private ArrayList<Tile> wallTiles;
-    private ArrayList<Tile> enemyTiles;
-
     private int[] dimensions;
 
+    private List<Tile> tiles;
+    private List<Tile> floorTiles;
+    private List<Tile> wallTiles;
+    private List<Tile> enemyTiles;
+    private List<Tile> miscTiles;
+
     public Map() {
+        tiles = new ArrayList<Tile>();
+    }
+
+    public void updateTiles() {
         floorTiles = new ArrayList<Tile>();
         wallTiles = new ArrayList<Tile>();
         enemyTiles = new ArrayList<Tile>();
-        dimensions = null;
+        miscTiles = new ArrayList<Tile>();
+        for (Tile tile : tiles) {
+            if (tile.type.equals("enemy"))
+                enemyTiles.add(tile);
+            else if (tile.type.equals("floor"))
+                floorTiles.add(tile);
+            else if (tile.collidable)
+                wallTiles.add(tile);
+            else
+                miscTiles.add(tile);
+        }
+        tiles = null;
     }
 
-    public void addTile(Tile tile) {
-        Gdx.app.log("Adding Tile", "x: " + tile.x +", y: " + tile.y + ", textureName: " +
-                tile.textureName + ", index:" + tile.textureIndex);
-        if(tile.type.equals(FLOOR) && !floorTiles.contains(tile)) floorTiles.add(tile);
-        else if(tile.type.equals(WALL) && !wallTiles.contains(tile)) wallTiles.add(tile);
-    }
-
-    public Tile searchTile(float x, float y){
-        for(Tile tile : enemyTiles) {
-            if(tile.x == x && tile.y == y)
-                return tile;
-        }
-        for(Tile tile : wallTiles) {
-            if(tile.x == x && tile.y == y)
-                return tile;
-        }
-        for(Tile tile : floorTiles) {
-            if(tile.x == x && tile.y == y)
-                return tile;
-        }
-        return null;
-    }
-
-    public Tile searchFloorTiles(float x, float y){
-        return null;
-    }
-
-    public Tile searchWallTiles(float x, float y){
-        for(Tile tile : wallTiles) {
-            if(tile.x == x && tile.y == y)
-                return tile;
-        }
-        return null;
-    }
-    public ArrayList<Tile> getFloorTiles(){
+    public List<Tile> getFloorTiles() {
         return floorTiles;
     }
 
-    public ArrayList<Tile> getWallTiles(){
+    public List<Tile> getWallTiles() {
         return wallTiles;
     }
 
-    public ArrayList<Tile> getEnemyTiles(){
+    public List<Tile> getEnemyTiles() {
         return enemyTiles;
     }
 
+    public Tile searchTiles(float x, float y) {
+        for (Tile tile : tiles) {
+            if (tile.x == x && tile.y == y)
+                return tile;
+        }
+        return null;
+    }
+
+    public Tile searchTilesFiltered(float x, float y, String type) {
+        for (Tile tile : tiles) {
+            if (tile.x == x && tile.y == y && tile.type.equals(type))
+                return tile;
+        }
+        return null;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
     public void removeTile(Tile tile) {
-        if(tile.type.equals(FLOOR)) floorTiles.remove(tile);
-        else if(tile.type.equals(WALL)) wallTiles.remove(tile);
-        else if(tile.type.equals(ENEMY)) enemyTiles.remove(tile);
+        if (tile == null) return;
+        tiles.remove(tile);
         Gdx.app.log("Removing tile", "x: " + tile.x + ", y : " + tile.y);
     }
 
     /* These are the tiles the enemy can not traverse. */
-    public ArrayList<Tile> getBlockedTiles() {
-        return getWallTiles(); // should be extended when there are other blocked tiles.
+    public List<Tile> getBlockedTiles() {
+        return getWallTiles(); // should be extended when there are other blockes tiles.
     }
 
     /* Get the dimensions of the map. */
@@ -90,25 +96,27 @@ public class Map {
         int maxX = 0;
         int minY = 0;
         int maxY = 0;
-        ArrayList<ArrayList<Tile>> tileArrays = new ArrayList<ArrayList<Tile>>(3);
+        ArrayList<List<Tile>> tileArrays = new ArrayList<List<Tile>>(3);
         tileArrays.add(floorTiles);
         tileArrays.add(enemyTiles);
         tileArrays.add(wallTiles);
-        for (ArrayList<Tile> tileArray : tileArrays)
-        {
-            for (Tile tile : tileArray)
-            {
-                if(tile.x < minX)
-                    minX = (int)(tile.x);
+        for (List<Tile> tileArray : tileArrays) {
+            for (Tile tile : tileArray) {
+                if (tile.x < minX)
+                    minX = (int) (tile.x);
                 if (tile.y < minY)
-                    minY = (int)(tile.y);
-                if(tile.x > maxX)
-                    maxX = (int)(tile.x);
+                    minY = (int) (tile.y);
+                if (tile.x > maxX)
+                    maxX = (int) (tile.x);
                 if (tile.y > maxY)
-                    maxY = (int)(tile.y);
+                    maxY = (int) (tile.y);
             }
         }
-        dimensions = new int[] { minX, maxX, minY, maxY };
+        dimensions = new int[]{minX, maxX, minY, maxY};
         return dimensions;
+    }
+
+    public List<Tile> getMiscTiles() {
+        return miscTiles;
     }
 }

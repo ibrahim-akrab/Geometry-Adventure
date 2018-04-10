@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapGraph implements IndexedGraph<MapGraphNode> {
     public ArrayList<MapGraphNode> nodes;
@@ -63,7 +64,7 @@ public class MapGraph implements IndexedGraph<MapGraphNode> {
      * to a file and read from memory.                                              */
     public void initializeGraph(Map map)
     {
-        ArrayList<Tile> blockedTiles = map.getBlockedTiles();
+        List<Tile> blockedTiles = map.getBlockedTiles();
         int[] dimensions = map.getMapDimensions();
         minX = dimensions[0];
         maxX = dimensions[1];
