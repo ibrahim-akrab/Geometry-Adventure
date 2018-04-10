@@ -12,7 +12,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CALIBRATION;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CHASING;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_MID_MOTION;
 
@@ -66,7 +65,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 pc.velocity.x = ec.speed * (float)Math.cos(angle);
                 pc.velocity.y = ec.speed * (float)Math.sin(angle);
                 angle = (float)Math.toDegrees(angle);
-                pc.rotationAngle = (pc.rotationAngle*9+angle)/10.0f;
+                pc.rotationAngle = angle;
                 if(Math.abs(deltaX) < 0.1 && Math.abs(deltaY) < 0.1)
                 {
                     ec.currentState = ec.previousState;
