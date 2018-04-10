@@ -9,16 +9,15 @@ import java.util.List;
  */
 
 /**
- * Systems are the logic part
- * They perform action on every Entity that the system is interested in
- * A system is interested in every entity that has ALL the components that are specified by the mask
+ * Systems are the logic part, they perform action on every Entity that the system is interested in
+ * A system is interested in every entity that has ALL of the components specified by the mask
  */
 
 public abstract class System {
-    // a list of all the entities that the system is interested in
-    protected List<Integer> entities;
     // a 64-bit mask where the ith bit represents the interest in the component with the code i
     private final long componentsMask;
+    // a list of all the entities that the system is interested in
+    protected List<Integer> entities;
     protected ECSManager ecsManager;
 
     /**
@@ -65,17 +64,19 @@ public abstract class System {
      * @return true if successful, false otherwise
      */
     boolean removeEntity(int entityId) {
+        int index = 0;
         for (Iterator<Integer> iterator = entities.iterator(); iterator.hasNext(); ) {
             int id = iterator.next();
             if (id == entityId) {
-                entityRemoved(id);
+                entityRemoved(id, index);
                 return entities.remove(Integer.valueOf(id));
             }
+            index++;
         }
         return false;
     }
 
-    protected void entityRemoved(int entityId) {
+    protected void entityRemoved(int entityId, int index) {
     }
 
     /**

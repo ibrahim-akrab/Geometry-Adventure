@@ -10,7 +10,6 @@ import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -26,7 +25,7 @@ public class WeaponSystem extends System implements ECSEventListener{
         switch (eventCode){
             case ECSEvents.ATTACK_EVENT:
                 float[] weaponData = (float[]) message;
-                entityAttacked(weaponData[0], weaponData[1], weaponData[2], (int)weaponData[3], (int)weaponData[4]);
+                entityAttacked(weaponData[0], weaponData[1], weaponData[2], (int) weaponData[3]);
         }
         return false;
     }
@@ -46,12 +45,12 @@ public class WeaponSystem extends System implements ECSEventListener{
      * @param x x-position of entity when fired
      * @param y y-position of entity when fired
      * @param angle rotation angle of entity
-     * @param componentId   the id of the weapon component that was used to attack
      * @param entityId  the id of the entity that attacked
      * @return  creates entities that has the properities of the bullet or the lethal object being shot
      */
-    private boolean entityAttacked(float x, float y, float angle, int componentId, int entityId){
-        WeaponComponent weaponComponent = (WeaponComponent) ecsManager.getComponent(componentId);
+    private boolean entityAttacked(float x, float y, float angle, int entityId) {
+        WeaponComponent weaponComponent = (WeaponComponent) ecsManager.getComponent(entityId,
+                Components.WEAPON_COMPONENT_CODE);
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
             return false;
 

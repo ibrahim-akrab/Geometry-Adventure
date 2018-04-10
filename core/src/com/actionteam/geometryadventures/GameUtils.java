@@ -114,6 +114,12 @@ public abstract class GameUtils {
         col.shapeType = CollisionComponent.RECTANGLE;
         col.id = 0;
         col.mask = ~0;
+        cc.leftBigCircleRadius = (float) (0.04 * Math.sqrt(Gdx.graphics.getWidth() *
+                Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
+        cc.rightBigCircleRadius = (float) (0.18 * Math.sqrt(Gdx.graphics.getWidth() *
+                Gdx.graphics.getWidth() + Gdx.graphics.getHeight() * Gdx.graphics.getHeight()));
+        cc.maximumSpeed = 3.5f;
+
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
 

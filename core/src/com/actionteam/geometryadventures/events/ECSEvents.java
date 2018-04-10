@@ -3,11 +3,9 @@ package com.actionteam.geometryadventures.events;
 import com.actionteam.geometryadventures.ecs.ECSEvent;
 
 /**
- * Created by theartful on 3/27/18.
- */
-
-/**
  * A factory-like class that initializes all kinds of events
+ *
+ * Created by theartful on 3/27/18.
  */
 
 public class ECSEvents {
@@ -41,12 +39,11 @@ public class ECSEvents {
         return new ECSEvent(COLLISION_EVENT, collided);
     }
 
-    public static ECSEvent attackEvent(float x, float y, float angle, int componentId, int entityId) {
-        return new ECSEvent(ATTACK_EVENT, new float[]{x, y, angle, componentId, entityId});
+    public static ECSEvent attackEvent(float x, float y, float angle, int entityId) {
+        return new ECSEvent(ATTACK_EVENT, new float[]{x, y, angle, entityId});
     }
 
-    public static ECSEvent enemyCollisionEvent(Integer entityID)
-    {
+    public static ECSEvent enemyCollisionEvent(Integer entityID) {
         return new ECSEvent(ENEMY_COLLIDED_EVENT, entityID);
     }
 }

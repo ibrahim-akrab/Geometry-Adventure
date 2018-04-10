@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by ibrahim on 3/18/18.
- */
-
-/**
  * Manages all the entities, system and components
  * It's responsible for:
  * - Creating entities and assigning them to concerned systems
  * - Assigning components to entities
  * - Acting as a message bus for communication across systems using events
  * - Updating the systems each frame
+ *
+ * Created by ibrahim on 3/18/18.
  */
 
 public class ECSManager {
@@ -254,6 +252,11 @@ public class ECSManager {
         for (System system : systems) {
             system.update(dt);
         }
+    }
+
+    public boolean entityHasComponent(int entityId, int componentCode) {
+        Entity entity = getEntity(entityId);
+        return entity != null && entity.hasComponent(componentCode);
     }
 
     private Entity getEntity(int id) {
