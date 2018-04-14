@@ -29,10 +29,10 @@ public class MainMenuScreen implements Screen {
         table.setFillParent(true);
         table.setDebug(true);
         ImageTextButton startButton = new ImageTextButton("Start Game", skin);
-        table.add(startButton).expand(1, 1).right();
+        table.add(startButton).expand(500, 500).right();
         table.row();
         ImageTextButton quitButton = new ImageTextButton("Quit", skin);
-        table.add(quitButton).expand(1,1).left();
+        table.add(quitButton).expand(500,500).left();
         stage.addActor(table);
 
         quitButton.addListener(new ChangeListener() {
