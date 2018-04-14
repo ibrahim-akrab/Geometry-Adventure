@@ -81,10 +81,14 @@ public class VisionSystem extends System implements ECSEventListener {
         Vector2 end = new Vector2 (playerPosition.x, playerPosition.y);
         if(!aiUtils.checkLineSegmentCollision(start, end))
         {
-            // Gdx.app.log("EnemySystem", "Path to player available!");
+            Gdx.app.log("EnemySystem", "Path to player available!");
             /* Change this part later. */
-            ec.previousState = ec.currentState;
-            ec.currentState = STATE_CHASING;
+            if (ec.currentState != EnemyComponent.EnemyState.STATE_MID_MOTION
+                    && ec.currentState != EnemyComponent.EnemyState.STATE_CHASING)
+            {
+                ec.previousState = ec.currentState;
+                ec.currentState = STATE_CHASING;
+            }
         }
     }
 
