@@ -49,6 +49,11 @@ public class VisionSystem extends System implements ECSEventListener {
         return (startArc.x * position.y) > (startArc.y * position.x);
     }
 
+    private boolean isClockwise(float startAngle, float angle)
+    {
+        return Math.sin(Math.toRadians(startAngle - angle)) < 0;
+    }
+
     private void updateEnemyVisibility(int entity) {
         EnemyComponent ec = (EnemyComponent)ecsManager.getComponent(entity,
                 Components.ENEMY_COMPONENT_CODE);
@@ -60,16 +65,11 @@ public class VisionSystem extends System implements ECSEventListener {
                 pc.position.y + cc.height/2);
         Vector2 delta = new Vector2(playerPosition.x - enemyPosition.x,
                 playerPosition.y - enemyPosition.y);
-
         float angle = (float)Math.toDegrees(Math.atan2(delta.y, delta.x));
         float enemyRotationAngle = pc.rotationAngle;
-        float viewArcStartAngle = correctAngleScale(enemyRotationAngle - ec.fieldOfView);
-        float viewArcEndAngle   = correctAngleScale(enemyRotationAngle + ec.fieldOfView);
-        Vector2 viewArcStart = new Vector2((float)Math.cos(viewArcStartAngle),
-                (float)Math.sin(viewArcStartAngle));
-        Vector2 viewArcEnd = new Vector2((float)Math.cos(viewArcEndAngle),
-                (float)Math.sin(viewArcEndAngle));
-        if (/* !isClockwise(viewArcStart, delta) || isClockwise(viewArcEnd, delta) || */
+        float viewArcStartAngle = enemyRotationAngle - ec.fieldOfView;
+        float viewArcEndAngle   = enemyRotationAngle + ec.fieldOfView;
+        if ( !isClockwise(viewArcStartAngle, angle) || isClockwise(viewArcEndAngle, angle) ||
                 delta.len2() > ec.lineOfSightLength * ec.lineOfSightLength)
         {
             return;

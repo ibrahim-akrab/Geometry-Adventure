@@ -102,10 +102,8 @@ public class EnemySystem extends System implements ECSEventListener {
                 ec.taskQueue.add(TASK_GO_TO);
                 ec.targetGoToPosition.x = playerPosition[0];
                 ec.targetGoToPosition.y = playerPosition[1];
-                float[] nextPos = aiUtils.calculatePath((int)Math.floor(pc.position.x + eCC.width / 2),
-                        (int)Math.floor(pc.position.y + eCC.height / 2), (int)ec.targetGoToPosition.x, (int)ec.targetGoToPosition.y);
-                ec.nextTilePosition.x = nextPos[0] + 0.5f;
-                ec.nextTilePosition.y = nextPos[1] + 0.5f;
+                ec.nextTilePosition.x = ec.targetGoToPosition.x;
+                ec.nextTilePosition.y = ec.targetGoToPosition.y;
                 /* Adds to the destroy threat ask again, such that the enemy can reconsider */
                 /* And chase after the player if the player is not destroyed.               */
                 ec.taskQueue.add(destroyTask);
@@ -119,7 +117,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 }
                 float midX = pc.position.x + eCC.width / 2;
                 float midY = pc.position.y + eCC.height / 2;
-                nextPos = aiUtils.calculatePath((int)Math.floor(midX),
+                float[] nextPos = aiUtils.calculatePath((int)Math.floor(midX),
                         (int)Math.floor(midY), (int)ec.targetGoToPosition.x, (int)ec.targetGoToPosition.y);
                 ec.nextTilePosition.x = nextPos[0] + 0.5f;
                 ec.nextTilePosition.y = nextPos[1] + 0.5f;

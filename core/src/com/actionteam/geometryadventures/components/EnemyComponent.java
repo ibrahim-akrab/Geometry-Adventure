@@ -46,7 +46,7 @@ public class EnemyComponent extends Component {
         remainingTime = 0;
         speed = 3.0f;
         fieldOfView = 57.0f;
-        lineOfSightLength = 10.0f;
+        lineOfSightLength = 5.0f;
         currentState = EnemyState.STATE_WAITING;
         previousState = EnemyState.STATE_MID_MOTION;
         nextTilePosition = new Vector2();
