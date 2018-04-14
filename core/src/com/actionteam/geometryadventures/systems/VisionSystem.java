@@ -69,12 +69,12 @@ public class VisionSystem extends System implements ECSEventListener {
                 (float)Math.sin(viewArcStartAngle));
         Vector2 viewArcEnd = new Vector2((float)Math.cos(viewArcEndAngle),
                 (float)Math.sin(viewArcEndAngle));
-        if (!isClockwise(viewArcStart, delta) || isClockwise(viewArcEnd, delta) ||
+        if (/* !isClockwise(viewArcStart, delta) || isClockwise(viewArcEnd, delta) || */
                 delta.len2() > ec.lineOfSightLength * ec.lineOfSightLength)
         {
             return;
         }
-        // Gdx.app.log("EnemySystem", "Player within range");
+        Gdx.app.log("EnemySystem", "Player within range");
         // If we reach here, the player's in our view arc. We need to do collision detection on
         // the player-enemy ray.
         Vector2 start = new Vector2 (enemyPosition.x, enemyPosition.y);
@@ -82,13 +82,12 @@ public class VisionSystem extends System implements ECSEventListener {
         if(!aiUtils.checkLineSegmentCollision(start, end))
         {
             Gdx.app.log("EnemySystem", "Path to player available!");
-            /* Change this part later. */
-            if (ec.currentState != EnemyComponent.EnemyState.STATE_MID_MOTION
-                    && ec.currentState != EnemyComponent.EnemyState.STATE_CHASING)
-            {
-                ec.previousState = ec.currentState;
-                ec.currentState = STATE_CHASING;
-            }
+            ec.canSeePlayer = true;
+            EnemySystem.AddTaskToEnemy(ec, EnemyComponent.EnemyTask.TASK_DESTROY_THREAT);
+        }
+        else
+        {
+            ec.canSeePlayer = false;
         }
     }
 

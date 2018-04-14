@@ -14,6 +14,11 @@ import com.badlogic.gdx.math.Vector2;
 
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CHASING;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_MID_MOTION;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WAITING;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_DESTROY_THREAT;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_STOP;
 
 /**
  * Created by rka97 on 4/2/2018.
@@ -29,6 +34,130 @@ public class EnemySystem extends System implements ECSEventListener {
         playerPosition = new int[2];
     }
 
+    public static void AddTaskToEnemy(EnemyComponent ec, EnemyTask task)
+    {
+        switch(task)
+        {
+            case TASK_DESTROY_THREAT:
+                if (ec.currentState != STATE_CHASING)
+                    ec.taskQueue.add(task);
+                break;
+            case TASK_GO_TO:
+                ec.taskQueue.add(task);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private boolean IsTaskDone(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC,
+                               EnemyTask task)
+    {
+        switch(task)
+        {
+            case TASK_DESTROY_THREAT:
+                /* Task is done if enemy can not see the player.            */
+                /* Or if the player is dead.                                */
+                /* Implement if player is dead from the lifetime component. */
+                if(!ec.canSeePlayer)
+                {
+                    ec.currentState = STATE_WAITING;
+                    Gdx.app.log("Enemy System", "Player no longer seen.");
+                    return true;
+                }
+                break;
+            case TASK_GO_TO:
+                // Is current position within 0.1 of the target position?
+                float midX = pc.position.x + eCC.width / 2;
+                float midY = pc.position.y + eCC.height / 2;
+                float deltaX = ec.nextTilePosition.x - midX;
+                float deltaY = ec.nextTilePosition.y - midY;
+                if (Math.abs(deltaX) < 0.1 && Math.abs(deltaY) < 0.1)
+                {
+                    return true;
+                }
+                break;
+            case TASK_STOP:
+                Gdx.app.log("Enemy System", "Stop Task");
+                pc.velocity.x = 0.0f;
+                pc.velocity.y = 0.0f;
+                ec.currentState = STATE_WAITING;
+                return true;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    private void ProcessEnemyTask(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC,
+                                  EnemyTask task)
+    {
+        switch(task)
+        {
+            case TASK_DESTROY_THREAT:
+                Gdx.app.log("Enemy System", "Destroy Threat Task");
+                ec.currentState = STATE_CHASING;
+                EnemyTask destroyTask = ec.taskQueue.poll();
+                /* Adds a task to go to the location with the current player position. */
+                ec.taskQueue.add(TASK_GO_TO);
+                ec.targetGoToPosition.x = playerPosition[0];
+                ec.targetGoToPosition.y = playerPosition[1];
+                float[] nextPos = aiUtils.calculatePath((int)Math.floor(pc.position.x + eCC.width / 2),
+                        (int)Math.floor(pc.position.y + eCC.height / 2), (int)ec.targetGoToPosition.x, (int)ec.targetGoToPosition.y);
+                ec.nextTilePosition.x = nextPos[0] + 0.5f;
+                ec.nextTilePosition.y = nextPos[1] + 0.5f;
+                /* Adds to the destroy threat ask again, such that the enemy can reconsider */
+                /* And chase after the player if the player is not destroyed.               */
+                ec.taskQueue.add(destroyTask);
+                break;
+            case TASK_GO_TO:
+                Gdx.app.log("Enemy System", "Go to Task");
+                if(ec.canSeePlayer)
+                {
+                    ec.targetGoToPosition.x = playerPosition[0];
+                    ec.targetGoToPosition.y = playerPosition[1];
+                }
+                float midX = pc.position.x + eCC.width / 2;
+                float midY = pc.position.y + eCC.height / 2;
+                nextPos = aiUtils.calculatePath((int)Math.floor(midX),
+                        (int)Math.floor(midY), (int)ec.targetGoToPosition.x, (int)ec.targetGoToPosition.y);
+                ec.nextTilePosition.x = nextPos[0] + 0.5f;
+                ec.nextTilePosition.y = nextPos[1] + 0.5f;
+                float deltaX = ec.nextTilePosition.x - midX;
+                float deltaY = ec.nextTilePosition.y - midY;
+                float angle = (float)Math.atan2(deltaY, deltaX);
+                pc.velocity.x = ec.speed * (float)Math.cos(angle);
+                pc.velocity.y = ec.speed * (float)Math.sin(angle);
+                angle = (float)Math.toDegrees(angle);
+                pc.rotationAngle = angle;
+                break;
+            case TASK_STOP:
+                break;
+        }
+    }
+
+    private void ProcessEnemyTasks(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC)
+    {
+        while (!ec.taskQueue.isEmpty())
+        {
+            EnemyTask currentTask = ec.taskQueue.peek();
+            if (!IsTaskDone(ec, pc, eCC, currentTask))
+            {
+                ProcessEnemyTask(ec, pc, eCC, currentTask);
+                return;
+            }
+            else
+            {
+                ec.taskQueue.remove();
+            }
+        }
+        if(ec.taskQueue.isEmpty())
+        {
+            pc.velocity.x = 0;
+            pc.velocity.y = 0;
+        }
+    }
+
     @Override
     public void update(float dt) {
         /* We should update the enemies per their programmed paths here. */
@@ -37,15 +166,16 @@ public class EnemySystem extends System implements ECSEventListener {
                     Components.ENEMY_COMPONENT_CODE);
             PhysicsComponent physicsComponent = (PhysicsComponent)ecsManager.getComponent(entity,
                     Components.PHYSICS_COMPONENT_CODE);
-            update(enemyComponent, physicsComponent, dt,entity);
+            CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
+                    Components.COLLISION_COMPONENT_CODE);
+            ProcessEnemyTasks(enemyComponent, physicsComponent, eCC);
+            // update(enemyComponent, physicsComponent, eCC, dt,entity);
         }
     }
 
-    private void update(EnemyComponent ec, PhysicsComponent pc, float dt, int entity)
+    private void update(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC, float dt, int entity)
     {
         /* FSM (Flying Spaghetti Monster) below. */
-        CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
-                Components.COLLISION_COMPONENT_CODE);
         float[] nextPos;
         float   angle;
         float   deltaX;

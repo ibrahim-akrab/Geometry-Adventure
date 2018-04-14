@@ -90,9 +90,11 @@ public class CollisionSystem extends System implements ECSEventListener {
 
             if (entityCollided) {
                 ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
+                /*
                 Gdx.app.log("Collision", entityID + " " + e);
                 Gdx.app.log("Collision", "(" + beginX + ", " + beginY + ") " + "("
                                     + endX + ", " + endY + ").");
+                */
                 if ((EnemyComponent) ecsManager.getComponent(entityID, Components.ENEMY_COMPONENT_CODE) != null)
                 {
                     ecsManager.fireEvent(ECSEvents.enemyCollisionEvent((Integer)entityID));

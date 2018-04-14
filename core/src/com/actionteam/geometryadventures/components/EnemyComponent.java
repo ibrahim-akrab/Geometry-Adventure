@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.lang.Float;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by rka97 on 4/2/2018.
  */
@@ -18,6 +21,12 @@ public class EnemyComponent extends Component {
         STATE_CALIBRATION,
         STATE_MID_MOTION
     }
+    public enum EnemyTask {
+        TASK_DESTROY_THREAT,
+        TASK_GO_TO,
+        TASK_STOP
+    }
+    public Queue<EnemyTask> taskQueue;
     // Arrays of Float. [0]: x, [1]: y, [2]: angle at point, [3]: time standing in seconds.
     public ArrayList<Float[]> pathPoints;
     public int currentPointIndex;
@@ -27,8 +36,9 @@ public class EnemyComponent extends Component {
     public float speed; // Not sure if including speed here (and not in Physics) is good.
     public float fieldOfView;
     public float lineOfSightLength;
+    public Vector2 targetGoToPosition;
     public Vector2 nextTilePosition;
-    public boolean startedChasing;
+    public boolean canSeePlayer;
     public EnemyComponent() {
         super(Components.ENEMY_COMPONENT_CODE);
         pathPoints = new ArrayList<Float[]>();
@@ -40,6 +50,9 @@ public class EnemyComponent extends Component {
         currentState = EnemyState.STATE_WAITING;
         previousState = EnemyState.STATE_MID_MOTION;
         nextTilePosition = new Vector2();
-        startedChasing = false;
+        targetGoToPosition = new Vector2();
+        canSeePlayer = false;
+        taskQueue = new LinkedList<EnemyTask>();
+        taskQueue.add(EnemyTask.TASK_STOP);
     }
 }
