@@ -36,19 +36,6 @@ public class VisionSystem extends System implements ECSEventListener {
         }
     }
 
-    private float correctAngleScale(float angle) {
-        if (angle < -180)
-            angle = 360 + angle;
-        if (angle > 180)
-            angle = 360 - angle;
-        return angle;
-    }
-
-    private boolean isClockwise(Vector2 startArc, Vector2 position)
-    {
-        return (startArc.x * position.y) > (startArc.y * position.x);
-    }
-
     private boolean isClockwise(float startAngle, float angle)
     {
         return Math.sin(Math.toRadians(startAngle - angle)) < 0;

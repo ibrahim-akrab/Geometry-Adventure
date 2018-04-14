@@ -151,6 +151,7 @@ public class EnemySystem extends System implements ECSEventListener {
         }
         if(ec.taskQueue.isEmpty())
         {
+            /* Stop moving if nothing to do. */
             pc.velocity.x = 0;
             pc.velocity.y = 0;
         }
@@ -167,7 +168,7 @@ public class EnemySystem extends System implements ECSEventListener {
             CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
                     Components.COLLISION_COMPONENT_CODE);
             ProcessEnemyTasks(enemyComponent, physicsComponent, eCC);
-            // update(enemyComponent, physicsComponent, eCC, dt,entity);
+            //update(enemyComponent, physicsComponent, eCC, dt,entity);
         }
     }
 
