@@ -4,12 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -18,22 +22,38 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
     Stage stage;
-    Skin skin;
 
     public MainMenuScreen() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("terra-skin/terra-mother-ui.json"));
         Table table = new Table();
-        table.setBackground(skin.getTiledDrawable("tile-a"));
+        stage.addActor(table);
+        Texture background = new Texture(Gdx.files.internal("main-menu/bg2.png"));
+        TextureRegion region = new TextureRegion(background, 0, 0, 512, 512);
+        table.setBackground(new TextureRegionDrawable(region));
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
+        Texture startUp = new Texture(Gdx.files.internal("main-menu/Start_Down.png"));
+        TextureRegion startUpRegion = new TextureRegion(startUp, 0, 0, 512, 512);
+        Texture startDown = new Texture(Gdx.files.internal("main-menu/Start_Up.png"));
+        TextureRegion startDownRegion = new TextureRegion(startDown, 0, 0, 512, 512);
+        Button startButton = new Button(new TextureRegionDrawable(startUpRegion),
+                new TextureRegionDrawable(startDownRegion));
+        table.add(startButton).maxSize(512*6/10, 254*6/10).right();
+        Texture quitUp = new Texture(Gdx.files.internal("main-menu/Quit_Down.png"));
+        TextureRegion quitUpRegion = new TextureRegion(quitUp, 0, 0, 512, 512);
+        Texture quitDown = new Texture(Gdx.files.internal("main-menu/Quit_Up.png"));
+        TextureRegion quitDownRegion = new TextureRegion(quitDown, 0, 0, 512, 512);
+        Button quitButton = new Button(new TextureRegionDrawable(quitUpRegion),
+                new TextureRegionDrawable(quitDownRegion));
+        table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
+        /*
         ImageTextButton startButton = new ImageTextButton("Start Game", skin);
         table.add(startButton).expand(500, 500).right();
         table.row();
         ImageTextButton quitButton = new ImageTextButton("Quit", skin);
         table.add(quitButton).expand(500,500).left();
-        stage.addActor(table);
+        */
 
         quitButton.addListener(new ChangeListener() {
             @Override
@@ -85,8 +105,6 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
         stage = null;
-        skin = null;
     }
 }
