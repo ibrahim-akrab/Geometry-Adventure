@@ -40,6 +40,7 @@ public class MainMenuScreen implements Screen {
         Button startButton = new Button(new TextureRegionDrawable(startUpRegion),
                 new TextureRegionDrawable(startDownRegion));
         table.add(startButton).maxSize(512*6/10, 254*6/10).right();
+
         Texture quitUp = new Texture(Gdx.files.internal("main-menu/Quit_Down.png"));
         TextureRegion quitUpRegion = new TextureRegion(quitUp, 0, 0, 512, 512);
         Texture quitDown = new Texture(Gdx.files.internal("main-menu/Quit_Up.png"));
@@ -47,13 +48,6 @@ public class MainMenuScreen implements Screen {
         Button quitButton = new Button(new TextureRegionDrawable(quitUpRegion),
                 new TextureRegionDrawable(quitDownRegion));
         table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
-        /*
-        ImageTextButton startButton = new ImageTextButton("Start Game", skin);
-        table.add(startButton).expand(500, 500).right();
-        table.row();
-        ImageTextButton quitButton = new ImageTextButton("Quit", skin);
-        table.add(quitButton).expand(500,500).left();
-        */
 
         quitButton.addListener(new ChangeListener() {
             @Override
