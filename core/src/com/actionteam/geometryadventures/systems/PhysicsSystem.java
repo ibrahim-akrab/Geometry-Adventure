@@ -38,14 +38,11 @@ public class PhysicsSystem extends System implements ECSEventListener {
     }
 
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {
-        physicsComponent.velocity.x +=
-                    dt * physicsComponent.acceleration.x + dt * physicsComponent.angularAcceleration.x;
-        physicsComponent.velocity.y +=
-                    dt * physicsComponent.acceleration.y + dt * physicsComponent.angularAcceleration.y;
-
-        if (physicsComponent.velocity.x == 0 && physicsComponent.velocity.y == 0) {
+        physicsComponent.velocity
+                .add(physicsComponent.acceleration.scl(dt))
+                .add(physicsComponent.angularAcceleration.scl(dt));
+        if (physicsComponent.velocity.isZero())
             return;
-        }
 
         float beginX = physicsComponent.position.x;
         float beginY = physicsComponent.position.y;
