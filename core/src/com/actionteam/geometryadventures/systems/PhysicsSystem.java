@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by theartful on 3/27/18.
@@ -37,12 +38,14 @@ public class PhysicsSystem extends System implements ECSEventListener {
     }
 
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {
+        physicsComponent.velocity.x +=
+                    dt * physicsComponent.acceleration.x + dt * physicsComponent.angularAcceleration.x;
+        physicsComponent.velocity.y +=
+                    dt * physicsComponent.acceleration.y + dt * physicsComponent.angularAcceleration.y;
 
-        physicsComponent.velocity.x += dt * physicsComponent.acceleration.x;
-        physicsComponent.velocity.y += dt * physicsComponent.acceleration.y;
-
-        if (physicsComponent.velocity.x == 0 && physicsComponent.velocity.y == 0)
+        if (physicsComponent.velocity.x == 0 && physicsComponent.velocity.y == 0) {
             return;
+        }
 
         float beginX = physicsComponent.position.x;
         float beginY = physicsComponent.position.y;
@@ -50,17 +53,17 @@ public class PhysicsSystem extends System implements ECSEventListener {
         float endY = beginY + dt * physicsComponent.velocity.y;
 
         CollisionComponent col = (CollisionComponent) ecsManager.
-                getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
+                    getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
 
         didCollide = false;
         if (col != null) {
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent
-                    (beginX, beginY, endX, beginY, entityID));
+                        (beginX, beginY, endX, beginY, entityID));
             if (!didCollide) {
                 beginX = endX;
             } else {
                 Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
-                        + physicsComponent.velocity.y + ").");
+                            + physicsComponent.velocity.y + ").");
                 endX = beginX;
             }
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));
@@ -70,6 +73,15 @@ public class PhysicsSystem extends System implements ECSEventListener {
         }
         physicsComponent.position.x = endX;
         physicsComponent.position.y = endY;
+        if(!physicsComponent.angularAcceleration.isZero()) {
+            Vector2 relativePositionVector = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
+            physicsComponent.angularAcceleration =
+                    relativePositionVector.limit(1.0f).scl(
+                            physicsComponent.velocity.len2()/
+                                    relativePositionVector.len()
+                    );
+        }
+
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -65,7 +67,7 @@ public class WeaponSystem extends System implements ECSEventListener{
             ecsManager.addComponent(createCollisionComponent(weaponComponent), entity);
             ecsManager.addComponent(createPhysicsComponent(weaponComponent, x, y, angle, i), entity);
             ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
-            ecsManager.addComponent(createLifetimeComponent(), entity);
+            ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
         }
         return true;
     }
@@ -90,15 +92,7 @@ public class WeaponSystem extends System implements ECSEventListener{
      */
     private CollisionComponent createCollisionComponent(WeaponComponent weaponComponent){
         CollisionComponent collisionComponent = new CollisionComponent();
-        switch (weaponComponent.weaponDamageRegion){
-            case WeaponComponent.CIRCLE:
-                collisionComponent.shapeType = CollisionComponent.CIRCLE;
-                break;
-            case WeaponComponent.SEMICIRCLE:
-                // TODO change to semicircle when omnia finishes it
-                collisionComponent.shapeType = CollisionComponent.CIRCLE;
-                break;
-        }
+        collisionComponent.shapeType = CollisionComponent.CIRCLE;
         collisionComponent.radius = weaponComponent.radius;
         //TODO customize collision component ID and Mask
         return collisionComponent;
@@ -116,13 +110,40 @@ public class WeaponSystem extends System implements ECSEventListener{
     private PhysicsComponent createPhysicsComponent(WeaponComponent weaponComponent, float x,
                                                     float y, float angle, int index){
         PhysicsComponent physicsComponent = new PhysicsComponent();
-        physicsComponent.position.x = x;
-        physicsComponent.position.y = y;
-        angle += index * (float)Math.pow(-1, index) * weaponComponent.angleOfSpreading;
-        physicsComponent.rotationAngle = angle;
-        if (weaponComponent.speed != 0){
-            physicsComponent.velocity.x = weaponComponent.speed * (float)Math.cos(angle);
-            physicsComponent.velocity.y = weaponComponent.speed * (float)Math.sin(Math.PI + angle);
+        if (weaponComponent.weaponDamageRegion == WeaponComponent.CIRCLE) {
+            physicsComponent.position.x = x;
+            physicsComponent.position.y = y;
+            angle += index * (float) Math.pow(-1, index) * weaponComponent.angleOfSpreading;
+            physicsComponent.rotationAngle = angle;
+            if (weaponComponent.speed != 0) {
+                physicsComponent.velocity.x = weaponComponent.speed * (float) Math.cos(angle);
+                physicsComponent.velocity.y = weaponComponent.speed * (float) Math.sin(Math.PI + angle);
+            }
+        }
+        else if (weaponComponent.weaponDamageRegion == WeaponComponent.SEMICIRCLE){
+//            Gdx.app.log("weapon system:", "Weapon damage region is semicircle");
+            physicsComponent.centerOfRotation.x = x;
+            physicsComponent.centerOfRotation.y = y;
+//            Gdx.app.log("center of rotation", physicsComponent.centerOfRotation.toString());
+            if (weaponComponent.speed != 0) {
+                physicsComponent.velocity.x = weaponComponent.speed * (float) Math.sin(Math.PI - angle);
+                physicsComponent.velocity.y = weaponComponent.speed * (float) Math.cos(angle);
+            }
+//            Gdx.app.log("velocity", physicsComponent.velocity.toString());
+            angle += index * (float) Math.pow(-1, index) * weaponComponent.angleOfSpreading;
+            physicsComponent.rotationAngle = angle;
+            Vector2 v = new Vector2(weaponComponent.radiusOfDamageRegion * (float) Math.cos(angle), weaponComponent.radiusOfDamageRegion * (float) Math.sin(Math.PI + angle));
+            Gdx.app.log("V", v.toString());
+            physicsComponent.position.x = x + weaponComponent.radiusOfDamageRegion * (float) Math.cos(angle);
+            physicsComponent.position.y = y + weaponComponent.radiusOfDamageRegion * (float) Math.sin(Math.PI + angle);
+//            Gdx.app.log("position", physicsComponent.position.toString());
+
+            physicsComponent.angularAcceleration =
+                    physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position).limit(1.0f).scl(
+                            weaponComponent.speed * weaponComponent.speed/
+                                    weaponComponent.radiusOfDamageRegion
+                    );
+//            Gdx.app.log("angular acc", physicsComponent.angularAcceleration.toString());
         }
         return physicsComponent;
 
@@ -146,9 +167,9 @@ public class WeaponSystem extends System implements ECSEventListener{
      * creates lifetime component for the bullets or lethal objects
      * @return  the created lifetime component
      */
-    private LifetimeComponent createLifetimeComponent(){
+    private LifetimeComponent createLifetimeComponent(WeaponComponent weaponComponent){
         LifetimeComponent lifetimeComponent = new LifetimeComponent();
-        lifetimeComponent.lifetime = 200;
+        lifetimeComponent.lifetime = weaponComponent.lifetimeOfLethalObject;
         return lifetimeComponent;
     }
 }

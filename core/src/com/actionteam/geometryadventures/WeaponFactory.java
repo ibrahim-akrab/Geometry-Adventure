@@ -34,10 +34,12 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 1;
-        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
-        weaponComponent.radius = 1;
-        weaponComponent.coolDownTime = 2;
+        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
+        weaponComponent.radiusOfDamageRegion = 1;
+        weaponComponent.radius = 0.2f;
+        weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 10;
+        weaponComponent.lifetimeOfLethalObject = 100;
         return weaponComponent;
     }
 
@@ -48,10 +50,12 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
-        weaponComponent.radius = 1;
-        weaponComponent.coolDownTime = 2;
+        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
+        weaponComponent.radiusOfDamageRegion = 1;
+        weaponComponent.radius = 0.3f;
+        weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 10;
+        weaponComponent.lifetimeOfLethalObject = 100;
         return weaponComponent;
     }
 
@@ -62,10 +66,12 @@ public class WeaponFactory {
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
-        weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
-        weaponComponent.radius = 1.5f;
-        weaponComponent.coolDownTime = 200;
+        weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
+        weaponComponent.radiusOfDamageRegion = 1.3f;
+        weaponComponent.radius = 0.4f;
+        weaponComponent.coolDownTime = 700;
         weaponComponent.speed = 10;
+        weaponComponent.lifetimeOfLethalObject = 150;
         return weaponComponent;
     }
 
@@ -81,6 +87,7 @@ public class WeaponFactory {
         weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 20;
+        weaponComponent.lifetimeOfLethalObject = 1000;
         return weaponComponent;
     }
 
@@ -96,6 +103,7 @@ public class WeaponFactory {
         weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 20;
+        weaponComponent.lifetimeOfLethalObject = 1000;
         return weaponComponent;
     }
 
@@ -110,6 +118,7 @@ public class WeaponFactory {
         weaponComponent.radius = 0.15f;
         weaponComponent.coolDownTime = 400;
         weaponComponent.speed = 20;
+        weaponComponent.lifetimeOfLethalObject = 1000;
         return weaponComponent;
     }
 
