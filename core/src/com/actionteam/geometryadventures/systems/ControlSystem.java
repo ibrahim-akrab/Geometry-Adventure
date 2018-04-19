@@ -167,7 +167,7 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
             if (ecsManager.entityHasComponent(entityId, Components.WEAPON_COMPONENT_CODE)) {
                 Vector2 position = physicsComponent.position;
                 ecsManager.fireEvent(ECSEvents.attackEvent
-                        (position.x, position.y, angle, entityId));
+                        (position.x, position.y, angle, entityId, true));
             }
         }
     }

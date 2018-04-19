@@ -9,6 +9,7 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
+import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -27,7 +28,8 @@ public class WeaponSystem extends System implements ECSEventListener{
         switch (eventCode){
             case ECSEvents.ATTACK_EVENT:
                 float[] weaponData = (float[]) message;
-                entityAttacked(weaponData[0], weaponData[1], weaponData[2], (int) weaponData[3]);
+                entityAttacked(weaponData[0], weaponData[1], weaponData[2],
+                        (int) weaponData[3], weaponData[4] == 1f ? true: false);
         }
         return false;
     }
@@ -50,7 +52,7 @@ public class WeaponSystem extends System implements ECSEventListener{
      * @param entityId  the id of the entity that attacked
      * @return  creates entities that has the properities of the bullet or the lethal object being shot
      */
-    private boolean entityAttacked(float x, float y, float angle, int entityId) {
+    private boolean entityAttacked(float x, float y, float angle, int entityId, boolean isPlayer) {
         WeaponComponent weaponComponent = (WeaponComponent) ecsManager.getComponent(entityId,
                 Components.WEAPON_COMPONENT_CODE);
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
@@ -64,7 +66,7 @@ public class WeaponSystem extends System implements ECSEventListener{
             int entity = ecsManager.createEntity();
             //TODO handle if ecsManager can't add component
             ecsManager.addComponent(createLethalComponent(weaponComponent,entityId), entity);
-            ecsManager.addComponent(createCollisionComponent(weaponComponent), entity);
+            ecsManager.addComponent(createCollisionComponent(weaponComponent, isPlayer), entity);
             ecsManager.addComponent(createPhysicsComponent(weaponComponent, x, y, angle, i), entity);
             ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
             ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
@@ -90,11 +92,12 @@ public class WeaponSystem extends System implements ECSEventListener{
      * @param weaponComponent   the weapon component in question
      * @return                  the created collision component
      */
-    private CollisionComponent createCollisionComponent(WeaponComponent weaponComponent){
+    private CollisionComponent createCollisionComponent(WeaponComponent weaponComponent, boolean isPlayer){
         CollisionComponent collisionComponent = new CollisionComponent();
         collisionComponent.shapeType = CollisionComponent.CIRCLE;
         collisionComponent.radius = weaponComponent.radius;
-        //TODO customize collision component ID and Mask
+        collisionComponent.id = isPlayer? Entities.LETHAL_PLAYER_COLLISION_ID: Entities.LETHAL_ENEMY_COLLISION_ID;
+        collisionComponent.mask = ~((1L << (isPlayer? Entities.PLAYER_COLLISION_ID: Entities.ENEMY_COLLISION_ID)) | (1L << collisionComponent.id));
         return collisionComponent;
     }
 

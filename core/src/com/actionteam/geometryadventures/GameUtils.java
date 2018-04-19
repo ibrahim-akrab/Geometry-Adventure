@@ -7,6 +7,7 @@ import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
+import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.Tile;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
@@ -91,7 +92,7 @@ public abstract class GameUtils {
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.width = 0.9f;
             collisionComponent.height = 0.9f;
-            collisionComponent.id = 0;
+            collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
             collisionComponent.mask = ~0;
             //TODO: Collision component needs id and mask
 
@@ -127,8 +128,8 @@ public abstract class GameUtils {
             enemyCC.width = 0.7f;
             enemyCC.height = 0.7f;
             enemyCC.radius = 0.7f;
-            enemyCC.id = 0;
-            enemyCC.mask = ~0;
+            enemyCC.id = Entities.ENEMY_COLLISION_ID;
+            enemyCC.mask = ~(1L << Entities.ENEMY_COLLISION_ID);
             PhysicsComponent enemyPC = new PhysicsComponent();
             enemyPC.position.x = enemyTile.x;
             enemyPC.position.y = enemyTile.y;
@@ -163,7 +164,7 @@ public abstract class GameUtils {
         col.width = 0.7f;
         col.height = 0.7f;
         col.shapeType = CollisionComponent.RECTANGLE;
-        col.id = 0;
+        col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);

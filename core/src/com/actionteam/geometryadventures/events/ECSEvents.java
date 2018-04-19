@@ -39,8 +39,8 @@ public class ECSEvents {
         return new ECSEvent(COLLISION_EVENT, collided);
     }
 
-    public static ECSEvent attackEvent(float x, float y, float angle, int entityId) {
-        return new ECSEvent(ATTACK_EVENT, new float[]{x, y, angle, entityId});
+    public static ECSEvent attackEvent(float x, float y, float angle, int entityId, boolean isPlayer) {
+        return new ECSEvent(ATTACK_EVENT, new float[]{x, y, angle, entityId, isPlayer ? 1f : 0f});
     }
 
     public static ECSEvent enemyCollisionEvent(Integer entityID) {

@@ -64,8 +64,11 @@ public class CollisionSystem extends System implements ECSEventListener {
         for (int e : entities) {
             cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
             pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
-
-            if (e == entityID || (cc.mask & (1L << myCc.id)) == 0) continue;
+            if (myCc.id == 4)
+            {
+                int i = 0;
+            }
+            if ((e == entityID) || ((myCc.mask & (1L << cc.id)) == 0)) continue;
 
             if (myCc.shapeType == CollisionComponent.RECTANGLE) {
                 switch (cc.shapeType) {
@@ -80,7 +83,8 @@ public class CollisionSystem extends System implements ECSEventListener {
             } else {
                 switch (cc.shapeType) {
                     case CollisionComponent.RECTANGLE:
-                        entityCollided = circRectCollision(pc.position.x,pc.position.y,cc.width,cc.height,endX,endY,myCc.radius);
+                        entityCollided = circRectCollision(pc.position.x,pc.position.y,
+                                cc.width,cc.height,endX,endY,myCc.radius);
                         break;
                     case CollisionComponent.CIRCLE:
                         entityCollided = circCircCollision(pc.position.x,pc.position.y,cc.radius,endX,endY,myCc.radius);
