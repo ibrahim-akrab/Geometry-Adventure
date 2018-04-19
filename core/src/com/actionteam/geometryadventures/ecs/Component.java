@@ -29,8 +29,8 @@ public abstract class Component {
         return componentCode;
     }
 
-    public void setId(int id) {
-        componentId = id;
+    public void setComponentId(int componentId) {
+        this.componentId = componentId;
     }
 
     public int getId() {

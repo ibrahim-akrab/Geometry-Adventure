@@ -114,7 +114,7 @@ public class ECSManager {
             componentId = componentEmptySlots.pop();
             components.set(componentId, component);
         }
-        component.setId(componentId);
+        component.setComponentId(componentId);
 
         // inform systems of the change of components for the entity
         // the addition of a new component may make a system interested in that entity

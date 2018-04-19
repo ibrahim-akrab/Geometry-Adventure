@@ -30,6 +30,7 @@ public class WeaponSystem extends System implements ECSEventListener{
                 float[] weaponData = (float[]) message;
                 entityAttacked(weaponData[0], weaponData[1], weaponData[2],
                         (int) weaponData[3], weaponData[4] == 1f ? true: false);
+                return true;
         }
         return false;
     }
@@ -87,6 +88,7 @@ public class WeaponSystem extends System implements ECSEventListener{
         return lethalComponent;
     }
 
+
     /**
      * creates collision component that is suitable to the weapon component in question
      * @param weaponComponent   the weapon component in question
@@ -97,7 +99,10 @@ public class WeaponSystem extends System implements ECSEventListener{
         collisionComponent.shapeType = CollisionComponent.CIRCLE;
         collisionComponent.radius = weaponComponent.radius;
         collisionComponent.id = isPlayer? Entities.LETHAL_PLAYER_COLLISION_ID: Entities.LETHAL_ENEMY_COLLISION_ID;
-        collisionComponent.mask = ~((1L << (isPlayer? Entities.PLAYER_COLLISION_ID: Entities.ENEMY_COLLISION_ID)) | (1L << collisionComponent.id));
+        collisionComponent.mask =
+                ~((1L << (isPlayer? Entities.PLAYER_COLLISION_ID: Entities.ENEMY_COLLISION_ID)) |
+                (1L << Entities.LETHAL_PLAYER_COLLISION_ID) |
+                (1L << Entities.LETHAL_ENEMY_COLLISION_ID));
         return collisionComponent;
     }
 

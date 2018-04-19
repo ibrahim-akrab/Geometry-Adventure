@@ -150,6 +150,9 @@ project(":core") {
         testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+
+        testCompile group: 'org.unitils', name: 'unitils-core', version: '3.4.6'
+        testCompile group: 'org.easymock', name: 'easymock', version: '3.6'
     }
 }
 
