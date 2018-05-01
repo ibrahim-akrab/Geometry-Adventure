@@ -17,6 +17,7 @@ import com.actionteam.geometryadventures.systems.GraphicsSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
+import com.actionteam.geometryadventures.systems.SoundSystem;
 import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
@@ -167,7 +168,7 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
@@ -187,6 +188,7 @@ public abstract class GameUtils {
         LifetimeSystem lifetimeSystem = new LifetimeSystem();
         EnemySystem enemySystem = new EnemySystem();
         VisionSystem visionSystem = new VisionSystem();
+        SoundSystem soundSystem = new SoundSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -197,5 +199,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(weaponSystem);
         ecsManager.addSystem(lifetimeSystem);
         ecsManager.addSystem(visionSystem);
+        ecsManager.addSystem(soundSystem);
     }
 }

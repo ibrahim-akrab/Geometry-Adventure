@@ -5,7 +5,11 @@ import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.actionteam.geometryadventures.sounds.Sounds;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.btree.branch.RandomSelector;
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.math.MathUtils;
+
+import java.util.Random;
 
 /**
  * Created by Omniia - on 27/04/2018.
@@ -35,7 +39,8 @@ public class SoundSystem extends System implements ECSEventListener{
     public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
             case ECSEvents.LOUD_WEAPON_FIRED_EVENT:
-                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.WEAPON_FIRED));
+                int index = MathUtils.random(Sounds.WEAPON_FIRED_N - 1);
+                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.WEAPON_FIRED[index]));
                 break;
             case ECSEvents.PLAYER_DEAD:
                 S = Gdx.audio.newSound(Gdx.files.internal(Sounds.PLAYER_DEAD));

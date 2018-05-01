@@ -29,10 +29,11 @@ public class WeaponSystem extends System implements ECSEventListener{
         switch (eventCode){
             case ECSEvents.ATTACK_EVENT:
                 float[] weaponData = (float[]) message;
-                entityAttacked(weaponData[0], weaponData[1], weaponData[2],
-                        (int) weaponData[3], weaponData[4] == 1f ? true: false);
-                Gdx.app.log("HERE","HERE");
-                ecsManager.fireEvent(ECSEvents.loudWeaponFired((int)weaponData[3]));
+                boolean successfulAttack =  entityAttacked(weaponData[0], weaponData[1], weaponData[2],
+                        (int) weaponData[3], weaponData[4] == 1f);
+                if (successfulAttack){
+                    ecsManager.fireEvent(ECSEvents.loudWeaponFired((int)weaponData[3]));
+                }
                 return true;
         }
         return false;
