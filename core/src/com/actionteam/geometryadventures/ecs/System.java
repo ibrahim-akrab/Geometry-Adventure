@@ -70,7 +70,8 @@ public abstract class System {
             int id = iterator.next();
             if (id == entityId) {
                 entityRemoved(id, index);
-                return entities.remove(Integer.valueOf(id));
+                iterator.remove();
+                return true;
             }
             index++;
         }

@@ -14,6 +14,7 @@ import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.EnemySystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
+import com.actionteam.geometryadventures.systems.HealthSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
@@ -189,6 +190,7 @@ public abstract class GameUtils {
         EnemySystem enemySystem = new EnemySystem();
         VisionSystem visionSystem = new VisionSystem();
         SoundSystem soundSystem = new SoundSystem();
+        HealthSystem healthSystem = new HealthSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -200,5 +202,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(lifetimeSystem);
         ecsManager.addSystem(visionSystem);
         ecsManager.addSystem(soundSystem);
+        ecsManager.addSystem(healthSystem);
     }
 }

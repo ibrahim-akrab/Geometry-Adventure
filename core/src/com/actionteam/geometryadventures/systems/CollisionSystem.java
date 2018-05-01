@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Iterator;
+
 /**
  * Created by Omnia- on 30/03/2018.
  */
@@ -47,6 +49,7 @@ public class CollisionSystem extends System implements ECSEventListener {
                         (int) collisionData[4]);
 
 
+
         }
         return true;
     }
@@ -65,10 +68,6 @@ public class CollisionSystem extends System implements ECSEventListener {
         for (int e : entities) {
             cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
             pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
-            if (myCc.id == 4)
-            {
-                int i = 0;
-            }
             if ((e == entityID) || ((myCc.mask & (1L << cc.id)) == 0)) continue;
 
             if (myCc.shapeType == CollisionComponent.RECTANGLE) {
@@ -100,9 +99,12 @@ public class CollisionSystem extends System implements ECSEventListener {
                 Gdx.app.log("Collision", "(" + beginX + ", " + beginY + ") " + "("
                                     + endX + ", " + endY + ").");
                 */
-                if ((EnemyComponent) ecsManager.getComponent(entityID, Components.ENEMY_COMPONENT_CODE) != null)
+                if (ecsManager.getComponent(entityID, Components.ENEMY_COMPONENT_CODE) != null)
                 {
                     ecsManager.fireEvent(ECSEvents.enemyCollisionEvent((Integer)entityID));
+                }
+                if (ecsManager.getComponent(entityID, Components.LETHAL_COMPONENT_CODE) != null){
+                    ecsManager.fireEvent(ECSEvents.bulletCollisionEvent(entityID, e));
                 }
                 return;
             }

@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures.ecs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -25,6 +26,7 @@ public class ECSManager {
     private ArrayList<ECSEventListener> listenerLists[];
     private Stack<Integer> entityEmptySlots;
     private Stack<Integer> componentEmptySlots;
+    private List<Integer> entitiesToBeRemoved;
 
     // an instance of the singleton class
     private static final ECSManager instance = new ECSManager();
@@ -39,6 +41,7 @@ public class ECSManager {
         for (int i = 0; i < 64; i++) {
             listenerLists[i] = new ArrayList<ECSEventListener>();
         }
+        entitiesToBeRemoved = new ArrayList<Integer>();
     }
 
     public static ECSManager getInstance(){
@@ -73,26 +76,45 @@ public class ECSManager {
         if (entityId >= entities.size()) return false;
         Entity entity = entities.get(entityId);
         if (entity == null) return false;
-
-        // removes all components associated with that entity
-        for (int componentCode = 0; componentCode < Entity.MAXIMUM_COMPONENT_NUMBER;
-             componentCode++) {
-            int componentId = entity.getComponentId(componentCode);
-            if (componentId != -1)
-                _removeComponent(getComponent(componentId), entity);
-        }
-
-        // marks the slot of the removed entity as empty
-        entityEmptySlots.push(entityId);
-        entities.set(entityId, null);
-
-        // removes entity from all concerned systems
-        for (System system : systems) {
-            if (system.entities.contains(entityId)) {
-                system.entities.remove(entityId);
-            }
+        if (!entitiesToBeRemoved.contains(entityId)) {
+            entitiesToBeRemoved.add(entityId);
         }
         return true;
+    }
+
+    /**
+     * remove entities in entitiesToBeRemoved list
+     */
+    public void updateEntities(){
+        Iterator<Entity> iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next();
+            if (entity != null) {
+                int entityId = entity.getId();
+                if (entitiesToBeRemoved.contains(entityId)) {
+                    entitiesToBeRemoved.remove(Integer.valueOf(entityId));
+                    // removes all components associated with that entity
+                    for (int componentCode = 0; componentCode < Entity.MAXIMUM_COMPONENT_NUMBER;
+                         componentCode++) {
+                        int componentId = entity.getComponentId(componentCode);
+                        if (componentId != -1)
+                            _removeComponent(getComponent(componentId), entity);
+                    }
+
+                    // marks the slot of the removed entity as empty
+                    entityEmptySlots.push(entityId);
+                    entities.set(entityId, null);
+
+                    // removes entity from all concerned systems
+                    for (System system : systems) {
+                        if (system.entities.contains(entityId)) {
+                            system.entities.remove(entityId);
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     /**
@@ -259,6 +281,7 @@ public class ECSManager {
         for (System system : systems) {
             system.update(dt);
         }
+        updateEntities();
     }
 
     public boolean entityHasComponent(int entityId, int componentCode) {
@@ -280,6 +303,7 @@ public class ECSManager {
 
     public Component getComponent(int entityId, int componentCode) {
         Entity entity = entities.get(entityId);
+        if (entity == null) return null;
         int componentId = entity.getComponentId(componentCode);
         if (componentId == -1) return null;
         return components.get(componentId);

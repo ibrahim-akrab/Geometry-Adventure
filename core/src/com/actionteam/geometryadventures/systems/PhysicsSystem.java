@@ -10,6 +10,8 @@ import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Iterator;
+
 /**
  * Created by theartful on 3/27/18.
  * edited by Omnia on 3/29/18
@@ -30,11 +32,11 @@ public class PhysicsSystem extends System implements ECSEventListener {
 
     @Override
     public void update(float dt) {
-        for (int entity : entities) {
-            PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
-                    Components.PHYSICS_COMPONENT_CODE);
-            update(physicsComponent, dt, entity);
-        }
+            for (int entity : entities) {
+                PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
+                        Components.PHYSICS_COMPONENT_CODE);
+                update(physicsComponent, dt, entity);
+            }
     }
 
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {

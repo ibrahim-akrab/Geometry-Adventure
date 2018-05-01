@@ -29,8 +29,8 @@ public class SoundSystem extends System implements ECSEventListener{
     }
     @Override
     public void ecsManagerAttached() {
-        ecsManager.subscribe(ECSEvents.ENEMY_DEAD, this);
-        ecsManager.subscribe(ECSEvents.PLAYER_DEAD,this);
+        ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
+        ecsManager.subscribe(ECSEvents.PLAYER_DEAD_EVENT,this);
         ecsManager.subscribe(ECSEvents.LOUD_WEAPON_FIRED_EVENT,this);
     }
 
@@ -42,10 +42,10 @@ public class SoundSystem extends System implements ECSEventListener{
                 int index = MathUtils.random(Sounds.WEAPON_FIRED_N - 1);
                 S = Gdx.audio.newSound(Gdx.files.internal(Sounds.WEAPON_FIRED[index]));
                 break;
-            case ECSEvents.PLAYER_DEAD:
+            case ECSEvents.PLAYER_DEAD_EVENT:
                 S = Gdx.audio.newSound(Gdx.files.internal(Sounds.PLAYER_DEAD));
                 break;
-            case ECSEvents.ENEMY_DEAD:
+            case ECSEvents.ENEMY_DEAD_EVENT:
                 S = Gdx.audio.newSound(Gdx.files.internal(Sounds.ENEMY_DEAD));
                 break;
             default: return false;

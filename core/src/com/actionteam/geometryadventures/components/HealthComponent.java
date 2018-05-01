@@ -12,4 +12,8 @@ public class HealthComponent extends Component {
     public HealthComponent() {
         super(Components.HEALTH_COMPONENT_CODE);
     }
+
+    public void takeDamage(int damage){
+        health -= damage;
+    }
 }

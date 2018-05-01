@@ -25,23 +25,14 @@ public class LifetimeSystem extends System {
      */
     @Override
     public void update(float dt) {
-        List<Integer> entitiesToBeRemoved = new ArrayList<Integer>();
         for (int entity :
                 entities) {
-//            Gdx.app.log("Lifetime system", "updated");
             LifetimeComponent lifetimeComponent = (LifetimeComponent)
                     ecsManager.getComponent(entity, Components.LIFETIME_COMPONENT_CODE);
             if (TimeUtils.timeSinceMillis(lifetimeComponent.timeOfCreation)
                     > lifetimeComponent.lifetime) {
-//                boolean returnValue = ecsManager.removeEntity(entity);
-                entitiesToBeRemoved.add(entity);
+                ecsManager.removeEntity(entity);
             }
         }
-        for (Integer entityId :
-                entitiesToBeRemoved) {
-//            Gdx.app.log("lifetime system", "removing entity");
-            ecsManager.removeEntity(entityId);
-        }
-        // TODO ask whether the list of entities IDs needs to be deleted or set to null to be deleted
     }
 }
