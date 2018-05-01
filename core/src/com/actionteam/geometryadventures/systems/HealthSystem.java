@@ -4,9 +4,12 @@ import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LethalComponent;
 import com.actionteam.geometryadventures.ecs.Component;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
+import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
 
 /**
  * Created by Ibrahim M. Akrab on 5/1/18.
@@ -14,7 +17,7 @@ import com.actionteam.geometryadventures.events.ECSEvents;
  */
 public class HealthSystem extends System implements ECSEventListener {
 
-    public HealthSystem(){ super(Components.HEALTH_COMPONENT_CODE, Components.LETHAL_COMPONENT_CODE);}
+    public HealthSystem(){ super(Components.HEALTH_COMPONENT_CODE);}
 
     @Override
     public boolean handle(int eventCode, Object message) {
@@ -31,7 +34,17 @@ public class HealthSystem extends System implements ECSEventListener {
 
     @Override
     public void update(float dt) {
-
+        for (int entity :
+                entities) {
+            HealthComponent healthComponent = (HealthComponent)
+                    ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
+            if (healthComponent.health <= 0 && !healthComponent.isDead){
+                int i = 1;
+                Gdx.app.log("health", "less than zero");
+                ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entity));
+                healthComponent.isDead = true;
+            }
+        }
     }
 
     @Override

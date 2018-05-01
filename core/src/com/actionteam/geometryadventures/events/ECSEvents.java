@@ -50,11 +50,20 @@ public class ECSEvents {
     public static ECSEvent enemyCollisionEvent(Integer entityID) {
         return new ECSEvent(ENEMY_COLLIDED_EVENT, entityID);
     }
+
     public static ECSEvent loudWeaponFired(Integer entityID){
         return new ECSEvent(LOUD_WEAPON_FIRED_EVENT,entityID);
     }
 
     public static ECSEvent bulletCollisionEvent(int bulletId, int collidedEntityId){
         return new ECSEvent(BULLET_COLLIDED_EVENT, new int[]{bulletId, collidedEntityId});
+    }
+
+    public static ECSEvent enemyDeadEvent(int enemyId){
+        return new ECSEvent(ENEMY_DEAD_EVENT, enemyId);
+    }
+
+    public static ECSEvent playerDeadEvent(int playerId){
+        return new ECSEvent(PLAYER_DEAD_EVENT, playerId);
     }
 }

@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.Component;
 
 public class HealthComponent extends Component {
     public int health;
+    public boolean isDead = false;
 
     public HealthComponent() {
         super(Components.HEALTH_COMPONENT_CODE);

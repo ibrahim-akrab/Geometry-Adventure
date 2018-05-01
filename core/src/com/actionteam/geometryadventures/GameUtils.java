@@ -4,6 +4,7 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
+import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
@@ -135,6 +136,8 @@ public abstract class GameUtils {
             PhysicsComponent enemyPC = new PhysicsComponent();
             enemyPC.position.x = enemyTile.x;
             enemyPC.position.y = enemyTile.y;
+            HealthComponent enemyHC = new HealthComponent();
+            enemyHC.health = 100;
 
             EnemyComponent enemyComponent = new EnemyComponent();
             /*
@@ -150,6 +153,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);
+            ecsManager.addComponent(enemyHC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
         }
 
