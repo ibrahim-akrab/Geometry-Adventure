@@ -14,7 +14,8 @@ public class Components {
     public static final int LETHAL_COMPONENT_CODE       = 6;
     public static final int LIFETIME_COMPONENT_CODE     = 7;
     public static final int ENEMY_COMPONENT_CODE        = 8;
-    public static final int SOUND_COMPONENT_CODE        = 9;
+    public static final int SCORE_COMPONENT_CODE        = 9;
+
 
 
 }

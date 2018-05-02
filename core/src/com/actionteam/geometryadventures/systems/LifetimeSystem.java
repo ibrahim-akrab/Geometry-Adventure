@@ -19,6 +19,11 @@ public class LifetimeSystem extends System {
         super((Components.LIFETIME_COMPONENT_CODE));
     }
 
+    @Override
+    protected void ecsManagerAttached() {
+
+    }
+
     /**
      * delete entities that needs to be deleted (its lifetime is over)
      * @param dt
