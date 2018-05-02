@@ -7,6 +7,7 @@ import com.actionteam.geometryadventures.components.LethalComponent;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.entities.Entities;
@@ -30,6 +31,8 @@ public class WeaponSystem extends System implements ECSEventListener{
                 float[] weaponData = (float[]) message;
                 entityAttacked(weaponData[0], weaponData[1], weaponData[2],
                         (int) weaponData[3], weaponData[4] == 1f ? true: false);
+                Gdx.app.log("HERE","HERE");
+                ecsManager.fireEvent(ECSEvents.loudWeaponFired((int)weaponData[3]));
                 return true;
         }
         return false;
@@ -59,10 +62,11 @@ public class WeaponSystem extends System implements ECSEventListener{
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
             return false;
 
-//        Gdx.app.log("entityAttack", "attacked");
+     Gdx.app.log("entityAttack", "attacked");
 
         weaponComponent.timeOfLastFire = TimeUtils.millis();
 
+        // DOES IT REALLY REACH HERE?!
         for (int i = 0; i < weaponComponent.numberOfLethalObjectsAtTime; i++){
             int entity = ecsManager.createEntity();
             //TODO handle if ecsManager can't add component
@@ -72,6 +76,7 @@ public class WeaponSystem extends System implements ECSEventListener{
             ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
             ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
         }
+
         return true;
     }
 
@@ -96,8 +101,10 @@ public class WeaponSystem extends System implements ECSEventListener{
      */
     private CollisionComponent createCollisionComponent(WeaponComponent weaponComponent, boolean isPlayer){
         CollisionComponent collisionComponent = new CollisionComponent();
-        collisionComponent.shapeType = CollisionComponent.CIRCLE;
-        collisionComponent.radius = weaponComponent.radius;
+        collisionComponent.shapeType = CollisionComponent.RECTANGLE;
+        //collisionComponent.radius = weaponComponent.radius;
+        collisionComponent.width = weaponComponent.radius;
+        collisionComponent.height = weaponComponent.radius;
         collisionComponent.id = isPlayer? Entities.LETHAL_PLAYER_COLLISION_ID: Entities.LETHAL_ENEMY_COLLISION_ID;
         collisionComponent.mask =
                 ~((1L << (isPlayer? Entities.PLAYER_COLLISION_ID: Entities.ENEMY_COLLISION_ID)) |

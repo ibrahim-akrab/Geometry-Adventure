@@ -1,5 +1,4 @@
 apply plugin: "java"
-apply plugin: "groovy"
 
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -7,7 +6,7 @@ sourceCompatibility = 1.6
 sourceSets {
     main {
         java { srcDirs = ["src/"] }
-        groovy { ["src/main/java", "src/main/groovy"] }
+        //groovy { ["src/main/java", "src/main/groovy"] }
     }
 }
 //sourceSets.main.java.srcDirs = [ "src/" ]
@@ -18,4 +17,7 @@ eclipse.project {
 }
 
 dependencies {
+
+    compile 'org.testng:testng:6.9.6'
+    compile 'junit:junit:4.12'
 }

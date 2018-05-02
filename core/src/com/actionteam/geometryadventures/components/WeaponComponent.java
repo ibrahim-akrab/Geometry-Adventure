@@ -30,7 +30,9 @@ public class WeaponComponent extends Component {
     public int weaponDamageRegion;
     public int numberOfLethalObjectsAtTime;
     public float radiusOfDamageRegion;
-    public float radius;                // radius of the lethal object
+    //public float width;
+    //public float height;
+    public float radius;// radius of the lethal object
     public long timeOfLastFire;
     public long coolDownTime;
     public float speed;

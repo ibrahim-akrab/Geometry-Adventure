@@ -17,9 +17,9 @@ public class CollisionSystemTest {
     public void circRectCollisionTest()
     {
         CollisionSystem cS = new CollisionSystem();
-        boolean collided = cS.circRectCollision(10,10,10,10,20,10,5);
-        assertTrue( collided);
-        collided = cS.circRectCollision(10,10,10,10,5,5,5);
+        boolean collided = cS.circRectCollision(10,10,10,10,5, 5,6);
+        assertTrue(collided);
+        collided = cS.circRectCollision(10,10,10,10,5,5,4);
         assertFalse(collided );
 
     }

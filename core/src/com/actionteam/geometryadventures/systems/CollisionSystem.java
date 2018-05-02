@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
@@ -134,9 +135,10 @@ public class CollisionSystem extends System implements ECSEventListener {
                                      float radius) {
 
         float middleX1 = X1 + width / 2.0f;
-        float middleY1 = Y1 + height / 2.0f;
-        float middleX2 = X2 + radius;
-        float middleY2 = Y2 + radius;
+        float middleY1 = Y1 - height / 2.0f;
+        float middleX2 = X2 ;
+
+        float middleY2 = Y2 ;
         boolean upDownCollision = (Math.abs(middleY1 - middleY2) == radius + height / 2.0f)
                 && (Math.abs(middleX1 - middleX2) < radius + width / 2.0f);
 
@@ -147,14 +149,14 @@ public class CollisionSystem extends System implements ECSEventListener {
 
     public boolean circCircCollision(float X1, float Y1, float radius1, float X2, float Y2,
                                      float radius2) {
-        double middleX1 = X1 + radius1;
-        double middleY1 = Y1 + radius1;
-        double middleX2 = X2 + radius2;
-        double middleY2 = Y2 + radius2;
+        double middleX1 = X1 ;
+        double middleY1 = Y1 ;
+        double middleX2 = X2 ;
+        double middleY2 = Y2;
 
         double dist = Math.pow(middleX1-middleX2,2) + Math.pow(middleY1-middleY2, 2);
         double radSum = Math.pow(radius1 + radius2, 2);
-        boolean collided = (radSum <= dist);
+        boolean collided = (dist <= radSum);
         return collided;
     }
 

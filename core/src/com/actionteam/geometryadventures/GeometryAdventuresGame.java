@@ -5,7 +5,9 @@ import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
+
 
 public class GeometryAdventuresGame extends ApplicationAdapter {
     public enum ChosenScreen {
@@ -17,16 +19,19 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	private GameUtils gameUtils;
     private MainMenuScreen mainMenu;
     public static ChosenScreen currentScreen;
+    private Music M ;
 
 	public GeometryAdventuresGame(GameUtils gameUtils){
 		this.gameUtils = gameUtils;
         ecsManager = null;
 		currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
+
 	}
 
 	@Override
 	public void create () {
 		//TexturePacker.process("mysprites/", "textureatlas/", "textures");
+        M = Gdx.audio.newMusic(Gdx.files.internal("0935.ogg"));
         switch(currentScreen)
         {
             case SCREEN_MAIN_MENU:
@@ -46,16 +51,20 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	    Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
         switch(currentScreen)
         {
             case SCREEN_MAIN_MENU:
                 mainMenu.render(0);
+                M.play();
                 break;
             case SCREEN_GAME_LEVEL:
                 if (ecsManager == null) {
+                    M.stop();
                     this.create();
                     // to update the viewport
                     this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
                 }
                 ecsManager.update(Gdx.graphics.getDeltaTime());
                 break;
