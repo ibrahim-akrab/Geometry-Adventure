@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by Ibrahim M. Akrab on 5/2/18.
@@ -9,6 +10,10 @@ import com.actionteam.geometryadventures.ecs.Component;
 public class ScoreComponent extends Component {
 
     public static final int enemyDeathScore = 10;
+    public static final long timeBetweenEachKillToCombo = 500;
+
+    public long lastKillTime = 0;
+    public int comboNumber = 0;
 
     public int score = 0;
 
@@ -18,5 +23,10 @@ public class ScoreComponent extends Component {
 
     public void increaseScore(int value){
         score += value;
+        lastKillTime = TimeUtils.millis();
+    }
+
+    public void checkCombo(){
+//        if (Tim)
     }
 }

@@ -16,7 +16,7 @@ public class SoundSystem extends System implements ECSEventListener{
 
     private Sound S;
     public SoundSystem() {
-        super (Components.SOUND_COMPONENT_CODE);
+        super ();
     }
 
 
