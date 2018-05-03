@@ -19,6 +19,7 @@ import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyS
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WALKING;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_DESTROY_THREAT;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_FOLLOW_SHOT;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO_CONTINUOUS;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_PATROL;
@@ -42,6 +43,11 @@ public class EnemySystem extends System implements ECSEventListener {
     {
         switch(task)
         {
+            case TASK_FOLLOW_SHOT:
+                ec.taskQueue.clear();
+                AddTaskToEnemy(ec, TASK_GO_TO);
+                AddTaskToEnemy(ec, TASK_PATROL);
+                break;
             case TASK_DESTROY_THREAT:
                 if (ec.currentState != STATE_CHASING)
                 {
@@ -69,6 +75,8 @@ public class EnemySystem extends System implements ECSEventListener {
     {
         switch(task)
         {
+            case TASK_FOLLOW_SHOT:
+                return true;
             case TASK_DESTROY_THREAT:
                 /* Task is done if enemy can not see the player.            */
                 /* Or if the player is dead.                                */
@@ -327,6 +335,25 @@ public class EnemySystem extends System implements ECSEventListener {
         ec.motionLock = true;
     }
 
+    private void ListenToLoudWeapon()
+    {
+        /* We should update the enemies per their programmed paths here. */
+        for (int entity : entities) {
+            EnemyComponent ec = (EnemyComponent) ecsManager.getComponent(entity,
+                    Components.ENEMY_COMPONENT_CODE);
+            PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(entity,
+                    Components.PHYSICS_COMPONENT_CODE);
+            Vector2 delta = new Vector2(playerPosition[0] - pc.position.x,
+                    playerPosition[1] - pc.position.y);
+            if (delta.len2() <= ec.hearingRadius * ec.hearingRadius)
+            {
+                ec.targetGoToPosition.x = playerPosition[0];
+                ec.targetGoToPosition.y = playerPosition[1];
+                AddTaskToEnemy(ec, TASK_FOLLOW_SHOT);
+            }
+        }
+    }
+
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT,this);
@@ -343,6 +370,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 playerPosition[1] = (int)Math.floor(position[1]  + 0.35f);
                 break;
             case ECSEvents.LOUD_WEAPON_FIRED_EVENT:
+                ListenToLoudWeapon();
                 break;
             case ECSEvents.ENEMY_COLLIDED_EVENT:
                 int enemyID = (Integer) message;

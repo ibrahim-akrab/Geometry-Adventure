@@ -18,7 +18,6 @@ public class EnemyComponent extends Component {
         STATE_WALKING,
         STATE_CHASING,
         STATE_COMBAT,
-        STATE_CALIBRATION,
         STATE_MID_MOTION
     }
     public enum EnemyTask {
@@ -26,6 +25,7 @@ public class EnemyComponent extends Component {
         TASK_GO_TO,
         TASK_GO_TO_CONTINUOUS,
         TASK_PATROL,
+        TASK_FOLLOW_SHOT,
         TASK_STOP
     }
     public Queue<EnemyTask> taskQueue;
@@ -38,6 +38,7 @@ public class EnemyComponent extends Component {
     public float speed; // Not sure if including speed here (and not in Physics) is good.
     public float fieldOfView;
     public float lineOfSightLength;
+    public float hearingRadius;
     public Vector2 targetGoToPosition;
     public Vector2 nextTilePosition;
     public Vector2 patrolDirection;
@@ -61,5 +62,6 @@ public class EnemyComponent extends Component {
         //taskQueue.add(EnemyTask.TASK_STOP);
         taskQueue.add(EnemyTask.TASK_PATROL);
         motionLock = false;
+        hearingRadius = 10.0f;
     }
 }
