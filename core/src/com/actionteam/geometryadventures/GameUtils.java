@@ -155,6 +155,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyCC, enemyEntity);
             ecsManager.addComponent(enemyHC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
+            break;
         }
 
         // temporary

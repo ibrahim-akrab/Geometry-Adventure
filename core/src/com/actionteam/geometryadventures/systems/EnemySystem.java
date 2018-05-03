@@ -16,9 +16,12 @@ import com.badlogic.gdx.math.Vector2;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CHASING;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_MID_MOTION;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WAITING;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WALKING;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_DESTROY_THREAT;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO_CONTINUOUS;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_PATROL;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_STOP;
 
 /**
@@ -46,6 +49,13 @@ public class EnemySystem extends System implements ECSEventListener {
             case TASK_GO_TO:
                 ec.taskQueue.add(task);
                 break;
+            case TASK_GO_TO_CONTINUOUS:
+                ec.taskQueue.add(task);
+                break;
+            case TASK_PATROL:
+                if (ec.currentState != STATE_CHASING)
+                    ec.taskQueue.add(task);
+                break;
             default:
                 break;
         }
@@ -63,7 +73,13 @@ public class EnemySystem extends System implements ECSEventListener {
                 if(!ec.canSeePlayer)
                 {
                     ec.currentState = STATE_WAITING;
-                    Gdx.app.log("Enemy System", "Player no longer seen.");
+                    Gdx.app.log("Enemy System", "Task destroy threat is done.");
+                    return true;
+                }
+                break;
+            case TASK_PATROL:
+                if (ec.currentState == STATE_WALKING)
+                {
                     return true;
                 }
                 break;
@@ -75,6 +91,16 @@ public class EnemySystem extends System implements ECSEventListener {
                 float deltaY = ec.nextTilePosition.y - midY;
                 if (Math.abs(deltaX) < 0.1 && Math.abs(deltaY) < 0.1)
                 {
+                    ec.currentState = STATE_WAITING;
+                    return true;
+                }
+                break;
+            case TASK_GO_TO_CONTINUOUS:
+                float dX = ec.targetGoToPosition.x - pc.position.x;
+                float dY = ec.targetGoToPosition.y - pc.position.y;
+                if (Math.abs(dX) < 0.1 && Math.abs(dY) < 0.1)
+                {
+                    ec.currentState = STATE_WAITING;
                     return true;
                 }
                 break;
@@ -95,8 +121,26 @@ public class EnemySystem extends System implements ECSEventListener {
     {
         switch(task)
         {
+            case TASK_PATROL:
+                Gdx.app.log("Enemy System", "Patrol Task");
+                ec.currentState = EnemyComponent.EnemyState.STATE_WALKING;
+                ec.taskQueue.add(TASK_PATROL);
+                if(!(ec.patrolDirection.x == 0 && ec.patrolDirection.y == 0))
+                {
+                    ec.taskQueue.add(TASK_GO_TO_CONTINUOUS);
+                    ec.targetGoToPosition.x = pc.position.x + ec.patrolDirection.x;
+                    ec.targetGoToPosition.y = pc.position.y + ec.patrolDirection.y;
+                    ec.taskQueue.add(TASK_PATROL);
+                }
+                break;
+            case TASK_GO_TO_CONTINUOUS:
+                float goToAngle = (float)Math.atan2(ec.patrolDirection.y, ec.patrolDirection.x);
+                pc.velocity.x = ec.speed * ec.patrolDirection.x;
+                pc.velocity.y = ec.speed * ec.patrolDirection.y;
+                pc.rotationAngle = (float)Math.toDegrees(goToAngle);
+                ec.motionLock = !ec.motionLock;
+                break;
             case TASK_DESTROY_THREAT:
-//                Gdx.app.log("Enemy System", "Destroy Threat Task");
                 ec.currentState = STATE_CHASING;
                 EnemyTask destroyTask = ec.taskQueue.poll();
                 /* Adds a task to go to the location with the current player position. */
@@ -110,7 +154,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 ec.taskQueue.add(destroyTask);
                 break;
             case TASK_GO_TO:
-//                Gdx.app.log("Enemy System", "Go to Task");
+                //Gdx.app.log("Enemy System", "Go to Task");
                 if(ec.canSeePlayer)
                 {
                     ec.targetGoToPosition.x = playerPosition[0];
@@ -171,11 +215,7 @@ public class EnemySystem extends System implements ECSEventListener {
             ProcessEnemyTasks(enemyComponent, physicsComponent, eCC);
             HealthComponent healthComponent = (HealthComponent)
                     ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
-//            Gdx.app.log("Health", String.valueOf(healthComponent.health));
-            java.lang.System.out.print(String.valueOf(healthComponent.health) + "\t");
-            //update(enemyComponent, physicsComponent, eCC, dt,entity);
         }
-        java.lang.System.out.print("\n");
     }
 
     private void update(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC, float dt, int entity)
@@ -250,6 +290,39 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    private void SwitchDirectionClockwise(EnemyComponent ec, PhysicsComponent pc)
+    {
+        if (ec.motionLock)
+            return;
+        if (ec.patrolDirection.x == 1 && ec.patrolDirection.y == 0)
+        {
+            ec.patrolDirection.x = 0;
+            ec.patrolDirection.y = -1;
+        }
+        else if (ec.patrolDirection.x == 0 && ec.patrolDirection.y == -1)
+        {
+            ec.patrolDirection.x = -1;
+            ec.patrolDirection.y = 0;
+        }
+        else if (ec.patrolDirection.x == -1 && ec.patrolDirection.y == 0)
+        {
+            ec.patrolDirection.x = 0;
+            ec.patrolDirection.y = 1;
+        }
+        else if (ec.patrolDirection.x == 0 && ec.patrolDirection.y == 1)
+        {
+            ec.patrolDirection.x = 1;
+            ec.patrolDirection.y = 0;
+        }
+        else
+        {
+            Gdx.app.log("EnemySystem", "can not move anywhere!");
+            ec.patrolDirection.x = 0;
+            ec.patrolDirection.y = 0;
+        }
+        ec.motionLock = true;
+    }
+
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT,this);
@@ -271,8 +344,9 @@ public class EnemySystem extends System implements ECSEventListener {
                 int enemyID = (Integer) message;
                 EnemyComponent enemyComponent = (EnemyComponent)ecsManager.getComponent(enemyID,
                         Components.ENEMY_COMPONENT_CODE);
-                enemyComponent.previousState = enemyComponent.currentState;
-                //enemyComponent.currentState = STATE_CALIBRATION;
+                PhysicsComponent physicsComponent = (PhysicsComponent)ecsManager.getComponent(enemyID,
+                        Components.PHYSICS_COMPONENT_CODE);
+                SwitchDirectionClockwise(enemyComponent, physicsComponent);
                 break;
             default:
                 break;

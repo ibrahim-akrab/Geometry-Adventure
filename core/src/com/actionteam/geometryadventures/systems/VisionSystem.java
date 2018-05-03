@@ -75,6 +75,7 @@ public class VisionSystem extends System implements ECSEventListener {
         else
         {
             ec.canSeePlayer = false;
+            Gdx.app.log("VisionSystem", "Can not see player!");
         }
     }
 
