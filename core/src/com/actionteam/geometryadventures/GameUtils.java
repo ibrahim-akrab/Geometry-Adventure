@@ -1,17 +1,21 @@
 package com.actionteam.geometryadventures;
 
+import com.actionteam.geometryadventures.components.CollectibleComponent;
+import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.Tile;
+import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.EnemySystem;
@@ -20,6 +24,7 @@ import com.actionteam.geometryadventures.systems.HealthSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
+import com.actionteam.geometryadventures.systems.ScoreSystem;
 import com.actionteam.geometryadventures.systems.SoundSystem;
 import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
@@ -188,13 +193,17 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+        ScoreComponent sc = new ScoreComponent();
+        CollectorComponent collectorComponent = new CollectorComponent();
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
         ecsManager.addComponent(gc, entity);
         ecsManager.addComponent(col, entity);
         ecsManager.addComponent(wc, entity);
+        ecsManager.addComponent(sc, entity);
+        ecsManager.addComponent(collectorComponent, entity);
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);
@@ -210,6 +219,8 @@ public abstract class GameUtils {
         VisionSystem visionSystem = new VisionSystem();
         SoundSystem soundSystem = new SoundSystem();
         HealthSystem healthSystem = new HealthSystem();
+        ScoreSystem scoreSystem = new ScoreSystem();
+        CollectionSystem collectionSystem = new CollectionSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -222,5 +233,7 @@ public abstract class GameUtils {
         ecsManager.addSystem(visionSystem);
         ecsManager.addSystem(soundSystem);
         ecsManager.addSystem(healthSystem);
+        ecsManager.addSystem(scoreSystem);
+        ecsManager.addSystem(collectionSystem);
     }
 }

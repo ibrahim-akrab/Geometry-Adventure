@@ -86,9 +86,9 @@ public class ECSManager {
      * remove entities in entitiesToBeRemoved list
      */
     public void updateEntities(){
-        Iterator<Entity> iterator = entities.iterator();
-        while (iterator.hasNext()) {
-            Entity entity = iterator.next();
+        Iterator<Entity> entitiesIterator = entities.iterator();
+        while (entitiesIterator.hasNext()) {
+            Entity entity = entitiesIterator.next();
             if (entity != null) {
                 int entityId = entity.getId();
                 if (entitiesToBeRemoved.contains(entityId)) {
@@ -105,10 +105,17 @@ public class ECSManager {
                     entityEmptySlots.push(entityId);
                     entities.set(entityId, null);
 
-                    // removes entity from all concerned systems
+//                    // removes entity from all concerned systems
+//                    Iterator<System> systemsIterator = systems.iterator();
+//                    while (systemsIterator.hasNext()){
+//                        System system = systemsIterator.next();
+//                        if (system.entities.contains(entityId)) {
+//                            system.entities.remove(Integer.valueOf(entityId));
+//                        }
+//                    }
                     for (System system : systems) {
                         if (system.entities.contains(entityId)) {
-                            system.entities.remove(entityId);
+                            system.entities.remove(Integer.valueOf(entityId));
                         }
                     }
 

@@ -21,8 +21,9 @@ public class ECSEvents {
     public static final int PLAYER_DEAD_EVENT = 8;
     public static final int ENEMY_DEAD_EVENT = 9;
     public static final int BULLET_COLLIDED_EVENT = 10;
-    public static final int PORTAL_FOUND = 11;
-    public static final int MOVED_TO_A_PORTAL = 12;
+    public static final int COLLECTIBLE_COLLIDED_EVENT = 11;
+    public static final int PORTAL_FOUND = 12;
+    public static final int MOVED_TO_A_PORTAL = 13;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
@@ -60,12 +61,16 @@ public class ECSEvents {
         return new ECSEvent(BULLET_COLLIDED_EVENT, new int[]{bulletId, collidedEntityId});
     }
 
-    public static ECSEvent enemyDeadEvent(int enemyId){
-        return new ECSEvent(ENEMY_DEAD_EVENT, enemyId);
+    public static ECSEvent enemyDeadEvent(int enemyId, int killerId){
+        return new ECSEvent(ENEMY_DEAD_EVENT, new int[]{enemyId, killerId});
     }
 
-    public static ECSEvent playerDeadEvent(int playerId){
-        return new ECSEvent(PLAYER_DEAD_EVENT, playerId);
+    public static ECSEvent playerDeadEvent(int playerId, int killerId){
+        return new ECSEvent(PLAYER_DEAD_EVENT, new int[]{playerId, killerId});
+    }
+
+    public static ECSEvent collectibleCollisionEvent(int collectibleId, int collectorId){
+        return new ECSEvent(COLLECTIBLE_COLLIDED_EVENT, new int[]{collectibleId, collectorId});
     }
 
     public static ECSEvent portalFound(Integer entityID) {

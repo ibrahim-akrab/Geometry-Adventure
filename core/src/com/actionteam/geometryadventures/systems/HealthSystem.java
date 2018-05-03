@@ -26,7 +26,9 @@ public class HealthSystem extends System implements ECSEventListener {
                 int[] data = (int[]) message;
                 int bulletId = data[0];
                 int entityId = data[1];
-                bulletCollided(bulletId, entityId);
+                if (bulletCollided(bulletId, entityId)) {
+                    isDead(bulletId, entityId);
+                }
                 removeBullet(bulletId);
         }
         return false;
@@ -34,17 +36,7 @@ public class HealthSystem extends System implements ECSEventListener {
 
     @Override
     public void update(float dt) {
-        for (int entity :
-                entities) {
-            HealthComponent healthComponent = (HealthComponent)
-                    ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
-            if (healthComponent.health <= 0 && !healthComponent.isDead){
-                int i = 1;
-                Gdx.app.log("health", "less than zero");
-                ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entity));
-                healthComponent.isDead = true;
-            }
-        }
+
     }
 
     @Override
@@ -69,6 +61,24 @@ public class HealthSystem extends System implements ECSEventListener {
                 ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
         healthComponent.takeDamage(lethalComponent.damage);
         return true;
+    }
+
+    private boolean isDead(int bulletId, int entityId) {
+        HealthComponent healthComponent = (HealthComponent)
+                ecsManager.getComponent(entityId, Components.HEALTH_COMPONENT_CODE);
+        LethalComponent lethalComponent = (LethalComponent)
+                ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
+        if (healthComponent.health <= 0 && !healthComponent.isDead) {
+//            Gdx.app.log("health", "less than zero");
+            healthComponent.isDead = true;
+            if (ecsManager.getComponent(entityId, Components.ENEMY_COMPONENT_CODE) != null) {
+                ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entityId, lethalComponent.owner));
+            } else {
+                ecsManager.fireEvent(ECSEvents.playerDeadEvent(entityId, lethalComponent.owner));
+            }
+            return true;
+        }
+        return false;
     }
 
     private void removeBullet(int bulletId){
