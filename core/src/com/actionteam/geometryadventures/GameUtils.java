@@ -142,12 +142,14 @@ public abstract class GameUtils {
             HealthComponent enemyHC = new HealthComponent();
             enemyHC.health = 100;
             /* Add enemy weapon here */
+            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
 
             EnemyComponent enemyComponent = new EnemyComponent();
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);
             ecsManager.addComponent(enemyHC, enemyEntity);
+            ecsManager.addComponent(enemyWeapon, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
             break;
         }

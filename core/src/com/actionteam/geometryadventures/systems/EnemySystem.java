@@ -1,11 +1,15 @@
 package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.AIUtils;
 import com.actionteam.geometryadventures.GameUtils;
+import com.actionteam.geometryadventures.WeaponFactory;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.WeaponComponent;
+import com.actionteam.geometryadventures.ecs.Component;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
@@ -219,10 +223,25 @@ public class EnemySystem extends System implements ECSEventListener {
         switch(ec.currentState)
         {
             case STATE_CHASING:
-                /* TO-DO: If (enemy has a ranged weapon) */
-                float angle = pc.rotationAngle;
-                ecsManager.fireEvent(ECSEvents.attackEvent
-                        (pc.position.x, pc.position.y, angle, entityId, false));
+                WeaponComponent wp = (WeaponComponent)ecsManager.getComponent(entityId, Components.WEAPON_COMPONENT_CODE);
+                float deltaX = playerPosition[0] - pc.position.x;
+                float deltaY = playerPosition[1] - pc.position.y;
+                float angle = (float)(2*Math.PI - Math.atan2(deltaY, deltaX));
+                if (wp.weaponDamageRegion == WeaponComponent.SEMICIRCLE)
+                {
+                    /* Melee */
+                    if((float)Math.abs(deltaX*deltaX + deltaY*deltaY) < wp.radiusOfDamageRegion * wp.radiusOfDamageRegion)
+                    {
+                        ecsManager.fireEvent(ECSEvents.attackEvent
+                                (pc.position.x, pc.position.y, angle, entityId, false));
+                    }
+                }
+                else
+                {
+                    /* Ranged */
+                    ecsManager.fireEvent(ECSEvents.attackEvent
+                            (pc.position.x, pc.position.y, angle, entityId, false));
+                }
                 break;
             default:
                 break;
@@ -243,78 +262,6 @@ public class EnemySystem extends System implements ECSEventListener {
             ProcessEnemyState(entity, enemyComponent, physicsComponent, eCC);
             HealthComponent healthComponent = (HealthComponent)
                     ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
-        }
-    }
-
-    private void update(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC, float dt, int entity)
-    {
-        /* FSM (Flying Spaghetti Monster) below. */
-        float[] nextPos;
-        float   angle;
-        float   deltaX;
-        float   deltaY;
-        switch (ec.currentState)
-        {
-            case STATE_MID_MOTION:
-                float midX = pc.position.x + eCC.width / 2;
-                float midY = pc.position.y + eCC.height / 2;
-                nextPos = aiUtils.calculatePath((int)Math.floor(midX),
-                        (int)Math.floor(midY), playerPosition[0], playerPosition[1]);
-                ec.nextTilePosition.x = nextPos[0];
-                ec.nextTilePosition.y = nextPos[1];
-                deltaX = (ec.nextTilePosition.x + 0.5f) - midX;
-                deltaY = (ec.nextTilePosition.y + 0.5f) - midY;
-                angle = (float)Math.atan2(deltaY, deltaX);
-                pc.velocity.x = ec.speed * (float)Math.cos(angle);
-                pc.velocity.y = ec.speed * (float)Math.sin(angle);
-                angle = (float)Math.toDegrees(angle);
-                pc.rotationAngle = angle;
-                if(Math.abs(deltaX) < 0.1 && Math.abs(deltaY) < 0.1)
-                {
-                    ec.currentState = ec.previousState;
-                }
-                break;
-            case STATE_CHASING:
-                nextPos = aiUtils.calculatePath((int)Math.floor(pc.position.x + eCC.width/2),
-                        (int)Math.floor(pc.position.y + eCC.height/2), playerPosition[0], playerPosition[1]);
-                ec.nextTilePosition.x = nextPos[0];
-                ec.nextTilePosition.y = nextPos[1];
-                ec.currentState = STATE_MID_MOTION;
-                ec.previousState = STATE_CHASING;
-                break;
-            case STATE_COMBAT:
-                //TODO: combat.
-                break;
-            case STATE_WAITING:
-                ec.remainingTime -= dt;
-                if (ec.remainingTime <= 0) {
-                    if(ec.pathPoints.isEmpty()) return;
-                    ec.currentState = EnemyComponent.EnemyState.STATE_WALKING;
-                    ec.currentPointIndex = (ec.currentPointIndex + 1) % ec.pathPoints.size();
-                    Float[] nextPosition = ec.pathPoints.get(ec.currentPointIndex);
-                    deltaX = nextPosition[0] - pc.position.x;
-                    deltaY = nextPosition[1] - pc.position.y;
-                    angle = (float)Math.atan2(deltaY, deltaX);
-                    pc.velocity.x = ec.speed * (float)Math.cos(angle);
-                    pc.velocity.y = ec.speed * (float)Math.sin(angle);
-                    pc.rotationAngle = (float)Math.toDegrees(angle);
-                }
-                break;
-            case STATE_WALKING:
-                Float[] nextPosition = ec.pathPoints.get(ec.currentPointIndex);
-                deltaX = nextPosition[0] - pc.position.x;
-                deltaY = nextPosition[1] - pc.position.y;
-                if (Math.abs(deltaX) <= 0.1 && Math.abs(deltaY) <= 0.1)
-                {
-                    ec.currentState = EnemyComponent.EnemyState.STATE_WAITING;
-                    ec.remainingTime = nextPosition[3];
-                    pc.velocity.x = 0;
-                    pc.velocity.y = 0;
-                    pc.rotationAngle = nextPosition[2];
-                }
-                break;
-            default:
-                break;
         }
     }
 
