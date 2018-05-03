@@ -32,7 +32,6 @@ public abstract class System {
         }
         componentsMask = tmpMask;
         entities = new ArrayList<Integer>();
-//        setEcsManager();
     }
 
     void setEcsManager() {
