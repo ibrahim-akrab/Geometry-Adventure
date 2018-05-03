@@ -44,7 +44,10 @@ public class EnemySystem extends System implements ECSEventListener {
         {
             case TASK_DESTROY_THREAT:
                 if (ec.currentState != STATE_CHASING)
+                {
+                    ec.taskQueue.clear();
                     ec.taskQueue.add(task);
+                }
                 break;
             case TASK_GO_TO:
                 ec.taskQueue.add(task);
@@ -74,6 +77,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 {
                     ec.currentState = STATE_WAITING;
                     Gdx.app.log("Enemy System", "Task destroy threat is done.");
+                    ec.taskQueue.add(TASK_PATROL);
                     return true;
                 }
                 break;
