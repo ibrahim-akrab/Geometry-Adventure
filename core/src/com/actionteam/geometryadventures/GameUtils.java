@@ -178,7 +178,7 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.MELEE);
         ScoreComponent sc = new ScoreComponent();
         CollectorComponent collectorComponent = new CollectorComponent();
 

@@ -13,6 +13,7 @@ import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -60,6 +61,8 @@ public class WeaponSystem extends System implements ECSEventListener{
     private boolean entityAttacked(float x, float y, float angle, int entityId, boolean isPlayer) {
         WeaponComponent weaponComponent = (WeaponComponent) ecsManager.getComponent(entityId,
                 Components.WEAPON_COMPONENT_CODE);
+        GraphicsComponent graphicsComponent = (GraphicsComponent)
+                ecsManager.getComponent(entityId, Components.GRAPHICS_COMPONENT_CODE);
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
             return false;
 
@@ -73,7 +76,7 @@ public class WeaponSystem extends System implements ECSEventListener{
             //TODO handle if ecsManager can't add component
             ecsManager.addComponent(createLethalComponent(weaponComponent,entityId), entity);
             ecsManager.addComponent(createCollisionComponent(weaponComponent, isPlayer), entity);
-            ecsManager.addComponent(createPhysicsComponent(weaponComponent, x, y, angle, i), entity);
+            ecsManager.addComponent(createPhysicsComponent(weaponComponent, graphicsComponent,x, y, angle, i), entity);
             ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
             ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
         }
@@ -123,12 +126,13 @@ public class WeaponSystem extends System implements ECSEventListener{
      * @param index             the index of the bullet or lethal objects (in order of creation)
      * @return                  the created physics component
      */
-    private PhysicsComponent createPhysicsComponent(WeaponComponent weaponComponent, float x,
-                                                    float y, float angle, int index){
+    private PhysicsComponent createPhysicsComponent(WeaponComponent weaponComponent,
+                                                    GraphicsComponent graphicsComponent,
+                                                    float x, float y, float angle, int index){
         PhysicsComponent physicsComponent = new PhysicsComponent();
         if (weaponComponent.weaponDamageRegion == WeaponComponent.CIRCLE) {
-            physicsComponent.position.x = x;
-            physicsComponent.position.y = y;
+            physicsComponent.position.x = x + graphicsComponent.width / 2;
+            physicsComponent.position.y = y + graphicsComponent.height / 2;
             angle += index * (float) Math.pow(-1, index) * weaponComponent.angleOfSpreading;
             if (weaponComponent.speed != 0) {
                 physicsComponent.velocity =
@@ -138,9 +142,9 @@ public class WeaponSystem extends System implements ECSEventListener{
             physicsComponent.rotationAngle = angle;
         }
         else if (weaponComponent.weaponDamageRegion == WeaponComponent.SEMICIRCLE){
-            physicsComponent.centerOfRotation.x = x;
-            physicsComponent.centerOfRotation.y = y;
-            angle += index * (float) Math.pow(-1, index) * weaponComponent.angleOfSpreading;
+            physicsComponent.centerOfRotation.x = x + graphicsComponent.width / 2;
+            physicsComponent.centerOfRotation.y = y + graphicsComponent.height / 2;
+            angle += weaponComponent.angleOfSpreading;
             if (weaponComponent.speed != 0) {
                 physicsComponent.velocity =
                         new Vector2((float) Math.sin(Math.PI - angle),(float) Math.cos(angle))
