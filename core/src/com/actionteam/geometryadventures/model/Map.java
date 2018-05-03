@@ -22,6 +22,7 @@ public class Map {
     private List<Tile> wallTiles;
     private List<Tile> enemyTiles;
     private List<Tile> miscTiles;
+    private List<Tile> portalTiles;
 
     public Map() {
         tiles = new ArrayList<Tile>();
@@ -56,6 +57,8 @@ public class Map {
     public List<Tile> getEnemyTiles() {
         return enemyTiles;
     }
+
+    public List<Tile> getPortalTiles() { return portalTiles;}
 
     public Tile searchTiles(float x, float y) {
         for (Tile tile : tiles) {
@@ -100,6 +103,7 @@ public class Map {
         tileArrays.add(floorTiles);
         tileArrays.add(enemyTiles);
         tileArrays.add(wallTiles);
+
         for (List<Tile> tileArray : tileArrays) {
             for (Tile tile : tileArray) {
                 if (tile.x < minX)
