@@ -18,8 +18,11 @@ public class ECSEvents {
     public static final int ATTACK_EVENT = 5;
     public static final int LOUD_WEAPON_FIRED_EVENT = 6;
     public static final int ENEMY_COLLIDED_EVENT = 7;
-    public static final int PLAYER_DEAD = 8;
-    public static final int ENEMY_DEAD = 9;
+    public static final int PLAYER_DEAD_EVENT = 8;
+    public static final int ENEMY_DEAD_EVENT = 9;
+    public static final int BULLET_COLLIDED_EVENT = 10;
+    public static final int PORTAL_FOUND = 11;
+    public static final int MOVED_TO_A_PORTAL = 12;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
@@ -51,5 +54,21 @@ public class ECSEvents {
     }
     public static ECSEvent loudWeaponFired(Integer entityID){
         return new ECSEvent(LOUD_WEAPON_FIRED_EVENT,entityID);
+    }
+
+    public static ECSEvent bulletCollisionEvent(int bulletId, int collidedEntityId){
+        return new ECSEvent(BULLET_COLLIDED_EVENT, new int[]{bulletId, collidedEntityId});
+    }
+
+    public static ECSEvent enemyDeadEvent(int enemyId){
+        return new ECSEvent(ENEMY_DEAD_EVENT, enemyId);
+    }
+
+    public static ECSEvent playerDeadEvent(int playerId){
+        return new ECSEvent(PLAYER_DEAD_EVENT, playerId);
+    }
+
+    public static ECSEvent portalFound(Integer entityID) {
+        return new ECSEvent(PORTAL_FOUND,entityID);
     }
 }

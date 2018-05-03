@@ -78,7 +78,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 }
                 break;
             case TASK_PATROL:
-                if (ec.currentState == STATE_WALKING)
+                if (ec.currentState != STATE_WAITING)
                 {
                     return true;
                 }
