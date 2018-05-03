@@ -4,6 +4,7 @@ import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
+import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
@@ -95,7 +96,7 @@ public class EnemySystem extends System implements ECSEventListener {
         switch(task)
         {
             case TASK_DESTROY_THREAT:
-                Gdx.app.log("Enemy System", "Destroy Threat Task");
+//                Gdx.app.log("Enemy System", "Destroy Threat Task");
                 ec.currentState = STATE_CHASING;
                 EnemyTask destroyTask = ec.taskQueue.poll();
                 /* Adds a task to go to the location with the current player position. */
@@ -109,7 +110,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 ec.taskQueue.add(destroyTask);
                 break;
             case TASK_GO_TO:
-                Gdx.app.log("Enemy System", "Go to Task");
+//                Gdx.app.log("Enemy System", "Go to Task");
                 if(ec.canSeePlayer)
                 {
                     ec.targetGoToPosition.x = playerPosition[0];
@@ -160,16 +161,21 @@ public class EnemySystem extends System implements ECSEventListener {
     @Override
     public void update(float dt) {
         /* We should update the enemies per their programmed paths here. */
-        for(int entity : entities){
-            EnemyComponent enemyComponent = (EnemyComponent)ecsManager.getComponent(entity,
+        for (int entity : entities) {
+            EnemyComponent enemyComponent = (EnemyComponent) ecsManager.getComponent(entity,
                     Components.ENEMY_COMPONENT_CODE);
-            PhysicsComponent physicsComponent = (PhysicsComponent)ecsManager.getComponent(entity,
+            PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
                     Components.PHYSICS_COMPONENT_CODE);
-            CollisionComponent eCC = (CollisionComponent)ecsManager.getComponent(entity,
+            CollisionComponent eCC = (CollisionComponent) ecsManager.getComponent(entity,
                     Components.COLLISION_COMPONENT_CODE);
             ProcessEnemyTasks(enemyComponent, physicsComponent, eCC);
+            HealthComponent healthComponent = (HealthComponent)
+                    ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
+//            Gdx.app.log("Health", String.valueOf(healthComponent.health));
+            java.lang.System.out.print(String.valueOf(healthComponent.health) + "\t");
             //update(enemyComponent, physicsComponent, eCC, dt,entity);
         }
+        java.lang.System.out.print("\n");
     }
 
     private void update(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC, float dt, int entity)

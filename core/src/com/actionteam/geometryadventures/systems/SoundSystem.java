@@ -5,11 +5,8 @@ import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.actionteam.geometryadventures.sounds.Sounds;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.btree.branch.RandomSelector;
 import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.math.MathUtils;
-
-import java.util.Random;
 
 /**
  * Created by Omniia - on 27/04/2018.
@@ -19,7 +16,7 @@ public class SoundSystem extends System implements ECSEventListener{
 
     private Sound S;
     public SoundSystem() {
-        super (Components.SOUND_COMPONENT_CODE);
+        super ();
     }
 
 
@@ -29,8 +26,8 @@ public class SoundSystem extends System implements ECSEventListener{
     }
     @Override
     public void ecsManagerAttached() {
-        ecsManager.subscribe(ECSEvents.ENEMY_DEAD, this);
-        ecsManager.subscribe(ECSEvents.PLAYER_DEAD,this);
+        ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
+        ecsManager.subscribe(ECSEvents.PLAYER_DEAD_EVENT,this);
         ecsManager.subscribe(ECSEvents.LOUD_WEAPON_FIRED_EVENT,this);
     }
 
@@ -40,13 +37,13 @@ public class SoundSystem extends System implements ECSEventListener{
         switch (eventCode) {
             case ECSEvents.LOUD_WEAPON_FIRED_EVENT:
                 int index = MathUtils.random(Sounds.WEAPON_FIRED_N - 1);
-                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.WEAPON_FIRED[index]));
+                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.WEAPON_FIRED_SOUND[index]));
                 break;
-            case ECSEvents.PLAYER_DEAD:
-                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.PLAYER_DEAD));
+            case ECSEvents.PLAYER_DEAD_EVENT:
+                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.PLAYER_DEAD_SOUND));
                 break;
-            case ECSEvents.ENEMY_DEAD:
-                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.ENEMY_DEAD));
+            case ECSEvents.ENEMY_DEAD_EVENT:
+                S = Gdx.audio.newSound(Gdx.files.internal(Sounds.ENEMY_DEAD_SOUND));
                 break;
             default: return false;
         }

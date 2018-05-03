@@ -40,8 +40,7 @@ public abstract class System {
         ecsManagerAttached();
     }
 
-    protected void ecsManagerAttached() {
-    }
+    protected abstract void ecsManagerAttached();
 
     /**
      * Adds an entity to the system
@@ -70,7 +69,8 @@ public abstract class System {
             int id = iterator.next();
             if (id == entityId) {
                 entityRemoved(id, index);
-                return entities.remove(Integer.valueOf(id));
+                iterator.remove();
+                return true;
             }
             index++;
         }

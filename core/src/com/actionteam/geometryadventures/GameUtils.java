@@ -4,6 +4,7 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
+import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
@@ -15,6 +16,7 @@ import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.EnemySystem;
 import com.actionteam.geometryadventures.systems.GraphicsSystem;
+import com.actionteam.geometryadventures.systems.HealthSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
@@ -137,6 +139,8 @@ public abstract class GameUtils {
             PhysicsComponent enemyPC = new PhysicsComponent();
             enemyPC.position.x = enemyTile.x;
             enemyPC.position.y = enemyTile.y;
+            HealthComponent enemyHC = new HealthComponent();
+            enemyHC.health = 100;
 
             EnemyComponent enemyComponent = new EnemyComponent();
             /*
@@ -152,6 +156,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);
+            ecsManager.addComponent(enemyHC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
         }
         for(Tile portalTile: map.getPortalTiles())
@@ -210,6 +215,7 @@ public abstract class GameUtils {
         EnemySystem enemySystem = new EnemySystem();
         VisionSystem visionSystem = new VisionSystem();
         SoundSystem soundSystem = new SoundSystem();
+        HealthSystem healthSystem = new HealthSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -221,5 +227,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(lifetimeSystem);
         ecsManager.addSystem(visionSystem);
         ecsManager.addSystem(soundSystem);
+        ecsManager.addSystem(healthSystem);
     }
 }
