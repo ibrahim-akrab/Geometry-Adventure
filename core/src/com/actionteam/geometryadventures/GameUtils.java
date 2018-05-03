@@ -141,18 +141,9 @@ public abstract class GameUtils {
             enemyPC.position.y = enemyTile.y;
             HealthComponent enemyHC = new HealthComponent();
             enemyHC.health = 100;
+            /* Add enemy weapon here */
 
             EnemyComponent enemyComponent = new EnemyComponent();
-            /*
-            // The enemy's path. Automate this!!
-            Float[] v1 = new Float[] {5.0f, 5.0f, 0.0f, 3.0f};
-            Float[] v2 = new Float[] {5.0f, 8.0f, 30.0f, 2.0f};
-            Float[] v3 = new Float[] {3.0f, 7.0f, -10.0f, 1.0f};
-            enemyComponent.pathPoints.add(v1);
-            enemyComponent.pathPoints.add(v2);
-            enemyComponent.pathPoints.add(v3);
-            enemyComponent.remainingTime = (enemyComponent.pathPoints.get(0))[3].floatValue();
-            */
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);

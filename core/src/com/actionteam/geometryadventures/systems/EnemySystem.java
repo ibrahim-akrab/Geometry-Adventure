@@ -214,6 +214,21 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    private void ProcessEnemyState(int entityId, EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC)
+    {
+        switch(ec.currentState)
+        {
+            case STATE_CHASING:
+                /* TO-DO: If (enemy has a ranged weapon) */
+                float angle = pc.rotationAngle;
+                ecsManager.fireEvent(ECSEvents.attackEvent
+                        (pc.position.x, pc.position.y, angle, entityId, false));
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void update(float dt) {
         /* We should update the enemies per their programmed paths here. */
@@ -225,6 +240,7 @@ public class EnemySystem extends System implements ECSEventListener {
             CollisionComponent eCC = (CollisionComponent) ecsManager.getComponent(entity,
                     Components.COLLISION_COMPONENT_CODE);
             ProcessEnemyTasks(enemyComponent, physicsComponent, eCC);
+            ProcessEnemyState(entity, enemyComponent, physicsComponent, eCC);
             HealthComponent healthComponent = (HealthComponent)
                     ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
         }
