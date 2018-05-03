@@ -5,6 +5,7 @@ import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
@@ -33,6 +34,8 @@ import java.io.InputStreamReader;
 /**
  * Created by theartful on 3/27/18.
  */
+
+//TODO ADD TILES FOR PORTALS.
 
 public abstract class GameUtils {
     public static AIUtils aiUtils;
@@ -150,6 +153,24 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
+        }
+        for(Tile portalTile: map.getPortalTiles())
+        {
+            int entity = ecsManager.createEntity();
+            PhysicsComponent physicsComponent = new PhysicsComponent();
+            GraphicsComponent graphicsComponent = new GraphicsComponent();
+            // x and y should be initialized as the position of the portal destination.
+
+            int x =0 , y=0 ;
+            PortalComponent portalComponent = new PortalComponent(x,y);
+            physicsComponent.position.set(portalTile.x, portalTile.y);
+
+            graphicsComponent.textureName = portalTile.textureName;
+            graphicsComponent.textureIndex = portalTile.textureIndex;
+
+            ecsManager.addComponent(physicsComponent, entity);
+            ecsManager.addComponent(graphicsComponent, entity);
+
         }
 
         // temporary

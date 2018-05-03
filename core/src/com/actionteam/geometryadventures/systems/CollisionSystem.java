@@ -32,6 +32,7 @@ public class CollisionSystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.COLLIDABLE_MOVED_EVENT, this);
     }
 
+    //TODO add handling of colliding with a door.
 
     /*
     handles the collision event fired by the physics system.  sends the collision data to collide
