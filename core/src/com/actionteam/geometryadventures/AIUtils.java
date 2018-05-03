@@ -9,6 +9,8 @@ import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.math.Vector2;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by rka97 on 4/7/2018.
  */
@@ -19,7 +21,7 @@ public class AIUtils {
         public float estimate(MapGraphNode node, MapGraphNode endNode) {
             float deltaX = endNode.x - node.x;
             float deltaY = endNode.y - node.y;
-            return Math.abs(deltaX) + Math.abs(deltaY);
+            return abs(deltaX) + abs(deltaY);
         }
     }
     private class EuclideanDistanceHeurestic implements Heuristic<MapGraphNode> {
@@ -50,6 +52,7 @@ public class AIUtils {
 
     public boolean checkLineSegmentCollision(Vector2 start, Vector2 end)
     {
+        int j = 0;
         if (Math.floor(end.x) == Math.floor(start.x))
         {
             if(end.y == start.y)
@@ -61,7 +64,7 @@ public class AIUtils {
                 int ymin = (int)Math.min(Math.floor(start.y), Math.floor(end.y));
                 int ymax = (int)Math.max(Math.floor(start.y), Math.floor(end.y));
                 int x = (int)Math.floor(start.x);
-                for(int i = ymin; i < ymax; i++)
+                for(int i = ymin; i <= ymax; i++)
                 {
                     MapGraphNode node = mapGraph.nodes.get(mapGraph.xyToIndex(x, i));
                     if (node.edges.size == 0)
@@ -73,13 +76,13 @@ public class AIUtils {
         {
             float m = (end.y - start.y)/(end.x - start.x);
             float c = start.y - m * start.x;
-            if(m < 1)
+            if(Math.abs(m) < 1)
             {
                 int xmin = (int)Math.min(Math.floor(start.x), Math.floor(end.x));
                 int xmax = (int)Math.max(Math.floor(start.x), Math.floor(end.x));
-                for(int i = xmin; i < xmax; i++)
+                for(int i = xmin; i <= xmax; i++)
                 {
-                    int yi = (int)Math.floor(m*i + c);
+                    int yi = (int)Math.floor(m*i + c + 0.5);
                     int index = mapGraph.xyToIndex(i, yi);
                     if (index == -1)
                         continue;
@@ -92,10 +95,10 @@ public class AIUtils {
             {
                 int ymin = (int)Math.min(Math.floor(start.y), Math.floor(end.y));
                 int ymax = (int)Math.max(Math.floor(start.y), Math.floor(end.y));
-                for(int y = ymin; y < ymax; y++)
+                for(int y = ymin; y <= ymax; y++)
                 {
                     // y = mx + c, x = (y-c)/
-                    int x = (int)Math.floor((y - c)/m);
+                    int x = (int)Math.floor((y - c)/m + 0.5);
                     int index = mapGraph.xyToIndex(x, y);
                     if (index == -1)
                         continue;

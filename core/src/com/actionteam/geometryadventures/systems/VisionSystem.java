@@ -68,7 +68,7 @@ public class VisionSystem extends System implements ECSEventListener {
         Vector2 end = new Vector2 (playerPosition.x, playerPosition.y);
         if(!aiUtils.checkLineSegmentCollision(start, end))
         {
-            Gdx.app.log("EnemySystem", "Path to player available!");
+            Gdx.app.log("EnemySystem", "Can See player!");
             ec.canSeePlayer = true;
             EnemySystem.AddTaskToEnemy(ec, EnemyComponent.EnemyTask.TASK_DESTROY_THREAT);
         }
