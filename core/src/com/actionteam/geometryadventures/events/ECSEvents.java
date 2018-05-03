@@ -59,11 +59,11 @@ public class ECSEvents {
         return new ECSEvent(BULLET_COLLIDED_EVENT, new int[]{bulletId, collidedEntityId});
     }
 
-    public static ECSEvent enemyDeadEvent(int enemyId){
-        return new ECSEvent(ENEMY_DEAD_EVENT, enemyId);
+    public static ECSEvent enemyDeadEvent(int enemyId, int killerId){
+        return new ECSEvent(ENEMY_DEAD_EVENT, new int[]{enemyId, killerId});
     }
 
-    public static ECSEvent playerDeadEvent(int playerId){
-        return new ECSEvent(PLAYER_DEAD_EVENT, playerId);
+    public static ECSEvent playerDeadEvent(int playerId, int killerId){
+        return new ECSEvent(PLAYER_DEAD_EVENT, new int[]{playerId, killerId});
     }
 }

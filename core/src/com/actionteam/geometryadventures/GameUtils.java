@@ -6,6 +6,7 @@ import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
@@ -19,6 +20,7 @@ import com.actionteam.geometryadventures.systems.HealthSystem;
 import com.actionteam.geometryadventures.systems.HudSystem;
 import com.actionteam.geometryadventures.systems.LifetimeSystem;
 import com.actionteam.geometryadventures.systems.PhysicsSystem;
+import com.actionteam.geometryadventures.systems.ScoreSystem;
 import com.actionteam.geometryadventures.systems.SoundSystem;
 import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
@@ -174,12 +176,14 @@ public abstract class GameUtils {
         col.mask = ~0;
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+        ScoreComponent sc = new ScoreComponent();
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
         ecsManager.addComponent(gc, entity);
         ecsManager.addComponent(col, entity);
         ecsManager.addComponent(wc, entity);
+        ecsManager.addComponent(sc, entity);
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);
@@ -195,6 +199,7 @@ public abstract class GameUtils {
         VisionSystem visionSystem = new VisionSystem();
         SoundSystem soundSystem = new SoundSystem();
         HealthSystem healthSystem = new HealthSystem();
+        ScoreSystem scoreSystem = new ScoreSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -207,5 +212,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(visionSystem);
         ecsManager.addSystem(soundSystem);
         ecsManager.addSystem(healthSystem);
+        ecsManager.addSystem(scoreSystem);
     }
 }
