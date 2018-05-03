@@ -24,7 +24,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 	public GeometryAdventuresGame(GameUtils gameUtils){
 		this.gameUtils = gameUtils;
         ecsManager = null;
-		currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
+		currentScreen = ChosenScreen.SCREEN_GAME_LEVEL;
 
 	}
 
@@ -64,7 +64,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
                     this.create();
                     // to update the viewport
                     this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
                 }
                 ecsManager.update(Gdx.graphics.getDeltaTime());
                 break;

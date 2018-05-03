@@ -40,6 +40,14 @@ public class AIUtils {
         distanceHeuristic = new ManhattanDistanceHeuristic();
     }
 
+    public boolean checkNodeIsVisitable(float x, float y)
+    {
+        int ix = (int)Math.floor(x);
+        int iy = (int)Math.floor(y);
+        MapGraphNode node = mapGraph.nodes.get(mapGraph.xyToIndex(ix, iy));
+        return !(node.edges.size == 0);
+    }
+
     public boolean checkLineSegmentCollision(Vector2 start, Vector2 end)
     {
         if (Math.floor(end.x) == Math.floor(start.x))
@@ -65,17 +73,36 @@ public class AIUtils {
         {
             float m = (end.y - start.y)/(end.x - start.x);
             float c = start.y - m * start.x;
-            int xmin = (int)Math.min(Math.floor(start.x), Math.floor(end.x));
-            int xmax = (int)Math.max(Math.floor(start.x), Math.floor(end.x));
-            for(int i = xmin; i < xmax; i++)
+            if(m < 1)
             {
-                int yi = (int)Math.floor(m*i + c);
-                int index = mapGraph.xyToIndex(i, yi);
-                if (index == -1)
-                    continue;
-                MapGraphNode node = mapGraph.nodes.get(index);
-                if (node.edges.size == 0)
-                    return true;
+                int xmin = (int)Math.min(Math.floor(start.x), Math.floor(end.x));
+                int xmax = (int)Math.max(Math.floor(start.x), Math.floor(end.x));
+                for(int i = xmin; i < xmax; i++)
+                {
+                    int yi = (int)Math.floor(m*i + c);
+                    int index = mapGraph.xyToIndex(i, yi);
+                    if (index == -1)
+                        continue;
+                    MapGraphNode node = mapGraph.nodes.get(index);
+                    if (node.edges.size == 0)
+                        return true;
+                }
+            }
+            else
+            {
+                int ymin = (int)Math.min(Math.floor(start.y), Math.floor(end.y));
+                int ymax = (int)Math.max(Math.floor(start.y), Math.floor(end.y));
+                for(int y = ymin; y < ymax; y++)
+                {
+                    // y = mx + c, x = (y-c)/
+                    int x = (int)Math.floor((y - c)/m);
+                    int index = mapGraph.xyToIndex(x, y);
+                    if (index == -1)
+                        continue;
+                    MapGraphNode node = mapGraph.nodes.get(index);
+                    if (node.edges.size == 0)
+                        return true;
+                }
             }
         }
         return false;
@@ -86,7 +113,7 @@ public class AIUtils {
         MapGraphNode startNode = mapGraph.nodes.get(mapGraph.xyToIndex(startX, startY));
         MapGraphNode endNode = mapGraph.nodes.get(mapGraph.xyToIndex(endX, endY));
         if (startNode.edges.size == 0 || endNode.edges.size == 0) {
-            Gdx.app.log("Path", "We should NEVER be here.");
+            //Gdx.app.log("Path", "We should NEVER be here.");
             return new float[]{(float) startNode.x, (float) startNode.y};
         }
         graphPath.clear();

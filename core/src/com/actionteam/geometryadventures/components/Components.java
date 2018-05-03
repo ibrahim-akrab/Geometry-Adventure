@@ -17,4 +17,5 @@ public class Components {
     public static final int SCORE_COMPONENT_CODE        = 9;
     public static final int COLLECTIBLE_COMPONENT_CODE  = 10;
     public static final int COLLECTOR_COMPONENT_CODE    = 11;
+    public static final int PORTAL_COMPONENT_CODE       = 12;
 }

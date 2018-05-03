@@ -9,6 +9,7 @@ import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
+import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
@@ -40,6 +41,8 @@ import java.io.InputStreamReader;
 /**
  * Created by theartful on 3/27/18.
  */
+
+//TODO ADD TILES FOR PORTALS.
 
 public abstract class GameUtils {
     public static AIUtils aiUtils;
@@ -143,23 +146,33 @@ public abstract class GameUtils {
             enemyPC.position.y = enemyTile.y;
             HealthComponent enemyHC = new HealthComponent();
             enemyHC.health = 100;
+            /* Add enemy weapon here */
 
             EnemyComponent enemyComponent = new EnemyComponent();
-            /*
-            // The enemy's path. Automate this!!
-            Float[] v1 = new Float[] {5.0f, 5.0f, 0.0f, 3.0f};
-            Float[] v2 = new Float[] {5.0f, 8.0f, 30.0f, 2.0f};
-            Float[] v3 = new Float[] {3.0f, 7.0f, -10.0f, 1.0f};
-            enemyComponent.pathPoints.add(v1);
-            enemyComponent.pathPoints.add(v2);
-            enemyComponent.pathPoints.add(v3);
-            enemyComponent.remainingTime = (enemyComponent.pathPoints.get(0))[3].floatValue();
-            */
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
             ecsManager.addComponent(enemyCC, enemyEntity);
             ecsManager.addComponent(enemyHC, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
+            break;
+        }
+        for(Tile portalTile: map.getPortalTiles())
+        {
+            int entity = ecsManager.createEntity();
+            PhysicsComponent physicsComponent = new PhysicsComponent();
+            GraphicsComponent graphicsComponent = new GraphicsComponent();
+            // x and y should be initialized as the position of the portal destination.
+
+            int x =0 , y=0 ;
+            PortalComponent portalComponent = new PortalComponent(x,y);
+            physicsComponent.position.set(portalTile.x, portalTile.y);
+
+            graphicsComponent.textureName = portalTile.textureName;
+            graphicsComponent.textureIndex = portalTile.textureIndex;
+
+            ecsManager.addComponent(physicsComponent, entity);
+            ecsManager.addComponent(graphicsComponent, entity);
+
         }
 
         // temporary
