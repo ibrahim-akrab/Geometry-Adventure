@@ -59,8 +59,8 @@ public class ScoreSystem extends System implements ECSEventListener{
         scoreComponent.score += scoreIncrementValue;
         checkCombo(scoreComponent);
         scoreComponent.lastKillTime = TimeUtils.millis();
-        Gdx.app.log("Player Score", String.valueOf(scoreComponent.score));
-        Gdx.app.log("Player Combo", String.valueOf(scoreComponent.comboNumber));
+//        Gdx.app.log("Player Score", String.valueOf(scoreComponent.score));
+//        Gdx.app.log("Player Combo", String.valueOf(scoreComponent.comboNumber));
     }
 
     public void checkCombo(ScoreComponent scoreComponent){

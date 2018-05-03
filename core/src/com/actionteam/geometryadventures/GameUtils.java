@@ -1,5 +1,7 @@
 package com.actionteam.geometryadventures;
 
+import com.actionteam.geometryadventures.components.CollectibleComponent;
+import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
@@ -12,6 +14,7 @@ import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.Tile;
+import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
 import com.actionteam.geometryadventures.systems.EnemySystem;
@@ -177,6 +180,7 @@ public abstract class GameUtils {
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
+        CollectorComponent collectorComponent = new CollectorComponent();
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
@@ -184,6 +188,7 @@ public abstract class GameUtils {
         ecsManager.addComponent(col, entity);
         ecsManager.addComponent(wc, entity);
         ecsManager.addComponent(sc, entity);
+        ecsManager.addComponent(collectorComponent, entity);
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);
@@ -200,6 +205,7 @@ public abstract class GameUtils {
         SoundSystem soundSystem = new SoundSystem();
         HealthSystem healthSystem = new HealthSystem();
         ScoreSystem scoreSystem = new ScoreSystem();
+        CollectionSystem collectionSystem = new CollectionSystem();
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);
@@ -213,5 +219,6 @@ public abstract class GameUtils {
         ecsManager.addSystem(soundSystem);
         ecsManager.addSystem(healthSystem);
         ecsManager.addSystem(scoreSystem);
+        ecsManager.addSystem(collectionSystem);
     }
 }

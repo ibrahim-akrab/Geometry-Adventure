@@ -21,6 +21,7 @@ public class ECSEvents {
     public static final int PLAYER_DEAD_EVENT = 8;
     public static final int ENEMY_DEAD_EVENT = 9;
     public static final int BULLET_COLLIDED_EVENT = 10;
+    public static final int COLLECTIBLE_COLLIDED_EVENT = 11;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
@@ -65,5 +66,9 @@ public class ECSEvents {
 
     public static ECSEvent playerDeadEvent(int playerId, int killerId){
         return new ECSEvent(PLAYER_DEAD_EVENT, new int[]{playerId, killerId});
+    }
+
+    public static ECSEvent collectibleCollisionEvent(int collectibleId, int collectorId){
+        return new ECSEvent(COLLECTIBLE_COLLIDED_EVENT, new int[]{collectibleId, collectorId});
     }
 }

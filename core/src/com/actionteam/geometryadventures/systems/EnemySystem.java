@@ -172,10 +172,10 @@ public class EnemySystem extends System implements ECSEventListener {
             HealthComponent healthComponent = (HealthComponent)
                     ecsManager.getComponent(entity, Components.HEALTH_COMPONENT_CODE);
 //            Gdx.app.log("Health", String.valueOf(healthComponent.health));
-            java.lang.System.out.print(String.valueOf(healthComponent.health) + "\t");
+//            java.lang.System.out.print(String.valueOf(healthComponent.health) + "\t");
             //update(enemyComponent, physicsComponent, eCC, dt,entity);
         }
-        java.lang.System.out.print("\n");
+//        java.lang.System.out.print("\n");
     }
 
     private void update(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC, float dt, int entity)

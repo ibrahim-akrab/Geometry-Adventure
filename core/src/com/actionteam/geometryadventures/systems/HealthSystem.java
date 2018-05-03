@@ -69,7 +69,7 @@ public class HealthSystem extends System implements ECSEventListener {
         LethalComponent lethalComponent = (LethalComponent)
                 ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
         if (healthComponent.health <= 0 && !healthComponent.isDead) {
-            Gdx.app.log("health", "less than zero");
+//            Gdx.app.log("health", "less than zero");
             healthComponent.isDead = true;
             if (ecsManager.getComponent(entityId, Components.ENEMY_COMPONENT_CODE) != null) {
                 ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entityId, lethalComponent.owner));
