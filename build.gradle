@@ -150,6 +150,9 @@ project(":core") {
         testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        // https://mvnrepository.com/artifact/org.unitils/unitils-core
+        testCompile group: 'org.unitils', name: 'unitils-core', version: '3.4.6'
+
     }
 }
 
