@@ -1,8 +1,5 @@
 package com.actionteam.geometryadventures.model;
 
-
-
-
 /**
  * Created by theartful on 3/27/18.
  */

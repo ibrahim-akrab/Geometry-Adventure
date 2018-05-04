@@ -2,17 +2,10 @@ package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
-import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.Iterator;
 
 /**
  * Created by Omnia- on 30/03/2018.

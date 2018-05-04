@@ -1,33 +1,20 @@
 package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.AIUtils;
 import com.actionteam.geometryadventures.GameUtils;
-import com.actionteam.geometryadventures.WeaponFactory;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
-import com.actionteam.geometryadventures.ecs.Component;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CHASING;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_MID_MOTION;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WAITING;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_WALKING;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.*;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_DESTROY_THREAT;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_FOLLOW_SHOT;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_GO_TO_CONTINUOUS;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_PATROL;
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.TASK_STOP;
+import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask.*;
 
 /**
  * Created by rka97 on 4/2/2018.
@@ -88,7 +75,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 if(!ec.canSeePlayer)
                 {
                     ec.currentState = STATE_WAITING;
-                    Gdx.app.log("Enemy System", "Task destroy threat is done.");
+//                    Gdx.app.log("Enemy System", "Task destroy threat is done.");
                     ec.taskQueue.add(TASK_PATROL);
                     return true;
                 }
@@ -121,7 +108,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 }
                 break;
             case TASK_STOP:
-                Gdx.app.log("Enemy System", "Stop Task");
+//                Gdx.app.log("Enemy System", "Stop Task");
                 pc.velocity.x = 0.0f;
                 pc.velocity.y = 0.0f;
                 ec.currentState = STATE_WAITING;
@@ -138,7 +125,7 @@ public class EnemySystem extends System implements ECSEventListener {
         switch(task)
         {
             case TASK_PATROL:
-                Gdx.app.log("Enemy System", "Patrol Task");
+//                Gdx.app.log("Enemy System", "Patrol Task");
                 ec.currentState = EnemyComponent.EnemyState.STATE_WALKING;
                 ec.taskQueue.add(TASK_PATROL);
                 if(!(ec.patrolDirection.x == 0 && ec.patrolDirection.y == 0))
@@ -291,7 +278,7 @@ public class EnemySystem extends System implements ECSEventListener {
         }
         else
         {
-            Gdx.app.log("EnemySystem", "can not move anywhere!");
+//            Gdx.app.log("EnemySystem", "can not move anywhere!");
             ec.patrolDirection.x = 0;
             ec.patrolDirection.y = 0;
         }

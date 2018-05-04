@@ -70,7 +70,6 @@ public class WeaponFactory {
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
         weaponComponent.radiusOfDamageRegion = 1.3f;
-        weaponComponent.angleOfSpreading = 0.75f;
         weaponComponent.radius = 0.4f;
         weaponComponent.coolDownTime = 700;
         weaponComponent.speed = 10;

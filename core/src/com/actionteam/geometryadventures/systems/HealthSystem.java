@@ -3,10 +3,7 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LethalComponent;
-import com.actionteam.geometryadventures.ecs.Component;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
-import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
@@ -57,6 +54,7 @@ public class HealthSystem extends System implements ECSEventListener {
         if (healthComponent == null){
             return false;
         }
+        Gdx.app.log("Health", String.valueOf(healthComponent.health));
         LethalComponent lethalComponent = (LethalComponent)
                 ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
         healthComponent.takeDamage(lethalComponent.damage);
@@ -75,6 +73,7 @@ public class HealthSystem extends System implements ECSEventListener {
                 ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entityId, lethalComponent.owner));
             } else {
                 ecsManager.fireEvent(ECSEvents.playerDeadEvent(entityId, lethalComponent.owner));
+                Gdx.app.log("Player", "Dead");
             }
             return true;
         }

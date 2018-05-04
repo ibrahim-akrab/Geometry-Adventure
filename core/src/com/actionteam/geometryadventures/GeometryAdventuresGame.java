@@ -1,6 +1,5 @@
 package com.actionteam.geometryadventures;
 
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.ApplicationAdapter;

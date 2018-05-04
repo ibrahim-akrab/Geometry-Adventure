@@ -4,13 +4,11 @@ package com.actionteam.geometryadventures.model;
  * Created by rka97 on 4/7/2018.
  */
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 
 import com.badlogic.gdx.utils.Array;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 

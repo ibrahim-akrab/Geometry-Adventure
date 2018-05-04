@@ -31,8 +31,12 @@ public class ScoreSystem extends System implements ECSEventListener{
                 int enemyId = eventData[0];
                 int playerId = eventData[1];
                 Gdx.app.log("Player status", "Dead");
+                ecsManager.fireEvent(ECSEvents.endOfLevel());
+                Gdx.app.exit();
                 break;
             }
+            case ECSEvents.END_OF_LEVEL_EVENT:
+                calculateFinalScore();
             default:
                     return false;
         }
@@ -43,6 +47,7 @@ public class ScoreSystem extends System implements ECSEventListener{
     protected void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
         ecsManager.subscribe(ECSEvents.PLAYER_DEAD_EVENT, this);
+        ecsManager.subscribe(ECSEvents.END_OF_LEVEL_EVENT, this);
     }
 
     @Override
@@ -57,10 +62,9 @@ public class ScoreSystem extends System implements ECSEventListener{
             return;
         }
         scoreComponent.score += scoreIncrementValue;
+        scoreComponent.killsNumber++;
         checkCombo(scoreComponent);
         scoreComponent.lastKillTime = TimeUtils.millis();
-//        Gdx.app.log("Player Score", String.valueOf(scoreComponent.score));
-//        Gdx.app.log("Player Combo", String.valueOf(scoreComponent.comboNumber));
     }
 
     public void checkCombo(ScoreComponent scoreComponent){
@@ -68,8 +72,22 @@ public class ScoreSystem extends System implements ECSEventListener{
             scoreComponent.comboNumber++;
         } else {
             scoreComponent.score += scoreComponent.comboNumber * scoreComponent.comboNumber * ScoreComponent.SCORE_PER_COMBO;
+            if(scoreComponent.comboNumber > scoreComponent.longestCombo) {
+                scoreComponent.longestCombo = scoreComponent.comboNumber;
+            }
             scoreComponent.comboNumber = 0;
+        }
+    }
 
+    public void calculateFinalScore(){
+        for (int entity :
+                entities) {
+            ScoreComponent scoreComponent = (ScoreComponent)
+                    ecsManager.getComponent(entity, Components.SCORE_COMPONENT_CODE);
+            scoreComponent.score += scoreComponent.longestCombo * 12;
+            scoreComponent.score += scoreComponent.killsNumber *
+                    (3 * 60 * 1000 / TimeUtils.timeSinceMillis(scoreComponent.levelStartTime));
+            Gdx.app.log("Score", String.valueOf(scoreComponent.score));
         }
     }
 

@@ -4,14 +4,11 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.Iterator;
 
 /**
  * Created by theartful on 3/27/18.
@@ -30,7 +27,7 @@ public class PhysicsSystem extends System implements ECSEventListener {
     @Override
     protected void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.COLLISION_EVENT, this);
-        ecsManager.subscribe(ECSEvents.MOVED_TO_A_PORTAL,this);
+        ecsManager.subscribe(ECSEvents.MOVED_TO_A_PORTAL_EVENT,this);
     }
 
     @Override
@@ -66,8 +63,8 @@ public class PhysicsSystem extends System implements ECSEventListener {
             if (!didCollide) {
                 beginX = endX;
             } else {
-                Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
-                            + physicsComponent.velocity.y + ").");
+//                Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
+//                            + physicsComponent.velocity.y + ").");
                 endX = beginX;
             }
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));

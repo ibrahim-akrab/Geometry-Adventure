@@ -1,6 +1,5 @@
 package com.actionteam.geometryadventures;
 
-import com.actionteam.geometryadventures.components.CollectibleComponent;
 import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
@@ -147,7 +146,7 @@ public abstract class GameUtils {
             HealthComponent enemyHC = new HealthComponent();
             enemyHC.health = 100;
             /* Add enemy weapon here */
-            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
 
             EnemyComponent enemyComponent = new EnemyComponent();
             ecsManager.addComponent(enemyPC, enemyEntity);
@@ -193,9 +192,11 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
         CollectorComponent collectorComponent = new CollectorComponent();
+        HealthComponent healthComponent = new HealthComponent();
+        healthComponent.health = 5;
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
@@ -204,6 +205,7 @@ public abstract class GameUtils {
         ecsManager.addComponent(wc, entity);
         ecsManager.addComponent(sc, entity);
         ecsManager.addComponent(collectorComponent, entity);
+        ecsManager.addComponent(healthComponent, entity);
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);

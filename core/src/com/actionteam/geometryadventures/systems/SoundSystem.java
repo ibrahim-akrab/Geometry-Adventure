@@ -1,5 +1,5 @@
 package com.actionteam.geometryadventures.systems;
-import com.actionteam.geometryadventures.components.Components;
+
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
