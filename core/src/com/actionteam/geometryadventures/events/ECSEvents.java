@@ -25,6 +25,9 @@ public class ECSEvents {
     public static final int PORTAL_FOUND_EVENT          = 12;
     public static final int MOVED_TO_A_PORTAL_EVENT     = 13;
     public static final int END_OF_LEVEL_EVENT          = 14;
+    public static final int HEART_COLLECTED_EVENT = 15;
+    public static final int COIN_COLLECTED_EVENT        = 16;
+    public static final int KEY_COLLECTED_EVENT         = 17;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
@@ -78,7 +81,19 @@ public class ECSEvents {
         return new ECSEvent(PORTAL_FOUND_EVENT, entityID);
     }
 
-    public static ECSEvent endOfLevel(){
+    public static ECSEvent endOfLevelEvent(){
         return new ECSEvent(END_OF_LEVEL_EVENT, null);
+    }
+
+    public static ECSEvent coinCollectedEvent(int collectorId, int coinValue){
+        return new ECSEvent(COIN_COLLECTED_EVENT, new int[]{collectorId, coinValue});
+    }
+
+    public static ECSEvent heartCollectedEvent(int collectorId, int healthValue){
+        return new ECSEvent(HEART_COLLECTED_EVENT, new int[]{collectorId, healthValue});
+    }
+
+    public static ECSEvent keyCollectedEvent(int collectorId, int keyValue){
+        return new ECSEvent(KEY_COLLECTED_EVENT, new int[]{collectorId, keyValue});
     }
 }

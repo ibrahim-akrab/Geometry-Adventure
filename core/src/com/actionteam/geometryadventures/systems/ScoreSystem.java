@@ -31,7 +31,7 @@ public class ScoreSystem extends System implements ECSEventListener{
                 int enemyId = eventData[0];
                 int playerId = eventData[1];
                 Gdx.app.log("Player status", "Dead");
-                ecsManager.fireEvent(ECSEvents.endOfLevel());
+                ecsManager.fireEvent(ECSEvents.endOfLevelEvent());
                 Gdx.app.exit();
                 break;
             }
