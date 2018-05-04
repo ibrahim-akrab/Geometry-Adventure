@@ -13,7 +13,10 @@ import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
+import com.actionteam.geometryadventures.model.EnemyTile;
 import com.actionteam.geometryadventures.model.Map;
+import com.actionteam.geometryadventures.model.PlayerTile;
+import com.actionteam.geometryadventures.model.PortalTile;
 import com.actionteam.geometryadventures.model.Tile;
 import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
@@ -30,10 +33,12 @@ import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,6 +57,7 @@ public abstract class GameUtils {
 
     private Map loadMap(String levelName){
         try {
+
             InputStream fis = openFile(levelName);
             StringBuilder sb = new StringBuilder();
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
@@ -60,8 +66,14 @@ public abstract class GameUtils {
                 sb.append(line);
                 sb.append('\n');
             }
-            Gson gson = new Gson();
+
+            RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
+                    registerSubtype(Tile.class).registerSubtype(PortalTile.class).
+                    registerSubtype(EnemyTile.class).registerSubtype(PlayerTile.class);
+
+            Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
             return gson.fromJson(sb.toString(), Map.class);
+
         } catch (FileNotFoundException e) {
             Gdx.app.log("Error in LevelLoader", "File not found");
             e.printStackTrace();
@@ -86,6 +98,9 @@ public abstract class GameUtils {
             physicsComponent.position.set(floorTile.x, floorTile.y);
             graphicsComponent.textureName = floorTile.textureName;
             graphicsComponent.textureIndex = floorTile.textureIndex;
+            graphicsComponent.isAnimated = floorTile.isAnimated;
+            graphicsComponent.frames = floorTile.frames;
+            graphicsComponent.animationSpeed = floorTile.speed;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
@@ -100,6 +115,10 @@ public abstract class GameUtils {
             physicsComponent.position.set(wallTile.x, wallTile.y);
             graphicsComponent.textureName = wallTile.textureName;
             graphicsComponent.textureIndex = wallTile.textureIndex;
+            graphicsComponent.isAnimated = wallTile.isAnimated;
+            graphicsComponent.frames = wallTile.frames;
+            graphicsComponent.animationSpeed = wallTile.speed;
+
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.width = 0.9f;
             collisionComponent.height = 0.9f;
@@ -112,7 +131,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
         }
 
-        for(Tile floorTile : map.getMiscTiles()){
+        for(Tile floorTile : map.getMiscTiles()) {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
@@ -120,11 +139,13 @@ public abstract class GameUtils {
             physicsComponent.position.set(floorTile.x, floorTile.y);
             graphicsComponent.textureName = floorTile.textureName;
             graphicsComponent.textureIndex = floorTile.textureIndex;
+            graphicsComponent.isAnimated = floorTile.isAnimated;
+            graphicsComponent.frames = floorTile.frames;
+            graphicsComponent.animationSpeed = floorTile.speed;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
         }
-
 
         for(Tile enemyTile : map.getEnemyTiles()) {
             // temporary, for enemy creation.
@@ -158,23 +179,32 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyComponent, enemyEntity);
             break;
         }
-        for(Tile portalTile: map.getPortalTiles())
-        {
+
+        for(Tile tile : map.getPortalTiles()) {
+            PortalTile portalTile = (PortalTile) tile;
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
+            CollisionComponent collisionComponent = new CollisionComponent();
             // x and y should be initialized as the position of the portal destination.
-
-            int x =0 , y=0 ;
-            PortalComponent portalComponent = new PortalComponent(x,y);
+            PortalComponent portalComponent = new PortalComponent(portalTile.toX, portalTile.toY);
             physicsComponent.position.set(portalTile.x, portalTile.y);
 
             graphicsComponent.textureName = portalTile.textureName;
             graphicsComponent.textureIndex = portalTile.textureIndex;
+            graphicsComponent.isAnimated = portalTile.isAnimated;
+            graphicsComponent.frames = portalTile.frames;
+            graphicsComponent.animationSpeed = portalTile.speed;
+
+            collisionComponent.shapeType = CollisionComponent.RECTANGLE;
+            collisionComponent.height = 1;
+            collisionComponent.width = 1;
+            collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
+            collisionComponent.mask= ~0;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
-
+            ecsManager.addComponent(portalComponent, entity);
         }
 
         // temporary
@@ -192,6 +222,7 @@ public abstract class GameUtils {
         col.shapeType = CollisionComponent.RECTANGLE;
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
+        pc.position.set(map.getPlayerTile().x, map.getPlayerTile().y);
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.MELEE);
         ScoreComponent sc = new ScoreComponent();

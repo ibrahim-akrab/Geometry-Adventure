@@ -1,21 +1,26 @@
 package com.actionteam.geometryadventures.model;
 
 /**
- * Created by theartful on 3/27/18.
+ * Created by theartful on 4/1/18.
  */
 
 public class Tile {
-    public String type;
+    public String tileType;
     public String textureName;
     public int textureIndex;
+    public boolean collidable;
     public float x;
     public float y;
-    public float z;
-    public boolean collidable;
+    public int z;
+    public boolean isAnimated;
+    public int frames;
+    public float speed;
 
     @Override
     public String toString(){
-        return "Tile - type: " + type + ", textureName: " + textureName + ", x: " + x +
+        return "Tile - type: " + tileType + ", textureName: " + textureName + ", x: " + x +
                 ", y: " + y;
     }
+
 }
+

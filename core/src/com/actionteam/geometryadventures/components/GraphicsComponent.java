@@ -12,13 +12,21 @@ public class GraphicsComponent extends Component {
     public int textureIndex;
     public float width;
     public float height;
-    public TextureRegion region;
+    public TextureRegion[] region;
+    public boolean isAnimated;
+    public int[] indices;
+    public int frames;
+    public float animationSpeed;
 
     public GraphicsComponent() {
         super(Components.GRAPHICS_COMPONENT_CODE);
         textureIndex = 0;
         width = 1.02f;
         height = 1.02f;
+        isAnimated = false;
+        indices = null;
+        frames = 0;
+        animationSpeed = 1;
     }
 
     @Override
