@@ -143,9 +143,9 @@ public abstract class GameUtils {
             enemyPC.position.x = enemyTile.x;
             enemyPC.position.y = enemyTile.y;
             HealthComponent enemyHC = new HealthComponent();
-            enemyHC.health = 100;
+            enemyHC.health = 5;
             /* Add enemy weapon here */
-            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
+            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
 
             EnemyComponent enemyComponent = new EnemyComponent();
             ecsManager.addComponent(enemyPC, enemyEntity);
@@ -191,7 +191,7 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
         ScoreComponent sc = new ScoreComponent();
         HealthComponent healthComponent = new HealthComponent();
         healthComponent.health = 5;
