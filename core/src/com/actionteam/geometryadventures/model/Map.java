@@ -1,7 +1,5 @@
 package com.actionteam.geometryadventures.model;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,13 @@ import java.util.List;
 
 public class Map {
 
-    private final String WALL = "Wall";
-    private final String FLOOR = "Floor";
-    private final String ENEMY = "Enemy";
+    public static final String WALL = "wall";
+    public static final String FLOOR = "floor";
+    public static final String ENEMY = "enemy";
+    public static final String PLAYER = "player";
+    public static final String MISC = "misc";
+    public static final String PORTAL = "portal";
+    public static final String DOOR = "door";
 
     private int[] dimensions;
 
@@ -23,6 +25,8 @@ public class Map {
     private List<Tile> enemyTiles;
     private List<Tile> miscTiles;
     private List<Tile> portalTiles;
+    private List<Tile> doorTiles;
+    private PlayerTile playerTile;
 
     public Map() {
         tiles = new ArrayList<Tile>();
@@ -34,13 +38,20 @@ public class Map {
         enemyTiles = new ArrayList<Tile>();
         miscTiles = new ArrayList<Tile>();
         portalTiles = new ArrayList<Tile>();
+        doorTiles = new ArrayList<Tile>();
         for (Tile tile : tiles) {
-            if (tile.type.equals("enemy"))
+            if (tile.tileType.equals(ENEMY))
                 enemyTiles.add(tile);
-            else if (tile.type.equals("floor"))
+            else if (tile.tileType.equals(FLOOR))
                 floorTiles.add(tile);
-            else if (tile.type.equals("portal"))
+            else if (tile.tileType.equals(PORTAL))
                 portalTiles.add(tile);
+            else if (tile.tileType.equals(PLAYER))
+                playerTile = (PlayerTile) tile;
+            else if (tile.tileType.equals(WALL))
+                wallTiles.add(tile);
+            else if (tile.tileType.equals(DOOR))
+                doorTiles.add(tile);
             else if (tile.collidable)
                 wallTiles.add(tile);
             else
@@ -61,32 +72,8 @@ public class Map {
         return enemyTiles;
     }
 
-    public List<Tile> getPortalTiles() { return portalTiles;}
-
-    public Tile searchTiles(float x, float y) {
-        for (Tile tile : tiles) {
-            if (tile.x == x && tile.y == y)
-                return tile;
-        }
-        return null;
-    }
-
-    public Tile searchTilesFiltered(float x, float y, String type) {
-        for (Tile tile : tiles) {
-            if (tile.x == x && tile.y == y && tile.type.equals(type))
-                return tile;
-        }
-        return null;
-    }
-
-    public List<Tile> getTiles() {
-        return tiles;
-    }
-
-    public void removeTile(Tile tile) {
-        if (tile == null) return;
-        tiles.remove(tile);
-        Gdx.app.log("Removing tile", "x: " + tile.x + ", y : " + tile.y);
+    public List<Tile> getPortalTiles() {
+        return portalTiles;
     }
 
     /* These are the tiles the enemy can not traverse. */
@@ -125,5 +112,9 @@ public class Map {
 
     public List<Tile> getMiscTiles() {
         return miscTiles;
+    }
+
+    public PlayerTile getPlayerTile() {
+        return playerTile;
     }
 }
