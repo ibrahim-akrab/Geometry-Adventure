@@ -27,13 +27,17 @@ public class HealthSystem extends System implements ECSEventListener {
                     isDead(bulletId, entityId);
                 }
                 removeBullet(bulletId);
+                break;
             }
             case ECSEvents.HEART_COLLECTED_EVENT:{
                 int[] data = (int[]) message;
                 int collectorId = data[0];
                 int heartValue = data[1];
                 increaseHealth(collectorId, heartValue);
+                break;
             }
+            default:
+                break;
 
         }
         return false;
