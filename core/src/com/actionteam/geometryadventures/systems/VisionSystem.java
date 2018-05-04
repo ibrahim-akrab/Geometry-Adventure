@@ -9,11 +9,7 @@ import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-
-import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.STATE_CHASING;
 
 /**
  * Created by rka97 on 4/9/2018.
@@ -61,21 +57,21 @@ public class VisionSystem extends System implements ECSEventListener {
         {
             return;
         }
-        Gdx.app.log("EnemySystem", "Player within range");
+//        Gdx.app.log("EnemySystem", "Player within range");
         // If we reach here, the player's in our view arc. We need to do collision detection on
         // the player-enemy ray.
         Vector2 start = new Vector2 (enemyPosition.x, enemyPosition.y);
         Vector2 end = new Vector2 (playerPosition.x, playerPosition.y);
         if(!aiUtils.checkLineSegmentCollision(start, end))
         {
-            Gdx.app.log("EnemySystem", "Can See player!");
+//            Gdx.app.log("EnemySystem", "Can See player!");
             ec.canSeePlayer = true;
             EnemySystem.AddTaskToEnemy(ec, EnemyComponent.EnemyTask.TASK_DESTROY_THREAT);
         }
         else
         {
             ec.canSeePlayer = false;
-            Gdx.app.log("VisionSystem", "Can not see player!");
+//            Gdx.app.log("VisionSystem", "Can not see player!");
         }
     }
 

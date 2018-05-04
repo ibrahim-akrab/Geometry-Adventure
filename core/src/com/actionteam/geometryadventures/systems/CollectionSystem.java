@@ -1,18 +1,21 @@
 package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.components.CollectibleComponent;
-import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.Components;
+import com.actionteam.geometryadventures.components.ParentEntityComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
+import com.actionteam.geometryadventures.ecs.Entity;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 
 /**
  * Created by Ibrahim M. Akrab on 5/3/18.
  * ibrahim.m.akrab@gmail.com
  */
 public class CollectionSystem extends System implements ECSEventListener{
+
+    public CollectionSystem(){ super(Components.COLLECTIBLE_COMPONENT_CODE, Components.PARENT_ENTITY_COMPONENT_CODE);}
+
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode){
@@ -20,9 +23,12 @@ public class CollectionSystem extends System implements ECSEventListener{
                 int[] collectibleData = (int[]) message;
                 int collectibleId = collectibleData[0];
                 int collectorId = collectibleData[1];
-                collect(collectibleId, collectorId);
-                removeCollectible(collectibleId);
-                return true;
+                if (collect(collectibleId, collectorId)){
+                    fireEvents(collectibleId, collectorId);
+                    removeCollectibleFromScreen(collectibleId);
+                    return true;
+                }
+                return false;
             default:
                 return false;
         }
@@ -38,16 +44,36 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     }
 
-    private void collect(int collectibleId, int collectorId){
-        CollectibleComponent collectibleComponent = (CollectibleComponent)
-                ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
-        CollectorComponent collectorComponent = (CollectorComponent)
-                ecsManager.getComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE);
-        collectorComponent.coins += collectibleComponent.coin;
-        Gdx.app.log("Coins", String.valueOf(collectorComponent.coins));
+    private boolean collect(int collectibleId, int collectorId){
+        if (ecsManager.entityHasComponent(collectorId, Components.CONTROL_COMPONENT_CODE)){
+            return false;
+        }
+        ParentEntityComponent parentEntityComponent = (ParentEntityComponent)
+                ecsManager.getComponent(collectibleId, Components.PARENT_ENTITY_COMPONENT_CODE);
+        parentEntityComponent.parentEntityId = collectorId;
+        return true;
     }
 
-    private void removeCollectible(int collectibleId){
-        ecsManager.removeEntity(collectibleId);
+    private void fireEvents(int collectibleId, int collectorId){
+        CollectibleComponent collectibleComponent = (CollectibleComponent)
+                ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
+        switch (collectibleComponent.type){
+            case CollectibleComponent.COIN:
+                ecsManager.fireEvent(ECSEvents.coinCollectedEvent(collectorId, collectibleComponent.value));
+                break;
+            case CollectibleComponent.HEART:
+                ecsManager.fireEvent(ECSEvents.heartCollectedEvent(collectorId, collectibleComponent.value));
+                break;
+            case CollectibleComponent.KEY:
+                ecsManager.fireEvent(ECSEvents.keyCollectedEvent(collectorId, collectibleComponent.value));
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void removeCollectibleFromScreen(int collectibleId){
+        Entity entity = ecsManager.getEntity(collectibleId);
+        entity.removeComponent(Components.PHYSICS_COMPONENT_CODE);
     }
 }

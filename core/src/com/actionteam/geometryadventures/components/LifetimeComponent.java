@@ -1,7 +1,6 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -15,7 +14,6 @@ public class    LifetimeComponent extends Component {
 
     public LifetimeComponent() {
         super(Components.LIFETIME_COMPONENT_CODE);
-//        Gdx.app.log("Lifetime component", "created");
         timeOfCreation = TimeUtils.millis();
     }
 }

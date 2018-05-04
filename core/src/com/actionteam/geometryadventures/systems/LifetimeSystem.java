@@ -2,13 +2,9 @@ package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
-import com.actionteam.geometryadventures.ecs.Component;
 import com.actionteam.geometryadventures.ecs.System;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ibrahim M. Akrab on 4/3/18.

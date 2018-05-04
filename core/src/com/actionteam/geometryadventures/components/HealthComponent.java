@@ -17,4 +17,8 @@ public class HealthComponent extends Component {
     public void takeDamage(int damage){
         health -= damage;
     }
+
+    public void heal(int healingValue){
+        health += healingValue;
+    }
 }

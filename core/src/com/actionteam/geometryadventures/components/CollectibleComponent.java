@@ -8,7 +8,13 @@ import com.actionteam.geometryadventures.ecs.Component;
  */
 public class CollectibleComponent extends Component {
 
-    public int coin;
+    public static final int COIN    = 0;
+    public static final int HEART   = 1;
+    public static final int KEY     = 2;
+
+
+    public int type;
+    public int value;
 
     public CollectibleComponent() {
         super(Components.COLLECTIBLE_COMPONENT_CODE);

@@ -44,7 +44,7 @@ public class Entity {
      *
      * @return true if successful, false otherwise
      */
-    boolean removeComponent(int componentCode) {
+    public boolean removeComponent(int componentCode) {
         long mask = 1L << componentCode;
         if ((componentsMask & mask) != mask) return false;
         componentsMask &= (~mask);

@@ -105,14 +105,6 @@ public class ECSManager {
                     entityEmptySlots.push(entityId);
                     entities.set(entityId, null);
 
-//                    // removes entity from all concerned systems
-//                    Iterator<System> systemsIterator = systems.iterator();
-//                    while (systemsIterator.hasNext()){
-//                        System system = systemsIterator.next();
-//                        if (system.entities.contains(entityId)) {
-//                            system.entities.remove(Integer.valueOf(entityId));
-//                        }
-//                    }
                     for (System system : systems) {
                         if (system.entities.contains(entityId)) {
                             system.entities.remove(Integer.valueOf(entityId));
@@ -296,7 +288,7 @@ public class ECSManager {
         return entity != null && entity.hasComponent(componentCode);
     }
 
-    private Entity getEntity(int id) {
+    public Entity getEntity(int id) {
         if (id >= entities.size() || id < 0)
             return null;
         return entities.get(id);
@@ -315,4 +307,5 @@ public class ECSManager {
         if (componentId == -1) return null;
         return components.get(componentId);
     }
+
 }

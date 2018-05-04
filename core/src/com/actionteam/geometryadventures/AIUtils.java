@@ -3,7 +3,6 @@ package com.actionteam.geometryadventures;
 import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.MapGraph;
 import com.actionteam.geometryadventures.model.MapGraphNode;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;

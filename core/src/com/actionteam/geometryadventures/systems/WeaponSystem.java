@@ -7,13 +7,10 @@ import com.actionteam.geometryadventures.components.LethalComponent;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -66,7 +63,7 @@ public class WeaponSystem extends System implements ECSEventListener{
         if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
             return false;
 
-     Gdx.app.log("entityAttack", "attacked");
+//     Gdx.app.log("entityAttack", "attacked");
 
         weaponComponent.timeOfLastFire = TimeUtils.millis();
 

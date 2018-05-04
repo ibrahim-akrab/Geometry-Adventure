@@ -3,10 +3,7 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LethalComponent;
-import com.actionteam.geometryadventures.ecs.Component;
-import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
-import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
@@ -22,7 +19,7 @@ public class HealthSystem extends System implements ECSEventListener {
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode){
-            case ECSEvents.BULLET_COLLIDED_EVENT:
+            case ECSEvents.BULLET_COLLIDED_EVENT: {
                 int[] data = (int[]) message;
                 int bulletId = data[0];
                 int entityId = data[1];
@@ -30,6 +27,14 @@ public class HealthSystem extends System implements ECSEventListener {
                     isDead(bulletId, entityId);
                 }
                 removeBullet(bulletId);
+            }
+            case ECSEvents.HEART_COLLECTED_EVENT:{
+                int[] data = (int[]) message;
+                int collectorId = data[0];
+                int heartValue = data[1];
+                increaseHealth(collectorId, heartValue);
+            }
+
         }
         return false;
     }
@@ -42,6 +47,7 @@ public class HealthSystem extends System implements ECSEventListener {
     @Override
     public void ecsManagerAttached(){
         ecsManager.subscribe(ECSEvents.BULLET_COLLIDED_EVENT, this);
+        ecsManager.subscribe(ECSEvents.HEART_COLLECTED_EVENT, this);
     }
 
     /**
@@ -57,6 +63,7 @@ public class HealthSystem extends System implements ECSEventListener {
         if (healthComponent == null){
             return false;
         }
+        Gdx.app.log("Health", String.valueOf(healthComponent.health));
         LethalComponent lethalComponent = (LethalComponent)
                 ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
         healthComponent.takeDamage(lethalComponent.damage);
@@ -69,12 +76,12 @@ public class HealthSystem extends System implements ECSEventListener {
         LethalComponent lethalComponent = (LethalComponent)
                 ecsManager.getComponent(bulletId, Components.LETHAL_COMPONENT_CODE);
         if (healthComponent.health <= 0 && !healthComponent.isDead) {
-//            Gdx.app.log("health", "less than zero");
             healthComponent.isDead = true;
-            if (ecsManager.getComponent(entityId, Components.ENEMY_COMPONENT_CODE) != null) {
+            if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
                 ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entityId, lethalComponent.owner));
             } else {
                 ecsManager.fireEvent(ECSEvents.playerDeadEvent(entityId, lethalComponent.owner));
+                Gdx.app.log("Player", "Dead");
             }
             return true;
         }
@@ -83,5 +90,11 @@ public class HealthSystem extends System implements ECSEventListener {
 
     private void removeBullet(int bulletId){
         ecsManager.removeEntity(bulletId);
+    }
+
+    private void increaseHealth(int collectorId, int heartValue){
+        HealthComponent healthComponent = (HealthComponent)
+                ecsManager.getComponent(collectorId, Components.HEALTH_COMPONENT_CODE);
+        healthComponent.heal(heartValue);
     }
 }

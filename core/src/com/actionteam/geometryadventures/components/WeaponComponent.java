@@ -3,7 +3,6 @@ package com.actionteam.geometryadventures.components;
 import com.actionteam.geometryadventures.ecs.Component;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.util.List;
 
 /**
  * Created by ibrahim on 3/29/18.
