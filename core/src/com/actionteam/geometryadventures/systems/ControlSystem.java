@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -146,12 +147,7 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         float angle = (float) Math.atan2(deltaY, deltaX);
         physicsComponent.velocity.x = (float) (speed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (-speed * Math.sin(angle));
-
-        /*
-        if (!controlComponent.isRightTouchDown) {
-            physicsComponent.rotationAngle = 360 - (float) Math.toDegrees(angle);
-        }
-        */
+        physicsComponent.rotationAngle = physicsComponent.velocity.angle();
     }
 
     private void rightTouchDragged(int screenX, int screenY) {
@@ -161,7 +157,6 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         float deltaX = screenX - controlComponent.rightInitialX;
         float deltaY = screenY - controlComponent.rightInitialY;
         float angle = (float) Math.atan2(deltaY, deltaX);
-        physicsComponent.rotationAngle = 360 - (float) Math.toDegrees(angle);
         // checks if the distance dragged is enough to initiate attack
         if (deltaX * deltaX + deltaY * deltaY >=
                 controlComponent.rightBigCircleRadius * controlComponent.rightBigCircleRadius) {
@@ -172,6 +167,8 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                         (position.x, position.y, angle, entityId, true));
             }
         }
+        physicsComponent.rotationAngle = - angle * MathUtils.radiansToDegrees;
+        if (physicsComponent.rotationAngle < 0) physicsComponent.rotationAngle += 360;
     }
 
     @Override

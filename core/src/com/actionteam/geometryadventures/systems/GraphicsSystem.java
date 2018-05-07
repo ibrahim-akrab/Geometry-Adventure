@@ -5,13 +5,12 @@ import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.ecs.Component;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -30,6 +29,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private static final int[] MOVING_RIGHT = new int[]{4, 8, 12, 16};
     private static final int[] MOVING_UP = new int[]{1, 5, 9, 13};
     private static final int[] MOVING_DOWN = new int[]{7, 11, 15, 19};
+    public static final int[] BULLET_ANIMATION = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
 
     private ScreenViewport viewport;
     private SpriteBatch batch;
@@ -37,6 +37,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private boolean flag = true;
     private List<CompEnt> entityList;
     CompEnt player;
+    private List<CompEnt> enemies;
     private LightSystem lightSystem;
     private ShaderProgram shader;
 
@@ -59,6 +60,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         textureAtlas = new TextureAtlas(gameUtils.
                 getFile("env_packed/envTextureAtlas.atlas").getPath());
         entityList = new ArrayList<CompEnt>();
+        enemies = new ArrayList<CompEnt>();
     }
 
     @Override
@@ -82,6 +84,8 @@ public class GraphicsSystem extends System implements ECSEventListener {
         CompEnt ent = new CompEnt(gc, pc, entityId);
         if (ecsManager.entityHasComponent(entityId, Components.CONTROL_COMPONENT_CODE)) {
             player = ent;
+        } else if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
+            enemies.add(ent);
         }
         entityList.add(ent);
     }
@@ -92,6 +96,14 @@ public class GraphicsSystem extends System implements ECSEventListener {
     @Override
     protected void entityRemoved(int entityId, int index) {
         entityList.remove(index);
+        if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
+            for (CompEnt enemy : enemies) {
+                if (enemy.entity == entityId) {
+                    enemies.remove(enemy);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -101,37 +113,44 @@ public class GraphicsSystem extends System implements ECSEventListener {
      */
     @Override
     public void update(float dt) {
-        float angle = player.pc.velocity.angle();
-        if (player.pc.velocity.x == 0 && player.pc.velocity.y == 0) {
-            player.gc.isAnimated = false;
-        } else if ((angle <= 45 && angle >= 0) || (angle >= 360 - 45 && angle <= 360)) {
-            player.gc.animationSequence = MOVING_RIGHT;
-            player.gc.isAnimated = true;
-            player.gc.frames = MOVING_RIGHT.length;
-        } else if (angle >= 180 - 45 && angle <= 180 + 45) {
-            player.gc.animationSequence = MOVING_LEFT;
-            player.gc.isAnimated = true;
-            player.gc.frames = MOVING_LEFT.length;
-        } else if (angle >= 45 && angle <= 90 + 45) {
-            player.gc.animationSequence = MOVING_UP;
-            player.gc.isAnimated = true;
-            player.gc.frames = MOVING_UP.length;
-        } else if (angle >= 270 - 45 && angle <= 270 + 45) {
-            player.gc.animationSequence = MOVING_DOWN;
-            player.gc.isAnimated = true;
-            player.gc.frames = MOVING_DOWN.length;
-        } else {
-            player.gc.isAnimated = false;
-        }
-
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.setShader(shader);
+        for (CompEnt enemy : enemies) {
+            updateSprite(enemy);
+        }
+        updateSprite(player);
         for (CompEnt e : entityList) {
             draw(e.gc, e.pc);
         }
         batch.end();
+
+    }
+
+    private void updateSprite(CompEnt ent) {
+        float angle = ent.pc.rotationAngle;
+        if (ent.pc.velocity.x == 0 && ent.pc.velocity.y == 0) {
+            ent.gc.isAnimated = false;
+        } else {
+            ent.gc.isAnimated = true;
+        }
+        if ((angle <= 45 && angle >= 0) || (angle >= 360 - 45 && angle <= 360)) {
+            ent.gc.animationSequence = MOVING_RIGHT;
+            ent.gc.frames = MOVING_RIGHT.length;
+        } else if (angle >= 180 - 45 && angle <= 180 + 45) {
+            ent.gc.animationSequence = MOVING_LEFT;
+            ent.gc.frames = MOVING_LEFT.length;
+        } else if (angle >= 45 && angle <= 90 + 45) {
+            ent.gc.animationSequence = MOVING_UP;
+            ent.gc.frames = MOVING_UP.length;
+        } else if (angle >= 270 - 45 && angle <= 270 + 45) {
+            ent.gc.animationSequence = MOVING_DOWN;
+            ent.gc.frames = MOVING_DOWN.length;
+        } else {
+            ent.gc.isAnimated = false;
+        }
+        ent.gc.textureIndex = ent.gc.animationSequence[0] - 1;
     }
 
     /**
@@ -146,14 +165,15 @@ public class GraphicsSystem extends System implements ECSEventListener {
                     graphicsComponent.frames;
             graphicsComponent.textureIndex = graphicsComponent.animationSequence[index] - 1;
         }
-        if (graphicsComponent.rotationAngle != 0) {
+        if (graphicsComponent.rotatable) {
             batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),
                     physicsComponent.position.x + graphicsComponent.offsetX,
                     physicsComponent.position.y + graphicsComponent.offsetY,
-                    graphicsComponent.width / 2f,
-                    graphicsComponent.height / 2f,
+                    (graphicsComponent.width + graphicsComponent.offsetX) / 2f,
+                    (graphicsComponent.height + graphicsComponent.offsetY) / 2f,
                     graphicsComponent.width, graphicsComponent.height,
-                    1, 1, graphicsComponent.rotationAngle);
+                    1, 1,
+                    180 - (float) Math.toDegrees(physicsComponent.rotationAngle));
         } else {
             batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),
                     physicsComponent.position.x + graphicsComponent.offsetX,
@@ -182,7 +202,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
 
     private void resize(int width, int height) {
         if (flag) {
-            viewport.setUnitsPerPixel(15.f / width);
+            viewport.setUnitsPerPixel(10.f / width);
             flag = false;
         }
         viewport.update(width, height, true);

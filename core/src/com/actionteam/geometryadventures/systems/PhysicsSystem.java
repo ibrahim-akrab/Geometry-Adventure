@@ -27,16 +27,16 @@ public class PhysicsSystem extends System implements ECSEventListener {
     @Override
     protected void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.COLLISION_EVENT, this);
-        ecsManager.subscribe(ECSEvents.MOVED_TO_A_PORTAL_EVENT,this);
+        ecsManager.subscribe(ECSEvents.MOVED_TO_A_PORTAL_EVENT, this);
     }
 
     @Override
     public void update(float dt) {
-            for (int entity : entities) {
-                PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
-                        Components.PHYSICS_COMPONENT_CODE);
-                update(physicsComponent, dt, entity);
-            }
+        for (int entity : entities) {
+            PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
+                    Components.PHYSICS_COMPONENT_CODE);
+            update(physicsComponent, dt, entity);
+        }
     }
 
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {
@@ -52,14 +52,14 @@ public class PhysicsSystem extends System implements ECSEventListener {
         float endY = beginY + dt * physicsComponent.velocity.y;
 
         CollisionComponent col = (CollisionComponent) ecsManager.
-                    getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
-        PortalComponent por =  (PortalComponent) ecsManager.
-                getComponent(entityID,Components.PORTAL_COMPONENT_CODE);
+                getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
+        PortalComponent por = (PortalComponent) ecsManager.
+                getComponent(entityID, Components.PORTAL_COMPONENT_CODE);
 
         didCollide = false;
         if (col != null) {
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent
-                        (beginX, beginY, endX, beginY, entityID));
+                    (beginX, beginY, endX, beginY, entityID));
             if (!didCollide) {
                 beginX = endX;
             } else {
@@ -73,24 +73,21 @@ public class PhysicsSystem extends System implements ECSEventListener {
             }
             physicsComponent.position.x = endX;
             physicsComponent.position.y = endY;
-        }
-        else if( por != null) {
+        } else if (por != null) {
             physicsComponent.position.x = por.position.x;
             physicsComponent.position.y = por.position.y;
-        }
-        else {
+        } else {
             physicsComponent.position.x = endX;
             physicsComponent.position.y = endY;
         }
-        if(!physicsComponent.angularAcceleration.isZero()) {
+        if (!physicsComponent.angularAcceleration.isZero()) {
             Vector2 relativePositionVector = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
             physicsComponent.angularAcceleration =
                     relativePositionVector.limit(1.0f).scl(
-                            physicsComponent.velocity.len2()/
+                            physicsComponent.velocity.len2() /
                                     relativePositionVector.len()
                     );
         }
-
 
 
     }

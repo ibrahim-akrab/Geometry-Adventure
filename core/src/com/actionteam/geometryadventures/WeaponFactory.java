@@ -117,10 +117,10 @@ public class WeaponFactory {
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
-        weaponComponent.radius = 0.15f;
-        weaponComponent.coolDownTime = 400;
-        weaponComponent.speed = 20;
-        weaponComponent.lifetimeOfLethalObject = 1000;
+        weaponComponent.radius = 0.7f;
+        weaponComponent.coolDownTime = 700;
+        weaponComponent.speed = 7;
+        weaponComponent.lifetimeOfLethalObject = 5000;
         return weaponComponent;
     }
 

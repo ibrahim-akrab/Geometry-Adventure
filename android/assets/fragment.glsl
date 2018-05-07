@@ -1,6 +1,6 @@
 #ifdef GL_ES
-precision mediump float;
-precision mediump int;
+precision lowp float;
+precision lowp int;
 
 #endif
 
@@ -9,7 +9,7 @@ varying vec2 v_texCoords;
 varying vec4 v_pos;
 
 uniform vec2 u_lightPos[10];
-uniform vec3 u_lightColor[10];
+uniform float u_lightIntensity[10];
 uniform vec2 u_radius[10];
 uniform int u_lightSources;
 
@@ -34,27 +34,20 @@ void main()
 {
     float t = float(u_time);
     vec4 color = (v_color * texture2D(u_texture, v_texCoords));
-    vec4 light = vec4(u_ambientLight * u_ambientIntensity, 1);
-    vec4 maxLight = vec4(0.f,0.f,0.f,0.f);
-    vec4 tmp = vec4(0.f,0.f,0.f,0.f);
+    vec3 light = u_ambientLight * u_ambientIntensity;
 
+    float lightIntensity = 0.f;
     for(int i = 0; i < u_lightSources; i++)
     {
         float radius = (v_pos.x - u_lightPos[i].x) * (v_pos.x - u_lightPos[i].x)
-                            + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y);
-        if(radius < u_radius[i].x + 4.f * rand(v_pos.xy * t))
-            tmp = vec4(u_lightColor[i], 0);
-        else if(radius < u_radius[i].y + 4.f * rand(v_pos.xy * t))
-             tmp = vec4(0.5f * u_lightColor[i], 0);
-        else if(radius < u_radius[i].y * 2.f + 4.f * rand(v_pos.xy * t))
-                     tmp = vec4(0.25f * u_lightColor[i], 0);
-        if(tmp.x > maxLight.x) maxLight.x = tmp.x;
-        if(tmp.y > maxLight.y) maxLight.y = tmp.y;
-        if(tmp.z > maxLight.z) maxLight.z = tmp.z;
-        tmp = vec4(0.f,0.f,0.f,0.f);
+                            + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y) +
+                             2.f * rand((6.f * t) * v_pos.xy);
+        lightIntensity += u_lightIntensity[i] * pow(2.718, -radius / u_radius[i].x);
     }
 
-    light += maxLight;
-    color *= light;
+    if(lightIntensity > 1.f) lightIntensity = 1.f;
+    lightIntensity = float(int(lightIntensity * 4.f)) / 4.f;
+
+    color *= vec4(vec3(lightIntensity + u_ambientIntensity), 1);
     gl_FragColor = color;
 }

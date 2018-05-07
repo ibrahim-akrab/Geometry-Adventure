@@ -128,8 +128,6 @@ public class WeaponSystem extends System implements ECSEventListener{
                                                     float x, float y, float angle, int index){
         PhysicsComponent physicsComponent = new PhysicsComponent();
         if (weaponComponent.weaponDamageRegion == WeaponComponent.CIRCLE) {
-            physicsComponent.position.x = x + graphicsComponent.width / 2;
-            physicsComponent.position.y = y + graphicsComponent.height / 2;
             angle += index * (float) Math.pow(-1, index) * weaponComponent.angleOfSpreading;
             if (weaponComponent.speed != 0) {
                 physicsComponent.velocity =
@@ -137,6 +135,8 @@ public class WeaponSystem extends System implements ECSEventListener{
                                 .scl(weaponComponent.speed);
             }
             physicsComponent.rotationAngle = angle;
+            physicsComponent.position.x = x - 0.1f;// + graphicsComponent.width / 2.f;
+            physicsComponent.position.y = y;// - graphicsComponent.height / 2.f;
         }
         else if (weaponComponent.weaponDamageRegion == WeaponComponent.SEMICIRCLE){
             physicsComponent.centerOfRotation.x = x + graphicsComponent.width / 2;
@@ -171,10 +171,15 @@ public class WeaponSystem extends System implements ECSEventListener{
      */
     private GraphicsComponent createGraphicsComponent(WeaponComponent weaponComponent){
         GraphicsComponent graphicsComponent = new GraphicsComponent();
-        graphicsComponent.width = weaponComponent.radius;
-        graphicsComponent.height = weaponComponent.radius;
+        graphicsComponent.width = 1.5f;
+        graphicsComponent.height = 1.5f;
+        graphicsComponent.textureName = "fireball";
         graphicsComponent.textureIndex = 0;
-        graphicsComponent.textureName = "wall";
+        graphicsComponent.rotatable = true;
+        graphicsComponent.isAnimated = true;
+        graphicsComponent.interval = 10;
+        graphicsComponent.frames = 8;
+        graphicsComponent.animationSequence = GraphicsSystem.BULLET_ANIMATION;
         return graphicsComponent;
     }
 

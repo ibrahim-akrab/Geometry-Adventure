@@ -14,7 +14,7 @@ public class Tile {
     public int z;
     public boolean isAnimated;
     public int frames;
-    public float speed;
+    public int speed;
 
     @Override
     public String toString(){

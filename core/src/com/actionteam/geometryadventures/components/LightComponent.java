@@ -10,14 +10,12 @@ import com.badlogic.gdx.math.Vector3;
 
 public class LightComponent extends Component {
 
-    public Vector2 lightPosition;
-    public Vector3 lightColor;
     public Vector2 radius;
+    public float lightIntensity;
 
     public LightComponent() {
         super(Components.LIGHT_COMPONENT_CODE);
-        lightPosition = new Vector2();
-        lightColor = new Vector3();
+        lightIntensity = 0;
         radius = new Vector2();
     }
 }

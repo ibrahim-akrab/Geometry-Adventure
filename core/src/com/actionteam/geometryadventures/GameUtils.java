@@ -154,15 +154,8 @@ public abstract class GameUtils {
             graphicsComponent.textureIndex = lightTile.textureIndex;
             graphicsComponent.isAnimated = lightTile.isAnimated;
             graphicsComponent.frames = lightTile.frames;
-            // graphicsComponent.interval = lightTile.speed;
-            lightComponent.lightPosition.set(lightTile.x + 0.5f, lightTile.y + 0.5f);
-            lightComponent.lightColor.set
-                    (((LightTile) lightTile).lightColor.x *
-                                    ((LightTile) lightTile).lightIntensity,
-                            ((LightTile) lightTile).lightColor.y *
-                                    ((LightTile) lightTile).lightIntensity,
-                            ((LightTile) lightTile).lightColor.z *
-                                    ((LightTile) lightTile).lightIntensity);
+            graphicsComponent.interval = lightTile.speed;
+            lightComponent.lightIntensity = ((LightTile) lightTile).lightIntensity;
             lightComponent.radius.set(((LightTile) lightTile).innerRadius,
                     ((LightTile) lightTile).outerRadius);
             if(lightTile.collidable) {
@@ -188,10 +181,10 @@ public abstract class GameUtils {
         gc.textureIndex = 1;
         gc.isAnimated = false;
         gc.interval = 200;
-        gc.height = 1.8f;
-        gc.width = 1.5f;
-        gc.offsetX = -0.5f;
-        gc.offsetY = -0.5f;
+        gc.height = 1.4f;
+        gc.width = 1.4f;
+        gc.offsetX = -0.2f;
+        gc.offsetY = -0.2f;
         PhysicsComponent pc = new PhysicsComponent();
         ControlComponent cc = new ControlComponent();
         CollisionComponent col = new CollisionComponent();
@@ -202,7 +195,7 @@ public abstract class GameUtils {
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
 
-        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.RIOT_GUN);
+        WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
         HealthComponent healthComponent = new HealthComponent();
         healthComponent.health = playerTile.health;
@@ -231,7 +224,7 @@ public abstract class GameUtils {
             graphicsComponent.textureIndex = portalTile.textureIndex;
             graphicsComponent.isAnimated = portalTile.isAnimated;
             graphicsComponent.frames = portalTile.frames;
-            // graphicsComponent.animationSpeed = portalTile.speed;
+            graphicsComponent.interval = portalTile.speed;
 
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.height = 1;
@@ -251,10 +244,13 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            enemyGC.textureName = enemyTile.textureName;
-            enemyGC.textureIndex = 0;
-            enemyGC.height = 1;
-            enemyGC.width = 1;
+            enemyGC.textureName = "greenorc";
+            //enemyGC.textureName = enemyTile.textureName;
+            enemyGC.textureIndex = 1;
+            enemyGC.height = 1.7f;
+            enemyGC.width = 1.7f;
+            enemyGC.offsetX = -0.35f;
+            enemyGC.offsetY = -0.35f;
             CollisionComponent enemyCC = new CollisionComponent();
             enemyCC.shapeType = CollisionComponent.RECTANGLE;
             enemyCC.width = 0.7f;
@@ -293,6 +289,8 @@ public abstract class GameUtils {
             graphicsComponent.textureIndex = wallTile.textureIndex;
             graphicsComponent.isAnimated = wallTile.isAnimated;
             graphicsComponent.frames = wallTile.frames;
+            graphicsComponent.width = 1;
+            graphicsComponent.height = 1;
             // graphicsComponent.animationSpeed = wallTile.speed;
 
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;

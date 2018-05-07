@@ -141,6 +141,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 pc.velocity.x = ec.speed * ec.patrolDirection.x;
                 pc.velocity.y = ec.speed * ec.patrolDirection.y;
                 pc.rotationAngle = (float)Math.toDegrees(goToAngle);
+                if(pc.rotationAngle < 0) pc.rotationAngle += 360;
                 ec.motionLock = !ec.motionLock;
                 break;
             case TASK_DESTROY_THREAT:
@@ -175,7 +176,8 @@ public class EnemySystem extends System implements ECSEventListener {
                 pc.velocity.x = ec.speed * (float)Math.cos(angle);
                 pc.velocity.y = ec.speed * (float)Math.sin(angle);
                 angle = (float)Math.toDegrees(angle);
-                // pc.rotationAngle = angle;
+                if(angle < 0) angle += 360;
+                pc.rotationAngle = angle;
                 break;
             case TASK_STOP:
                 break;
