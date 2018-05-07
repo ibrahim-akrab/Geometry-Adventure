@@ -8,19 +8,15 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 
 /**
  * This system is responsible for displaying all of the in game graphics
@@ -30,32 +26,39 @@ import box2dLight.RayHandler;
 
 public class GraphicsSystem extends System implements ECSEventListener {
 
+    private static final int[] MOVING_LEFT = new int[]{2, 6, 10, 14};
+    private static final int[] MOVING_RIGHT = new int[]{4, 8, 12, 16};
+    private static final int[] MOVING_UP = new int[]{1, 5, 9, 13};
+    private static final int[] MOVING_DOWN = new int[]{7, 11, 15, 19};
+
     private ScreenViewport viewport;
     private SpriteBatch batch;
     private TextureAtlas textureAtlas;
     private boolean flag = true;
-    private List<GraphicsComponent> graphicsComponentList;
-    private List<PhysicsComponent> physicsComponentList;
+    private List<CompEnt> entityList;
+    CompEnt player;
+    private LightSystem lightSystem;
+    private ShaderProgram shader;
 
-    private World world;
-    private RayHandler rayHandler;
+    private class CompEnt {
+        GraphicsComponent gc;
+        PhysicsComponent pc;
+        int entity;
+
+        CompEnt(GraphicsComponent gc, PhysicsComponent pc, int entity) {
+            this.gc = gc;
+            this.pc = pc;
+            this.entity = entity;
+        }
+    }
 
     public GraphicsSystem(GameUtils gameUtils) {
         super(Components.GRAPHICS_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
         viewport = new ScreenViewport();
         batch = new SpriteBatch();
         textureAtlas = new TextureAtlas(gameUtils.
-                getFile("textureatlas/textureatlas.atlas").getPath());
-        graphicsComponentList = new ArrayList<GraphicsComponent>();
-        physicsComponentList = new ArrayList<PhysicsComponent>();
-
-        world = new World(new Vector2(0, 0), false);
-        rayHandler = new RayHandler(world);
-        rayHandler.setShadows(true);
-        rayHandler.setAmbientLight(1, 1, 1, 0.1f);
-        rayHandler.setBlurNum(3);
-        new PointLight(rayHandler, 40, new Color(1, 1, 1, 0.7f), 3, 0, 0);
-
+                getFile("env_packed/envTextureAtlas.atlas").getPath());
+        entityList = new ArrayList<CompEnt>();
     }
 
     @Override
@@ -73,21 +76,14 @@ public class GraphicsSystem extends System implements ECSEventListener {
     protected void entityAdded(int entityId) {
         GraphicsComponent gc = (GraphicsComponent) ecsManager.getComponent(entityId,
                 Components.GRAPHICS_COMPONENT_CODE);
-        if (gc.isAnimated) {
-            gc.region = new TextureRegion[gc.frames];
-            for (int i = 0; i < gc.frames; i++) {
-                if (gc.indices == null)
-                    gc.region[i] = textureAtlas.findRegion(gc.textureName, i);
-                else
-                    gc.region[i] = textureAtlas.findRegion(gc.textureName, gc.indices[i]);
-            }
-        } else
-            gc.region = new TextureRegion[]{
-                    textureAtlas.findRegion(gc.textureName, gc.textureIndex)};
-        graphicsComponentList.add(gc);
-        PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entityId,
+        gc.regions = textureAtlas.findRegions(gc.textureName);
+        PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(entityId,
                 Components.PHYSICS_COMPONENT_CODE);
-        physicsComponentList.add(physicsComponent);
+        CompEnt ent = new CompEnt(gc, pc, entityId);
+        if (ecsManager.entityHasComponent(entityId, Components.CONTROL_COMPONENT_CODE)) {
+            player = ent;
+        }
+        entityList.add(ent);
     }
 
     /**
@@ -95,8 +91,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
      */
     @Override
     protected void entityRemoved(int entityId, int index) {
-        graphicsComponentList.remove(index);
-        physicsComponentList.remove(index);
+        entityList.remove(index);
     }
 
     /**
@@ -106,12 +101,35 @@ public class GraphicsSystem extends System implements ECSEventListener {
      */
     @Override
     public void update(float dt) {
+        float angle = player.pc.velocity.angle();
+        if (player.pc.velocity.x == 0 && player.pc.velocity.y == 0) {
+            player.gc.isAnimated = false;
+        } else if ((angle <= 45 && angle >= 0) || (angle >= 360 - 45 && angle <= 360)) {
+            player.gc.animationSequence = MOVING_RIGHT;
+            player.gc.isAnimated = true;
+            player.gc.frames = MOVING_RIGHT.length;
+        } else if (angle >= 180 - 45 && angle <= 180 + 45) {
+            player.gc.animationSequence = MOVING_LEFT;
+            player.gc.isAnimated = true;
+            player.gc.frames = MOVING_LEFT.length;
+        } else if (angle >= 45 && angle <= 90 + 45) {
+            player.gc.animationSequence = MOVING_UP;
+            player.gc.isAnimated = true;
+            player.gc.frames = MOVING_UP.length;
+        } else if (angle >= 270 - 45 && angle <= 270 + 45) {
+            player.gc.animationSequence = MOVING_DOWN;
+            player.gc.isAnimated = true;
+            player.gc.frames = MOVING_DOWN.length;
+        } else {
+            player.gc.isAnimated = false;
+        }
+
         viewport.apply();
-        batch.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-        int length = graphicsComponentList.size();
-        for (int i = 0; i < length; i++) {
-            draw(graphicsComponentList.get(i), physicsComponentList.get(i));
+        batch.begin();
+        batch.setShader(shader);
+        for (CompEnt e : entityList) {
+            draw(e.gc, e.pc);
         }
         batch.end();
     }
@@ -123,21 +141,24 @@ public class GraphicsSystem extends System implements ECSEventListener {
      * @param physicsComponent  The physics component of that entity
      */
     private void draw(GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
-        int index = 0;
         if (graphicsComponent.isAnimated) {
-            index = (int) (Clock.clock / graphicsComponent.animationSpeed) %
+            int index = (Clock.clock / graphicsComponent.interval) %
                     graphicsComponent.frames;
+            graphicsComponent.textureIndex = graphicsComponent.animationSequence[index] - 1;
         }
-        if (physicsComponent.rotationAngle != 0) {
-            batch.draw(graphicsComponent.region[index], physicsComponent.position.x,
-                    physicsComponent.position.y,
+        if (graphicsComponent.rotationAngle != 0) {
+            batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),
+                    physicsComponent.position.x + graphicsComponent.offsetX,
+                    physicsComponent.position.y + graphicsComponent.offsetY,
                     graphicsComponent.width / 2f,
-                    +graphicsComponent.height / 2f,
+                    graphicsComponent.height / 2f,
                     graphicsComponent.width, graphicsComponent.height,
-                    1, 1, physicsComponent.rotationAngle);
+                    1, 1, graphicsComponent.rotationAngle);
         } else {
-            batch.draw(graphicsComponent.region[index], physicsComponent.position.x,
-                    physicsComponent.position.y, graphicsComponent.width, graphicsComponent.height);
+            batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),
+                    physicsComponent.position.x + graphicsComponent.offsetX,
+                    physicsComponent.position.y + graphicsComponent.offsetY,
+                    graphicsComponent.width, graphicsComponent.height);
         }
     }
 
@@ -165,5 +186,10 @@ public class GraphicsSystem extends System implements ECSEventListener {
             flag = false;
         }
         viewport.update(width, height, true);
+    }
+
+    public void setLightSystem(LightSystem lightSystem) {
+        this.lightSystem = lightSystem;
+        this.shader = lightSystem.getShaderProgram();
     }
 }

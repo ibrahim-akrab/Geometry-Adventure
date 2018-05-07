@@ -6,7 +6,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class GeometryAdventuresGame extends ApplicationAdapter {
@@ -17,7 +16,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     public static ChosenScreen currentScreen;
     private Music M;
     private long time;
-    private int clockRate = 300;
 
     public enum ChosenScreen {
         SCREEN_MAIN_MENU,
@@ -40,12 +38,17 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
                 mainMenu = new MainMenuScreen();
                 break;
             case SCREEN_GAME_LEVEL:
-                gameUtils.loadLevel("map");
+                try {
+                    gameUtils.loadLevel("map");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ecsManager = ECSManager.getInstance();
                 break;
             default:
                 break;
         }
+
     }
 
     @Override
@@ -53,11 +56,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        long t = TimeUtils.millis();
-        if(t - time > clockRate) {
-            Clock.clock++;
-            time = t;
-        }
+        Clock.clock = (int) TimeUtils.millis();
 
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:

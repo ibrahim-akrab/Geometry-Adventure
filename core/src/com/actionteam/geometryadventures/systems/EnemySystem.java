@@ -175,7 +175,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 pc.velocity.x = ec.speed * (float)Math.cos(angle);
                 pc.velocity.y = ec.speed * (float)Math.sin(angle);
                 angle = (float)Math.toDegrees(angle);
-                pc.rotationAngle = angle;
+                // pc.rotationAngle = angle;
                 break;
             case TASK_STOP:
                 break;
@@ -217,7 +217,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 if (wp.weaponDamageRegion == WeaponComponent.SEMICIRCLE)
                 {
                     /* Melee */
-                    if((float)Math.abs(deltaX*deltaX + deltaY*deltaY) < wp.radiusOfDamageRegion * wp.radiusOfDamageRegion)
+                    if(Math.abs(deltaX*deltaX + deltaY*deltaY) < wp.radiusOfDamageRegion * wp.radiusOfDamageRegion)
                     {
                         ecsManager.fireEvent(ECSEvents.attackEvent
                                 (pc.position.x, pc.position.y, angle, entityId, false));

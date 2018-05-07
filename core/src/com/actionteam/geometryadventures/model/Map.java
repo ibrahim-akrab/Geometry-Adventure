@@ -1,5 +1,7 @@
 package com.actionteam.geometryadventures.model;
 
+import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +18,11 @@ public class Map {
     public static final String MISC = "misc";
     public static final String PORTAL = "portal";
     public static final String DOOR = "door";
+    public static final String LIGHT = "light";
 
     private int[] dimensions;
+    private boolean newLight;
+    private MapConfig config;
 
     private List<Tile> tiles;
     private List<Tile> floorTiles;
@@ -26,7 +31,13 @@ public class Map {
     private List<Tile> miscTiles;
     private List<Tile> portalTiles;
     private List<Tile> doorTiles;
+    private List<Tile> lightTiles;
     private PlayerTile playerTile;
+
+    public class MapConfig{
+        public Vector3 ambientLight = new Vector3(1,1,1);
+        public float ambientIntensity = 0.5f;
+    }
 
     public Map() {
         tiles = new ArrayList<Tile>();
@@ -39,6 +50,8 @@ public class Map {
         miscTiles = new ArrayList<Tile>();
         portalTiles = new ArrayList<Tile>();
         doorTiles = new ArrayList<Tile>();
+        lightTiles = new ArrayList<Tile>();
+
         for (Tile tile : tiles) {
             if (tile.tileType.equals(ENEMY))
                 enemyTiles.add(tile);
@@ -52,6 +65,8 @@ public class Map {
                 wallTiles.add(tile);
             else if (tile.tileType.equals(DOOR))
                 doorTiles.add(tile);
+            else if (tile.tileType.equals(LIGHT))
+                lightTiles.add(tile);
             else if (tile.collidable)
                 wallTiles.add(tile);
             else
@@ -74,6 +89,10 @@ public class Map {
 
     public List<Tile> getPortalTiles() {
         return portalTiles;
+    }
+
+    public List<Tile> getLightTiles() {
+        return lightTiles;
     }
 
     /* These are the tiles the enemy can not traverse. */
@@ -116,5 +135,9 @@ public class Map {
 
     public PlayerTile getPlayerTile() {
         return playerTile;
+    }
+
+    public MapConfig getConfig() {
+        return config;
     }
 }

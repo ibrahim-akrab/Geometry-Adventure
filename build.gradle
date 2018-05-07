@@ -143,7 +143,7 @@ project(":core") {
         compile "com.github.czyzby:gdx-lml-vis:1.9.1.9.6"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 
-        compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
+        // compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
         testCompile 'junit:junit:4.12'
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -151,7 +151,7 @@ project(":core") {
         testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         // https://mvnrepository.com/artifact/org.unitils/unitils-core
-        testCompile group: 'org.unitils', name: 'unitils-core', version: '3.4.6'
+        // testCompile group: 'org.unitils', name: 'unitils-core', version: '3.4.6'
 
     }
 }

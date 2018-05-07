@@ -1,7 +1,9 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by theartful on 3/27/18.
@@ -12,11 +14,14 @@ public class GraphicsComponent extends Component {
     public int textureIndex;
     public float width;
     public float height;
-    public TextureRegion[] region;
+    public Array<TextureAtlas.AtlasRegion> regions;
     public boolean isAnimated;
-    public int[] indices;
+    public int[] animationSequence;
     public int frames;
-    public float animationSpeed;
+    public int interval; // in milliseconds
+    public float offsetX;
+    public float offsetY;
+    public float rotationAngle;
 
     public GraphicsComponent() {
         super(Components.GRAPHICS_COMPONENT_CODE);
@@ -24,9 +29,11 @@ public class GraphicsComponent extends Component {
         width = 1.02f;
         height = 1.02f;
         isAnimated = false;
-        indices = null;
+        animationSequence = null;
         frames = 0;
-        animationSpeed = 1;
+        interval = 200;
+        offsetX = 0;
+        offsetY = 0;
     }
 
     @Override

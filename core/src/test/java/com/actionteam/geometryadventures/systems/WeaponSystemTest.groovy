@@ -9,8 +9,6 @@ import com.actionteam.geometryadventures.entities.Entities
 import com.actionteam.geometryadventures.events.ECSEvents
 import org.unitils.reflectionassert.ReflectionAssert
 
-
-
 /**
  * Created by Ibrahim M. Akrab on 4/19/18.
  * ibrahim.m.akrab@gmail.com

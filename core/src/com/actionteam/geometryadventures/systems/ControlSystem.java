@@ -147,9 +147,11 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         physicsComponent.velocity.x = (float) (speed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (-speed * Math.sin(angle));
 
+        /*
         if (!controlComponent.isRightTouchDown) {
             physicsComponent.rotationAngle = 360 - (float) Math.toDegrees(angle);
         }
+        */
     }
 
     private void rightTouchDragged(int screenX, int screenY) {
