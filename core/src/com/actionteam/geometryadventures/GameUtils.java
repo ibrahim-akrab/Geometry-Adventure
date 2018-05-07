@@ -188,7 +188,7 @@ public abstract class GameUtils {
         gc.textureIndex = 1;
         gc.isAnimated = false;
         gc.interval = 200;
-        gc.height = 1.5f;
+        gc.height = 1.8f;
         gc.width = 1.5f;
         gc.offsetX = -0.5f;
         gc.offsetY = -0.5f;
