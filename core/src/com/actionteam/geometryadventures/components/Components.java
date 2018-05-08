@@ -20,4 +20,5 @@ public class Components {
     public static final int PORTAL_COMPONENT_CODE = 12;
     public static final int PARENT_ENTITY_COMPONENT_CODE = 13;
     public static final int LIGHT_COMPONENT_CODE = 14;
+    public static final int CACHE_COMPONENT_CODE = 15;
 }

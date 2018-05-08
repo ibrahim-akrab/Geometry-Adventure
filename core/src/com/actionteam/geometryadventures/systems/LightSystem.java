@@ -2,6 +2,7 @@ package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.Clock;
 import com.actionteam.geometryadventures.GameUtils;
+import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.LightComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
@@ -23,8 +24,6 @@ import java.util.List;
 
 public class LightSystem extends System {
 
-    private static final int MAX_NUMBER = 10;
-
     private ShaderProgram shader;
     private List<CompEnt> entityList;
 
@@ -42,17 +41,20 @@ public class LightSystem extends System {
     private class CompEnt {
         LightComponent lc;
         PhysicsComponent pc;
+        CacheComponent cc;
         int entity;
 
-        CompEnt(LightComponent lc, PhysicsComponent pc, int entity) {
+        CompEnt(LightComponent lc, PhysicsComponent pc, CacheComponent cc, int entity) {
             this.lc = lc;
             this.pc = pc;
+            this.cc = cc;
             this.entity = entity;
         }
     }
 
     public LightSystem(GameUtils gameUtils) throws IOException {
-        super(Components.LIGHT_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
+        super(Components.LIGHT_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE,
+                Components.CACHE_COMPONENT_CODE);
 
         InputStream fis = gameUtils.openFile("vertex.glsl");
         StringBuilder vertex = new StringBuilder();
@@ -75,6 +77,7 @@ public class LightSystem extends System {
             ShaderProgram.pedantic = false;
         } else {
             Gdx.app.log("SA", "FUC");
+            Gdx.app.log("Shader", shader.getLog());
         }
 
         ulightPos = shader.getUniformLocation("u_lightPos[0]");
@@ -93,7 +96,9 @@ public class LightSystem extends System {
                 Components.LIGHT_COMPONENT_CODE);
         PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(entityId,
                 Components.PHYSICS_COMPONENT_CODE);
-        entityList.add(new CompEnt(lc, pc, entityId));
+        CacheComponent cc = (CacheComponent) ecsManager.getComponent(entityId,
+                Components.CACHE_COMPONENT_CODE);
+        entityList.add(new CompEnt(lc, pc, cc, entityId));
     }
 
     @Override
@@ -107,21 +112,27 @@ public class LightSystem extends System {
 
     }
 
+    int xx = 1;
+
     @Override
     public void update(float dt) {
         shader.begin();
         shader.setUniformf(uambientLight, ambientLight);
         shader.setUniformf(uambientIntensity, ambientIntensity);
-        shader.setUniformi(utime, Clock.clock);
+        shader.setUniformf(utime, Clock.clock);
         int i = 0;
         for (CompEnt e : entityList) {
-            shader.setUniformf(ulightPos + i, e.pc.position.x + 0.5f,
-                    e.pc.position.y + 0.5f);
-            shader.setUniformf(ulightIntensity + i, e.lc.lightIntensity);
-            shader.setUniformf(uradius + i, e.lc.radius);
-            i++;
+            if (e.cc.isCached) {
+                shader.setUniformf(ulightPos + i, e.pc.position.x + 0.5f,
+                        e.pc.position.y + 0.5f);
+                shader.setUniformf(ulightIntensity + i, e.lc.lightIntensity);
+                shader.setUniformf(uradius + i, e.lc.radius);
+                i++;
+            }
+            if (i > 10) break;
         }
         shader.setUniformi(ulightSources, i);
+        // Gdx.app.log("Light Sources: ", i + "");
         shader.end();
     }
 

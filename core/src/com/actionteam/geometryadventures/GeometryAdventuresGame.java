@@ -32,6 +32,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     @Override
     public void create() {
         //TexturePacker.process("mysprites/", "textureatlas/", "textures");
+
         M = Gdx.audio.newMusic(Gdx.files.internal("0935.ogg"));
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:

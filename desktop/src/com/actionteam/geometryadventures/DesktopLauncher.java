@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
+	public static void main (String[] arg) throws InterruptedException {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new GeometryAdventuresGame(new GameUtils() {
 			@Override
