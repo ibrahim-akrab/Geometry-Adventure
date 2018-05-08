@@ -142,9 +142,8 @@ project(":core") {
         compile "com.github.czyzby:gdx-lml:1.9.1.9.6"
         compile "com.github.czyzby:gdx-lml-vis:1.9.1.9.6"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         // compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
-        testCompile 'junit:junit:4.12'
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -156,10 +155,12 @@ project(":core") {
         =======
         testCompile group: 'org.unitils', name: 'unitils-core', version: '3.4.6'
         // https://mvnrepository.com/artifact/org.easymock/easymock
+<<<<<<< Updated upstream
         testCompile group: 'org.easymock', name: 'easymock', version: '3.6'
 
 >>>>>>> f2b8bc84ed9ee0ffe8c77a6ea0a66b4be32d0888
 */
+		testCompile group: 'org.easymock', name: 'easymock', version: '3.6'
     }
 }
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -24,11 +25,13 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         Table table = new Table();
         stage.addActor(table);
-        Texture background = new Texture(Gdx.files.internal("main-menu/bg2.png"));
-        TextureRegion region = new TextureRegion(background, 0, 0, 512, 512);
+        Texture background = new Texture(Gdx.files.internal("main-menu/main_menu_bg.png"));
+        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion region = new TextureRegion(background);
         table.setBackground(new TextureRegionDrawable(region));
         table.setFillParent(true);
-        table.setDebug(false);
+        table.setDebug(true);
+        /*
         Texture startUp = new Texture(Gdx.files.internal("main-menu/Start_Down.png"));
         TextureRegion startUpRegion = new TextureRegion(startUp, 0, 0, 512, 512);
         Texture startDown = new Texture(Gdx.files.internal("main-menu/Start_Up.png"));
@@ -44,7 +47,16 @@ public class MainMenuScreen implements Screen {
         Button quitButton = new Button(new TextureRegionDrawable(quitUpRegion),
                 new TextureRegionDrawable(quitDownRegion));
         table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
+        */
+        table.row().bottom().expand();
+        Texture trees = new Texture(Gdx.files.internal("main-menu/main_menu_trees.png"));
+        trees.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        Image image = new Image(trees);
+        table.add(new Image(trees)).bottom().left().fill().expandX();
+        table.add(new Image(trees)).bottom().right().fill().expandX();
+       // table.add(new Image(trees)).bottom().left();
 
+        /*
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -58,6 +70,7 @@ public class MainMenuScreen implements Screen {
                 GeometryAdventuresGame.currentScreen = GeometryAdventuresGame.ChosenScreen.SCREEN_GAME_LEVEL;
             }
         });
+        */
     }
 
     @Override
