@@ -261,8 +261,15 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            enemyGC.textureName = enemyTile.textureName;
-            enemyGC.textureIndex = enemyTile.textureIndex;
+            if(enemyTile.enemyType == "green orc")
+            {
+                enemyGC.textureName = "greenorc";
+            }
+            else
+            {
+                enemyGC.textureName = "greenorc";
+            }
+            enemyGC.textureIndex = 0;
             enemyGC.height = 1.7f;
             enemyGC.width = 1.7f;
             enemyGC.offsetX = -0.35f;
