@@ -6,5 +6,5 @@ package com.actionteam.geometryadventures.model;
 
 public class CollectibleTile extends Tile {
     public int value;
-    public int type;
+    public String subtype;
 }

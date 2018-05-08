@@ -371,7 +371,10 @@ public abstract class GameUtils {
             collisionComponent.radius = 0.8f;
             collisionComponent.id = Entities.COLLECTABLE_COLLISION_ID;
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
-            collectibleComponent.type = collectibleTile.type;
+            if (collectibleTile.subtype.equals("heart"))
+                collectibleComponent.type = CollectibleComponent.HEART;
+            else
+                collectibleComponent.type = CollectibleComponent.KEY;
             collectibleComponent.value = collectibleTile.value;
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
