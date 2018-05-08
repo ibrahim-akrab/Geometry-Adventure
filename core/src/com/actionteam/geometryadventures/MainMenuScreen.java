@@ -30,32 +30,24 @@ public class MainMenuScreen implements Screen {
         TextureRegion region = new TextureRegion(background);
         table.setBackground(new TextureRegionDrawable(region));
         table.setFillParent(true);
-        table.setDebug(true);
-        Texture startUp = new Texture(Gdx.files.internal("main-menu/Start_Down.png"));
-        TextureRegion startUpRegion = new TextureRegion(startUp, 0, 0, 512, 512);
-        Texture startDown = new Texture(Gdx.files.internal("main-menu/Start_Up.png"));
-        TextureRegion startDownRegion = new TextureRegion(startDown, 0, 0, 512, 512);
+        table.setDebug(false);
+        Texture startUp = new Texture(Gdx.files.internal("main-menu/Start_Up.png"));
+        TextureRegion startUpRegion = new TextureRegion(startUp);
+        Texture startDown = new Texture(Gdx.files.internal("main-menu/Start_Down.png"));
+        TextureRegion startDownRegion = new TextureRegion(startDown);
         Button startButton = new Button(new TextureRegionDrawable(startUpRegion),
                 new TextureRegionDrawable(startDownRegion));
-        //table.add(startButton).maxSize(512*6/10, 254*6/10).right();
+        table.row();
+        table.add(startButton).center().bottom().expand();
 
-        Texture quitUp = new Texture(Gdx.files.internal("main-menu/Quit_Down.png"));
-        TextureRegion quitUpRegion = new TextureRegion(quitUp, 0, 0, 512, 512);
-        Texture quitDown = new Texture(Gdx.files.internal("main-menu/Quit_Up.png"));
-        TextureRegion quitDownRegion = new TextureRegion(quitDown, 0, 0, 512, 512);
+        Texture quitUp = new Texture(Gdx.files.internal("main-menu/Quit_Up.png"));
+        TextureRegion quitUpRegion = new TextureRegion(quitUp);
+        Texture quitDown = new Texture(Gdx.files.internal("main-menu/Quit_Down.png"));
+        TextureRegion quitDownRegion = new TextureRegion(quitDown);
         Button quitButton = new Button(new TextureRegionDrawable(quitUpRegion),
                 new TextureRegionDrawable(quitDownRegion));
-        //table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
-
-        /*
-        table.row().bottom().expand();
-        Texture trees = new Texture(Gdx.files.internal("main-menu/main_menu_trees.png"));
-        trees.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        Image image = new Image(trees);
-        table.add(new Image(trees)).bottom().left().fill().expandX();
-        table.add(new Image(trees)).bottom().right().fill().expandX();
-       // table.add(new Image(trees)).bottom().left();
-        */
+        table.row().pad(20.0f);
+        table.add(quitButton).center().top().expand();
 
         quitButton.addListener(new ChangeListener() {
             @Override
