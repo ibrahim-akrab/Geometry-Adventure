@@ -1,5 +1,7 @@
 package com.actionteam.geometryadventures.ecs;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,45 +78,37 @@ public class ECSManager {
         if (entityId >= entities.size()) return false;
         Entity entity = entities.get(entityId);
         if (entity == null) return false;
-        if (!entitiesToBeRemoved.contains(entityId)) {
-            entitiesToBeRemoved.add(entityId);
-        }
+        entitiesToBeRemoved.add(entityId);
         return true;
     }
 
     /**
      * remove entities in entitiesToBeRemoved list
      */
-    public void updateEntities(){
-        Iterator<Entity> entitiesIterator = entities.iterator();
-        while (entitiesIterator.hasNext()) {
-            Entity entity = entitiesIterator.next();
-            if (entity != null) {
-                int entityId = entity.getId();
-                if (entitiesToBeRemoved.contains(entityId)) {
-                    entitiesToBeRemoved.remove(Integer.valueOf(entityId));
-                    // removes all components associated with that entity
-                    for (int componentCode = 0; componentCode < Entity.MAXIMUM_COMPONENT_NUMBER;
-                         componentCode++) {
-                        int componentId = entity.getComponentId(componentCode);
-                        if (componentId != -1)
-                            _removeComponent(getComponent(componentId), entity);
-                    }
+    private void updateEntities() {
+        for(int entityId : entitiesToBeRemoved) {
+            Entity entity = getEntity(entityId);
+            // removes all components associated with that entity
+            for (int componentCode = 0; componentCode < Entity.MAXIMUM_COMPONENT_NUMBER;
+                 componentCode++) {
+                int componentId = entity.getComponentId(componentCode);
+                if (componentId != -1)
+                    _removeComponent(getComponent(componentId), entity);
+            }
 
-                    // marks the slot of the removed entity as empty
-                    entityEmptySlots.push(entityId);
-                    entities.set(entityId, null);
+            // marks the slot of the removed entity as empty
+            entityEmptySlots.push(entityId);
+            entities.set(entityId, null);
 
-                    for (System system : systems) {
-                        if (system.entities.contains(entityId)) {
-                            system.entities.remove(Integer.valueOf(entityId));
-                        }
-                    }
-
+            for (System system : systems) {
+                if (system.entities.contains(entityId)) {
+                    system.entities.remove(Integer.valueOf(entityId));
                 }
             }
         }
+        entitiesToBeRemoved.clear();
     }
+
 
     /**
      * Adds a component to an entity

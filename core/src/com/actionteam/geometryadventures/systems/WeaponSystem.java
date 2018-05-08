@@ -1,18 +1,23 @@
 package com.actionteam.geometryadventures.systems;
 
+import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.LethalComponent;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
+import com.actionteam.geometryadventures.components.LightComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import box2dLight.Light;
 
 /**
  * Created by ibrahim on 4/2/18.
@@ -76,6 +81,8 @@ public class WeaponSystem extends System implements ECSEventListener{
             ecsManager.addComponent(createPhysicsComponent(weaponComponent, graphicsComponent,x, y, angle, i), entity);
             ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
             ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponent(new LightComponent(), entity);
         }
 
         return true;

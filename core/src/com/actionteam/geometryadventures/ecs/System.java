@@ -31,7 +31,7 @@ public abstract class System {
             tmpMask |= (1L << componentCode);
         }
         componentsMask = tmpMask;
-        entities = new ArrayList<Integer>();
+        entities = new ArrayList<Integer>(1024);
     }
 
     void setEcsManager() {
@@ -47,9 +47,6 @@ public abstract class System {
      * @return true if successful, false otherwise
      */
     boolean addEntity(int entityId) {
-        for (int id : entities) {
-            if (entityId == id) return false;
-        }
         entityAdded(entityId);
         return entities.add(entityId);
     }

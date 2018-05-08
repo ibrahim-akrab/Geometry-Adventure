@@ -1,5 +1,6 @@
 package com.actionteam.geometryadventures;
 
+import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
@@ -18,6 +19,7 @@ import com.actionteam.geometryadventures.model.Map;
 import com.actionteam.geometryadventures.model.PlayerTile;
 import com.actionteam.geometryadventures.model.PortalTile;
 import com.actionteam.geometryadventures.model.Tile;
+import com.actionteam.geometryadventures.systems.CacheSystem;
 import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
@@ -61,6 +63,8 @@ public abstract class GameUtils {
 
     private Map map;
     private ECSManager ecsManager;
+    private float initialPlayerX;
+    private float initialPlayerY;
 
     private Map loadMap(String levelName) {
         try {
@@ -139,6 +143,7 @@ public abstract class GameUtils {
         ecsManager.addSystem(scoreSystem);
         ecsManager.addSystem(collectionSystem);
         ecsManager.addSystem(lightSystem);
+        ecsManager.addSystem(new CacheSystem(initialPlayerX, initialPlayerY));
         graphicsSystem.setLightSystem(lightSystem);
     }
 
@@ -168,6 +173,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(lightComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
         }
     }
 
@@ -192,6 +198,8 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
+        initialPlayerX = playerTile.x;
+        initialPlayerY = playerTile.y;
         lc.lightIntensity = 0.7f;
         lc.radius = 10.f;
 
@@ -208,6 +216,7 @@ public abstract class GameUtils {
         ecsManager.addComponent(sc, entity);
         ecsManager.addComponent(lc, entity);
         ecsManager.addComponent(healthComponent, entity);
+        ecsManager.addComponent(new CacheComponent(), entity);
     }
 
     private void initPortalTiles(List<Tile> portalTiles) {
@@ -237,6 +246,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(portalComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
         }
     }
 
@@ -274,6 +284,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(enemyHC, enemyEntity);
             ecsManager.addComponent(enemyWeapon, enemyEntity);
             ecsManager.addComponent(enemyComponent, enemyEntity);
+            ecsManager.addComponent(new CacheComponent(), enemyEntity);
         }
     }
 
@@ -304,6 +315,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(collisionComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
         }
     }
 
@@ -322,6 +334,7 @@ public abstract class GameUtils {
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
         }
     }
 }

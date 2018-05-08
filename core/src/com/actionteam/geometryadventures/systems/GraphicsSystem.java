@@ -2,10 +2,10 @@ package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.Clock;
 import com.actionteam.geometryadventures.GameUtils;
+import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
-import com.actionteam.geometryadventures.ecs.Component;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
@@ -44,17 +44,21 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private class CompEnt {
         GraphicsComponent gc;
         PhysicsComponent pc;
+        CacheComponent cc;
         int entity;
 
-        CompEnt(GraphicsComponent gc, PhysicsComponent pc, int entity) {
+        CompEnt(GraphicsComponent gc, PhysicsComponent pc, CacheComponent cc,
+                int entity) {
             this.gc = gc;
             this.pc = pc;
+            this.cc = cc;
             this.entity = entity;
         }
     }
 
     public GraphicsSystem(GameUtils gameUtils) {
-        super(Components.GRAPHICS_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE);
+        super(Components.GRAPHICS_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE,
+                Components.CACHE_COMPONENT_CODE);
         viewport = new ScreenViewport();
         batch = new SpriteBatch();
         textureAtlas = new TextureAtlas(gameUtils.
@@ -81,7 +85,9 @@ public class GraphicsSystem extends System implements ECSEventListener {
         gc.regions = textureAtlas.findRegions(gc.textureName);
         PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent(entityId,
                 Components.PHYSICS_COMPONENT_CODE);
-        CompEnt ent = new CompEnt(gc, pc, entityId);
+        CacheComponent cc = (CacheComponent) ecsManager.getComponent(entityId,
+                Components.CACHE_COMPONENT_CODE);
+        CompEnt ent = new CompEnt(gc, pc, cc, entityId);
         if (ecsManager.entityHasComponent(entityId, Components.CONTROL_COMPONENT_CODE)) {
             player = ent;
         } else if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
@@ -116,13 +122,14 @@ public class GraphicsSystem extends System implements ECSEventListener {
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.setShader(shader);
         for (CompEnt enemy : enemies) {
-            updateSprite(enemy);
+            if (enemy.cc.isCached)
+                updateSprite(enemy);
         }
         updateSprite(player);
         for (CompEnt e : entityList) {
-            draw(e.gc, e.pc);
+            if (e.cc.isCached)
+                draw(e.gc, e.pc);
         }
         batch.end();
 
@@ -205,7 +212,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
 
     private void resize(int width, int height) {
         if (flag) {
-            viewport.setUnitsPerPixel(10.f / width);
+            viewport.setUnitsPerPixel(20.f / width);
             flag = false;
         }
         viewport.update(width, height, true);
@@ -214,5 +221,6 @@ public class GraphicsSystem extends System implements ECSEventListener {
     public void setLightSystem(LightSystem lightSystem) {
         this.lightSystem = lightSystem;
         this.shader = lightSystem.getShaderProgram();
+        batch.setShader(shader);
     }
 }

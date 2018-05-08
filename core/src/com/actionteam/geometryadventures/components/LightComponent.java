@@ -15,7 +15,7 @@ public class LightComponent extends Component {
 
     public LightComponent() {
         super(Components.LIGHT_COMPONENT_CODE);
-        lightIntensity = 0;
-        radius = 0;
+        lightIntensity = 1;
+        radius = 0.5f;
     }
 }

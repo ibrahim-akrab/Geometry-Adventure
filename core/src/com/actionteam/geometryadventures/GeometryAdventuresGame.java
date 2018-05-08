@@ -25,13 +25,14 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     public GeometryAdventuresGame(GameUtils gameUtils) {
         this.gameUtils = gameUtils;
         ecsManager = null;
-        currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
+        currentScreen = ChosenScreen.SCREEN_GAME_LEVEL;
         time = TimeUtils.millis();
     }
 
     @Override
     public void create() {
         //TexturePacker.process("mysprites/", "textureatlas/", "textures");
+
         M = Gdx.audio.newMusic(Gdx.files.internal("0935.ogg"));
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
