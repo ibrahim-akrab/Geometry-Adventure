@@ -333,7 +333,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 SwitchDirectionClockwise(enemyComponent, physicsComponent);
                 break;
             case ECSEvents.PLAYER_DEAD_EVENT:
-
+                break;
             default:
                 break;
         }

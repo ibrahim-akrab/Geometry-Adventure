@@ -225,7 +225,6 @@ public abstract class GameUtils {
     }
 
     private void initPortalTiles(List<Tile> portalTiles) {
-
             PortalTile portalTile = new PortalTile();
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
@@ -253,7 +252,6 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(portalComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
-
     }
 
     private void initEnemyTiles(List<Tile> enemyTiles) {
