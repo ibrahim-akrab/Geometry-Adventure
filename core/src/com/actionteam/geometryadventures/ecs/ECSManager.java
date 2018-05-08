@@ -208,7 +208,6 @@ public class ECSManager {
                 system.addEntity(entity.getId());
             }
         }
-        updateEntities();
     }
 
     /**
@@ -275,6 +274,7 @@ public class ECSManager {
         for (System system : systems) {
             system.update(dt);
         }
+        updateEntities();
     }
 
     public boolean entityHasComponent(int entityId, int componentCode) {

@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Iterator;
 
-
 /**
  * Created by theartful on 3/27/18.
  * edited by Omnia on 3/29/18
@@ -65,8 +64,8 @@ public class PhysicsSystem extends System implements ECSEventListener {
             if (!didCollide) {
                 beginX = endX;
             } else {
-//                Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
-//                            + physicsComponent.velocity.y + ").");
+                // Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
+                //+ physicsComponent.velocity.y + ").");
                 endX = beginX;
             }
             ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));
@@ -84,14 +83,9 @@ public class PhysicsSystem extends System implements ECSEventListener {
         }
         if (!physicsComponent.angularAcceleration.isZero()) {
             Vector2 relativePositionVector = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
-            physicsComponent.angularAcceleration =
-                    relativePositionVector.limit(1.0f).scl(
-                            physicsComponent.velocity.len2() /
-                                    relativePositionVector.len()
-                    );
+            physicsComponent.angularAcceleration = relativePositionVector.limit(1.0f).scl(
+                    physicsComponent.velocity.len2() / relativePositionVector.len());
         }
-
-
     }
 
     @Override
