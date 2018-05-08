@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures;
 
 import com.actionteam.geometryadventures.components.CacheComponent;
+import com.actionteam.geometryadventures.components.CollectibleComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
@@ -13,8 +14,7 @@ import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
-import com.actionteam.geometryadventures.model.CollectableTile;
-import com.actionteam.geometryadventures.model.CollectibeTile;
+import com.actionteam.geometryadventures.model.CollectibleTile;
 import com.actionteam.geometryadventures.model.EnemyTile;
 import com.actionteam.geometryadventures.model.LightTile;
 import com.actionteam.geometryadventures.model.Map;
@@ -37,15 +37,12 @@ import com.actionteam.geometryadventures.systems.SoundSystem;
 import com.actionteam.geometryadventures.systems.VisionSystem;
 import com.actionteam.geometryadventures.systems.WeaponSystem;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.utils.Collision;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -84,7 +81,7 @@ public abstract class GameUtils {
             RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
                     registerSubtype(Tile.class).registerSubtype(PortalTile.class).
                     registerSubtype(EnemyTile.class).registerSubtype(PlayerTile.class).
-                    registerSubtype(LightTile.class).registerSubtype(CollectableTile.class);
+                    registerSubtype(LightTile.class).registerSubtype(CollectibleTile.class);
 
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
             return gson.fromJson(sb.toString(), Map.class);
@@ -114,6 +111,7 @@ public abstract class GameUtils {
         initPortalTiles(map.getPortalTiles());
         initPlayerTile(map.getPlayerTile());
         initLightTiles(map.getLightTiles());
+        initCollectableTile(map.getCollectibleTiles());
 
         // create systems
         GraphicsSystem graphicsSystem = new GraphicsSystem(this);
@@ -346,29 +344,34 @@ public abstract class GameUtils {
         }
     }
 
-    private void initCollectibleTile(List<Tile> collectableTiles)
+    private void initCollectableTile(List<CollectibleTile> collectibleTiles)
     {
-        for (Tile collectableTile : collectableTiles)
+        for (CollectibleTile collectibleTile : collectibleTiles)
         {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
-            CollisionComponent collisionComponent = new CollisionComponent();
+            CollisionComponent collisionComponent = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
             GraphicsComponent graphicsComponent = new GraphicsComponent();
+            CollectibleComponent collectibleComponent = new CollectibleComponent();
 
-            physicsComponent.position.set(collectableTile.x, collectableTile.y);
-            graphicsComponent.textureIndex = collectableTile.textureIndex;
-            graphicsComponent.textureName = collectableTile.textureName;
-            graphicsComponent.isAnimated = collectableTile.isAnimated;
-            graphicsComponent.frames = collectableTile.frames;
-            graphicsComponent.interval = collectableTile.speed;
+            physicsComponent.position.set(collectibleTile.x, collectibleTile.y);
+            graphicsComponent.textureIndex = collectibleTile.textureIndex;
+            graphicsComponent.textureName = collectibleTile.textureName;
+            graphicsComponent.isAnimated = collectibleTile.isAnimated;
+            graphicsComponent.frames = collectibleTile.frames;
+            graphicsComponent.interval = collectibleTile.speed;
             collisionComponent.height = 0.8f;
             collisionComponent.width = 0.8f;
             collisionComponent.radius = 0.8f;
             collisionComponent.id = Entities.COLLECTABLE_COLLISION_ID;
-            collisionComponent.mask = 1L << Entities.PLAYER_COLLISION_ID;
-
+            collisionComponent.shapeType = CollisionComponent.RECTANGLE;
+            collectibleComponent.type = collectibleTile.type;
+            collectibleComponent.value = collectibleTile.value;
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
+            ecsManager.addComponent(collisionComponent, entity);
+            ecsManager.addComponent(collectibleComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
         }
     }
 }

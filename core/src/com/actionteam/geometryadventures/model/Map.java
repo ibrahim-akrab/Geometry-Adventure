@@ -19,6 +19,7 @@ public class Map {
     public static final String PORTAL = "portal";
     public static final String DOOR = "door";
     public static final String LIGHT = "light";
+    public static final String COLLECTABLE = "collectable";
 
     private int[] dimensions;
     private boolean newLight;
@@ -32,6 +33,7 @@ public class Map {
     private List<Tile> portalTiles;
     private List<Tile> doorTiles;
     private List<Tile> lightTiles;
+    private List<CollectibleTile> collectibleTiles;
     private PlayerTile playerTile;
 
     public class MapConfig{
@@ -51,6 +53,7 @@ public class Map {
         portalTiles = new ArrayList<Tile>();
         doorTiles = new ArrayList<Tile>();
         lightTiles = new ArrayList<Tile>();
+        collectibleTiles = new ArrayList<CollectibleTile>();
 
         for (Tile tile : tiles) {
             if (tile.tileType.equals(ENEMY))
@@ -67,6 +70,8 @@ public class Map {
                 doorTiles.add(tile);
             else if (tile.tileType.equals(LIGHT))
                 lightTiles.add(tile);
+            else if (tile.tileType.equals(COLLECTABLE))
+                collectibleTiles.add((CollectibleTile)tile);
             else if (tile.collidable)
                 wallTiles.add(tile);
             else
@@ -93,6 +98,10 @@ public class Map {
 
     public List<Tile> getLightTiles() {
         return lightTiles;
+    }
+
+    public List<CollectibleTile> getCollectibleTiles() {
+        return collectibleTiles;
     }
 
     /* These are the tiles the enemy can not traverse. */
