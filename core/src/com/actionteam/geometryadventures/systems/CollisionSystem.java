@@ -4,9 +4,12 @@ import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.components.PortalComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Omnia- on 30/03/2018.
@@ -57,6 +60,7 @@ public class CollisionSystem extends System implements ECSEventListener {
         CollisionComponent myCc = (CollisionComponent) ecsManager.getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
         CollisionComponent cc;
         PhysicsComponent pc;
+        PortalComponent poc;
 
         boolean entityCollided = false;
 
@@ -66,6 +70,8 @@ public class CollisionSystem extends System implements ECSEventListener {
             if (!cacheComponent.isCached) continue;
             cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
             pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
+            poc = (PortalComponent) ecsManager.getComponent(e,Components.PORTAL_COMPONENT_CODE);
+
             if ((e == entityID) || ((myCc.mask & (1L << cc.id)) == 0)) continue;
 
             if (myCc.shapeType == CollisionComponent.RECTANGLE) {
@@ -90,7 +96,7 @@ public class CollisionSystem extends System implements ECSEventListener {
                 }
             }
 
-            if (entityCollided) {
+            if (entityCollided && poc == null ) {
                 ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
                 /*
                 Gdx.app.log("Collision", entityID + " " + e);
@@ -107,7 +113,14 @@ public class CollisionSystem extends System implements ECSEventListener {
                         ecsManager.entityHasComponent(entityID, Components.COLLECTOR_COMPONENT_CODE)) {
                     ecsManager.fireEvent(ECSEvents.collectibleCollisionEvent(e, entityID));
                 }
+
                 return;
+            }
+            else if(entityCollided && poc !=null &&
+                    ecsManager.getComponent(entityID,Components.CONTROL_COMPONENT_CODE) !=null )
+            {
+                Vector3 v = new Vector3(poc.position.x,poc.position.y,entityID);
+                ecsManager.fireEvent(ECSEvents.movedToAPortalEvent(v));
             }
         }
 

@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.Iterator;
 
@@ -20,9 +21,11 @@ import java.util.Iterator;
 public class PhysicsSystem extends System implements ECSEventListener {
 
     private boolean didCollide;
+    private Vector3 movedToAPortal;
 
     public PhysicsSystem() {
         super(Components.PHYSICS_COMPONENT_CODE);
+        movedToAPortal = null;
     }
 
     @Override
@@ -72,14 +75,17 @@ public class PhysicsSystem extends System implements ECSEventListener {
             if (didCollide) {
                 endY = beginY;
             }
-            physicsComponent.position.x = endX;
-            physicsComponent.position.y = endY;
-        } else if (por != null) {
-            physicsComponent.position.x = por.position.x;
-            physicsComponent.position.y = por.position.y;
-        } else {
-            physicsComponent.position.x = endX;
-            physicsComponent.position.y = endY;
+            if(movedToAPortal != null){
+                PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((int)movedToAPortal.z,
+                        Components.PHYSICS_COMPONENT_CODE);
+                pc.position.x = movedToAPortal.x;
+                pc.position.y = movedToAPortal.y;
+                movedToAPortal = null;
+            }
+            else {
+                physicsComponent.position.x = endX;
+                physicsComponent.position.y = endY;
+            }
         }
         if (!physicsComponent.angularAcceleration.isZero()) {
             Vector2 relativePositionVector = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
@@ -93,6 +99,10 @@ public class PhysicsSystem extends System implements ECSEventListener {
         switch (eventCode) {
             case ECSEvents.COLLISION_EVENT:
                 didCollide = (Boolean) message;
+                break;
+            case ECSEvents.MOVED_TO_A_PORTAL_EVENT:
+                movedToAPortal = (Vector3)message;
+                break;
         }
         return false;
     }

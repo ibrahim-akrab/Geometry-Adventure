@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures.events;
 
 import com.actionteam.geometryadventures.ecs.ECSEvent;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A factory-like class that initializes all kinds of events
@@ -22,12 +23,11 @@ public class ECSEvents {
     public static final int ENEMY_DEAD_EVENT            = 9;
     public static final int BULLET_COLLIDED_EVENT       = 10;
     public static final int COLLECTIBLE_COLLIDED_EVENT  = 11;
-    public static final int PORTAL_FOUND_EVENT          = 12;
-    public static final int MOVED_TO_A_PORTAL_EVENT     = 13;
-    public static final int END_OF_LEVEL_EVENT          = 14;
-    public static final int HEART_COLLECTED_EVENT = 15;
-    public static final int COIN_COLLECTED_EVENT        = 16;
-    public static final int KEY_COLLECTED_EVENT         = 17;
+    public static final int MOVED_TO_A_PORTAL_EVENT     = 12;
+    public static final int END_OF_LEVEL_EVENT          = 13;
+    public static final int HEART_COLLECTED_EVENT       = 14;
+    public static final int COIN_COLLECTED_EVENT        = 15;
+    public static final int KEY_COLLECTED_EVENT         = 16;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
@@ -77,9 +77,6 @@ public class ECSEvents {
         return new ECSEvent(COLLECTIBLE_COLLIDED_EVENT, new int[]{collectibleId, collectorId});
     }
 
-    public static ECSEvent portalFound(Integer entityID) {
-        return new ECSEvent(PORTAL_FOUND_EVENT, entityID);
-    }
 
     public static ECSEvent endOfLevelEvent(){
         return new ECSEvent(END_OF_LEVEL_EVENT, null);
@@ -95,5 +92,9 @@ public class ECSEvents {
 
     public static ECSEvent keyCollectedEvent(int collectorId, int keyValue){
         return new ECSEvent(KEY_COLLECTED_EVENT, new int[]{collectorId, keyValue});
+    }
+
+    public static ECSEvent movedToAPortalEvent (Vector3 portalData){
+        return new ECSEvent(MOVED_TO_A_PORTAL_EVENT, portalData);
     }
 }
