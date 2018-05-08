@@ -39,11 +39,11 @@ void main()
         radius = (v_pos.x - u_lightPos[i].x) * (v_pos.x - u_lightPos[i].x)
                             + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y) +
                               0.5 * rand((6.0 * u_time) * v_pos.xy);
-        lightIntensity += u_lightIntensity[i] * u_radius[i]  / ((radius + 1.0)* (radius + 1.0));
+        lightIntensity += u_lightIntensity[i] * u_radius[i]  / ((radius + 1.0));
         //pow(2.718, -radius / u_radius[i]);
     }
 
-    if(lightIntensity > 1.0) lightIntensity = 1.0;
+    // if(lightIntensity > 1.0) lightIntensity = 1.0;
     lightIntensity = float(int(lightIntensity * 3.0)) / 3.0;
 
     color *= vec4(vec3(lightIntensity + u_ambientIntensity), 1.0);
