@@ -21,7 +21,7 @@ public class Map {
     public static final String PORTAL = "portal";
     public static final String DOOR = "door";
     public static final String LIGHT = "light";
-    public static final String COLLECTABLE = "collectable";
+    public static final String COLLECTABLE = "collectible";
 
     private int[] dimensions;
     private boolean newLight;
