@@ -10,4 +10,5 @@ public class Entities {
     public static int ENEMY_COLLISION_ID = 2;
     public static int LETHAL_ENEMY_COLLISION_ID = 3;
     public static int LETHAL_PLAYER_COLLISION_ID = 4;
+    public static int COLLECTABLE_COLLISION_ID = 5;
 }
