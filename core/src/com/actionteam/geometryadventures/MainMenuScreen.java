@@ -25,20 +25,19 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         Table table = new Table();
         stage.addActor(table);
-        Texture background = new Texture(Gdx.files.internal("main-menu/main_menu_bg.png"));
-        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        Texture background = new Texture(Gdx.files.internal("main-menu/main_menu_full.png"));
+        //background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         TextureRegion region = new TextureRegion(background);
         table.setBackground(new TextureRegionDrawable(region));
         table.setFillParent(true);
         table.setDebug(true);
-        /*
         Texture startUp = new Texture(Gdx.files.internal("main-menu/Start_Down.png"));
         TextureRegion startUpRegion = new TextureRegion(startUp, 0, 0, 512, 512);
         Texture startDown = new Texture(Gdx.files.internal("main-menu/Start_Up.png"));
         TextureRegion startDownRegion = new TextureRegion(startDown, 0, 0, 512, 512);
         Button startButton = new Button(new TextureRegionDrawable(startUpRegion),
                 new TextureRegionDrawable(startDownRegion));
-        table.add(startButton).maxSize(512*6/10, 254*6/10).right();
+        //table.add(startButton).maxSize(512*6/10, 254*6/10).right();
 
         Texture quitUp = new Texture(Gdx.files.internal("main-menu/Quit_Down.png"));
         TextureRegion quitUpRegion = new TextureRegion(quitUp, 0, 0, 512, 512);
@@ -46,8 +45,9 @@ public class MainMenuScreen implements Screen {
         TextureRegion quitDownRegion = new TextureRegion(quitDown, 0, 0, 512, 512);
         Button quitButton = new Button(new TextureRegionDrawable(quitUpRegion),
                 new TextureRegionDrawable(quitDownRegion));
-        table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
-        */
+        //table.add(quitButton).maxSize(512*6/10, 254*6/10).left();
+
+        /*
         table.row().bottom().expand();
         Texture trees = new Texture(Gdx.files.internal("main-menu/main_menu_trees.png"));
         trees.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -55,8 +55,8 @@ public class MainMenuScreen implements Screen {
         table.add(new Image(trees)).bottom().left().fill().expandX();
         table.add(new Image(trees)).bottom().right().fill().expandX();
        // table.add(new Image(trees)).bottom().left();
+        */
 
-        /*
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -70,7 +70,6 @@ public class MainMenuScreen implements Screen {
                 GeometryAdventuresGame.currentScreen = GeometryAdventuresGame.ChosenScreen.SCREEN_GAME_LEVEL;
             }
         });
-        */
     }
 
     @Override
