@@ -25,18 +25,18 @@ import java.util.List;
 
 public class GraphicsSystem extends System implements ECSEventListener {
 
-    private static final int[] MOVING_LEFT = new int[]{2, 6, 10, 14};
-    private static final int[] MOVING_RIGHT = new int[]{4, 8, 12, 16};
-    private static final int[] MOVING_UP = new int[]{1, 5, 9, 13};
-    private static final int[] MOVING_DOWN = new int[]{7, 11, 15, 19};
-    public static final int[] BULLET_ANIMATION = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
+    private static final int[] MOVING_LEFT = new int[]{1, 5, 9, 13};
+    private static final int[] MOVING_RIGHT = new int[]{3, 7, 11, 15};
+    private static final int[] MOVING_UP = new int[]{0, 4, 8, 12};
+    private static final int[] MOVING_DOWN = new int[]{6, 10, 14, 18};
+    public static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
 
     private ScreenViewport viewport;
     private SpriteBatch batch;
     private TextureAtlas textureAtlas;
     private boolean flag = true;
     private List<CompEnt> entityList;
-    CompEnt player;
+    private CompEnt player;
     private List<CompEnt> enemies;
     private LightSystem lightSystem;
     private ShaderProgram shader;
@@ -150,7 +150,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         } else {
             ent.gc.isAnimated = false;
         }
-        ent.gc.textureIndex = ent.gc.animationSequence[0] - 1;
+        ent.gc.textureIndex = ent.gc.animationSequence[0];
     }
 
     /**
@@ -163,7 +163,10 @@ public class GraphicsSystem extends System implements ECSEventListener {
         if (graphicsComponent.isAnimated) {
             int index = (Clock.clock / graphicsComponent.interval) %
                     graphicsComponent.frames;
-            graphicsComponent.textureIndex = graphicsComponent.animationSequence[index] - 1;
+            if (graphicsComponent.animationSequence == null)
+                graphicsComponent.textureIndex = index;
+            else
+                graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
         }
         if (graphicsComponent.rotatable) {
             batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),

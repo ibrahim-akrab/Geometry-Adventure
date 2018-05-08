@@ -1,21 +1,19 @@
 #ifdef GL_ES
 precision lowp float;
 precision lowp int;
-
 #endif
 
 varying vec4 v_color;
 varying vec2 v_texCoords;
 varying vec4 v_pos;
 
-uniform vec2 u_lightPos[10];
-uniform float u_lightIntensity[10];
-uniform vec2 u_radius[10];
+uniform vec2 u_lightPos[64];
+uniform float u_lightIntensity[64];
+uniform float u_radius[64];
 uniform int u_lightSources;
 
 uniform vec3 u_ambientLight;
 uniform float u_ambientIntensity;
-
 uniform int u_time;
 
 uniform sampler2D u_texture;
@@ -41,8 +39,8 @@ void main()
     {
         float radius = (v_pos.x - u_lightPos[i].x) * (v_pos.x - u_lightPos[i].x)
                             + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y) +
-                             2.f * rand((6.f * t) * v_pos.xy);
-        lightIntensity += u_lightIntensity[i] * pow(2.718, -radius / u_radius[i].x);
+                              rand((6.f * t) * v_pos.xy);
+        lightIntensity += u_lightIntensity[i] * pow(2.718, -radius / u_radius[i]);
     }
 
     if(lightIntensity > 1.f) lightIntensity = 1.f;

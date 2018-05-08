@@ -148,7 +148,6 @@ public abstract class GameUtils {
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
             LightComponent lightComponent = new LightComponent();
-
             physicsComponent.position.set(lightTile.x, lightTile.y);
             graphicsComponent.textureName = lightTile.textureName;
             graphicsComponent.textureIndex = lightTile.textureIndex;
@@ -156,8 +155,7 @@ public abstract class GameUtils {
             graphicsComponent.frames = lightTile.frames;
             graphicsComponent.interval = lightTile.speed;
             lightComponent.lightIntensity = ((LightTile) lightTile).lightIntensity;
-            lightComponent.radius.set(((LightTile) lightTile).innerRadius,
-                    ((LightTile) lightTile).outerRadius);
+            lightComponent.radius = ((LightTile) lightTile).innerRadius;
             if(lightTile.collidable) {
                 CollisionComponent collisionComponent = new CollisionComponent();
                 collisionComponent.shapeType = CollisionComponent.RECTANGLE;
@@ -166,7 +164,6 @@ public abstract class GameUtils {
                 collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
                 collisionComponent.mask = ~0;
                 ecsManager.addComponent(collisionComponent, entity);
-
             }
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
@@ -188,12 +185,15 @@ public abstract class GameUtils {
         PhysicsComponent pc = new PhysicsComponent();
         ControlComponent cc = new ControlComponent();
         CollisionComponent col = new CollisionComponent();
+        LightComponent lc = new LightComponent();
         col.width = 0.7f;
         col.height = 0.7f;
         col.shapeType = CollisionComponent.RECTANGLE;
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
+        lc.lightIntensity = 0.7f;
+        lc.radius = 10.f;
 
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
@@ -206,6 +206,7 @@ public abstract class GameUtils {
         ecsManager.addComponent(col, entity);
         ecsManager.addComponent(wc, entity);
         ecsManager.addComponent(sc, entity);
+        ecsManager.addComponent(lc, entity);
         ecsManager.addComponent(healthComponent, entity);
     }
 
