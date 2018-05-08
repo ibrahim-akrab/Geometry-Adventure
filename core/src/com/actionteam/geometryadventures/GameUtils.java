@@ -151,8 +151,8 @@ public abstract class GameUtils {
         graphicsSystem.setLightSystem(lightSystem);
     }
 
-    private void initLightTiles(List<Tile> lightTiles) {
-        for (Tile lightTile : lightTiles) {
+    private void initLightTiles(List<LightTile> lightTiles) {
+        for (LightTile lightTile : lightTiles) {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
@@ -163,15 +163,16 @@ public abstract class GameUtils {
             graphicsComponent.isAnimated = lightTile.isAnimated;
             graphicsComponent.frames = lightTile.frames;
             graphicsComponent.interval = lightTile.speed;
-            lightComponent.lightIntensity = ((LightTile) lightTile).lightIntensity;
-            lightComponent.radius = ((LightTile) lightTile).innerRadius;
+            lightComponent.lightIntensity = lightTile.lightIntensity;
+            lightComponent.radius = lightTile.innerRadius;
             if(lightTile.collidable) {
-                CollisionComponent collisionComponent = new CollisionComponent();
+                CollisionComponent collisionComponent =
+                        new CollisionComponent(Entities.PLAYER_COLLISION_ID,
+                                Entities.ENEMY_COLLISION_ID);
                 collisionComponent.shapeType = CollisionComponent.RECTANGLE;
                 collisionComponent.width = 0.9f;
                 collisionComponent.height = 0.9f;
                 collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
-                collisionComponent.mask = ~0;
                 ecsManager.addComponent(collisionComponent, entity);
             }
             ecsManager.addComponent(physicsComponent, entity);
@@ -224,16 +225,17 @@ public abstract class GameUtils {
         ecsManager.addComponent(new CacheComponent(), entity);
     }
 
-    private void initPortalTiles(List<Tile> portalTiles) {
-            PortalTile portalTile = new PortalTile();
+    private void initPortalTiles(List<PortalTile> portalTiles) {
+        for(PortalTile portalTile : portalTiles)
+        {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
-            CollisionComponent collisionComponent = new CollisionComponent();
+            CollisionComponent collisionComponent = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
             PortalComponent portalComponent = new PortalComponent();
-            portalComponent.position.x = 20;
-            portalComponent.position.y = 30;
-            physicsComponent.position.set(15,15);
+            portalComponent.position.x = portalTile.toX;
+            portalComponent.position.y = portalTile.toY;
+            physicsComponent.position.set(portalTile.x, portalTile.y);
 
             graphicsComponent.textureName = portalTile.textureName;
             graphicsComponent.textureIndex = portalTile.textureIndex;
@@ -245,23 +247,22 @@ public abstract class GameUtils {
             collisionComponent.height = 1;
             collisionComponent.width = 1;
             collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
-            collisionComponent.mask = ~0;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(portalComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
+        }
     }
 
-    private void initEnemyTiles(List<Tile> enemyTiles) {
-        for (Tile enemyTile : enemyTiles) {
+    private void initEnemyTiles(List<EnemyTile> enemyTiles) {
+        for (EnemyTile enemyTile : enemyTiles) {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            enemyGC.textureName = "greenorc";
-            //enemyGC.textureName = enemyTile.textureName;
-            enemyGC.textureIndex = 1;
+            enemyGC.textureName = enemyTile.textureName;
+            enemyGC.textureIndex = enemyTile.textureIndex;
             enemyGC.height = 1.7f;
             enemyGC.width = 1.7f;
             enemyGC.offsetX = -0.35f;
@@ -277,10 +278,17 @@ public abstract class GameUtils {
             enemyPC.position.x = enemyTile.x;
             enemyPC.position.y = enemyTile.y;
             HealthComponent enemyHC = new HealthComponent();
-            enemyHC.health = 5;
+            enemyHC.health = enemyTile.health;
             /* Add enemy weapon here */
-            WeaponComponent enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-
+            WeaponComponent enemyWeapon;
+            if(enemyTile.enemyType.equals("green orc"))
+            {
+                enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+            }
+            else
+            {
+                enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+            }
             EnemyComponent enemyComponent = new EnemyComponent();
             ecsManager.addComponent(enemyPC, enemyEntity);
             ecsManager.addComponent(enemyGC, enemyEntity);
