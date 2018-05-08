@@ -23,7 +23,6 @@ eclipse.project {
 }
 
 dependencies {
-
     compile 'org.testng:testng:6.9.6'
     compile 'junit:junit:4.12'
 }

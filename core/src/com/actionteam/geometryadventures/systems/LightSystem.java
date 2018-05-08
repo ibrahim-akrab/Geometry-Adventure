@@ -74,7 +74,7 @@ public class LightSystem extends System {
         if (shader.isCompiled()) {
             ShaderProgram.pedantic = false;
         } else {
-            Gdx.app.log("SA", "FUC");
+            Gdx.app.log("SA", "Shader Compilation Failed.");
         }
 
         ulightPos = shader.getUniformLocation("u_lightPos[0]");

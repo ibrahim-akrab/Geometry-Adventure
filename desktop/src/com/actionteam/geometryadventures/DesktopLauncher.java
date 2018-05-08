@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 1024;
+		config.height = 512;
 		new LwjglApplication(new GeometryAdventuresGame(new GameUtils() {
 			@Override
 			public FileInputStream openFile(String fileName) throws FileNotFoundException {

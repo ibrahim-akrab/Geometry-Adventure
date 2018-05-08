@@ -21,6 +21,9 @@
 
 -verbose
 
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
 -dontwarn android.support.**
 -dontwarn com.badlogic.gdx.backends.android.AndroidFragmentApplication
 -dontwarn com.badlogic.gdx.utils.GdxBuild
