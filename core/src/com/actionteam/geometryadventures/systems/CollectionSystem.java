@@ -70,7 +70,7 @@ public class CollectionSystem extends System implements ECSEventListener{
                 break;
             case CollectibleComponent.HEART:
                 ecsManager.fireEvent(ECSEvents.heartCollectedEvent(collectorId, collectibleComponent.value));
-                Gdx.app.log("collection system", "HEART COLLECTED");
+                Gdx.app.log("collection system", "HEART COLLECTED" + String.valueOf(collectibleComponent.value));
                 break;
             case CollectibleComponent.KEY:
                 ecsManager.fireEvent(ECSEvents.keyCollectedEvent(collectorId, collectibleComponent.value));

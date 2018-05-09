@@ -38,6 +38,14 @@ public class ScoreSystem extends System implements ECSEventListener {
             }
             case ECSEvents.END_OF_LEVEL_EVENT:
                 calculateFinalScore();
+                break;
+            case ECSEvents.COIN_COLLECTED_EVENT:{
+                int[] eventData = (int[]) message;
+                int collectorId = eventData[0];
+                int coinsValue = eventData[1];
+                addCoinsToScore(collectorId, coinsValue);
+            }
+
             default:
                 return false;
         }
@@ -49,6 +57,8 @@ public class ScoreSystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
         ecsManager.subscribe(ECSEvents.PLAYER_DEAD_EVENT, this);
         ecsManager.subscribe(ECSEvents.END_OF_LEVEL_EVENT, this);
+        ecsManager.subscribe(ECSEvents.COIN_COLLECTED_EVENT, this);
+
     }
 
     @Override
@@ -91,4 +101,9 @@ public class ScoreSystem extends System implements ECSEventListener {
         }
     }
 
+    public void addCoinsToScore(int collectorId, int coinsValue){
+        ScoreComponent scoreComponent = (ScoreComponent)
+                ecsManager.getComponent(collectorId, Components.SCORE_COMPONENT_CODE);
+        scoreComponent.score += coinsValue;
+    }
 }
