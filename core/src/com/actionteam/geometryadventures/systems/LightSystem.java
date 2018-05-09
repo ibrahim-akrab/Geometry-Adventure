@@ -1,6 +1,5 @@
 package com.actionteam.geometryadventures.systems;
 
-import com.actionteam.geometryadventures.Clock;
 import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.Components;
@@ -118,7 +117,7 @@ public class LightSystem extends System {
         shader.begin();
         shader.setUniformf(uambientLight, ambientLight);
         shader.setUniformf(uambientIntensity, ambientIntensity);
-        shader.setUniformf(utime, Clock.clock);
+        shader.setUniformf(utime, ClockSystem.clock);
         int i = 0;
         for (CompEnt e : entityList) {
             if (e.cc.isCached) {

@@ -43,10 +43,8 @@ void main()
                 //pow(2.718, -radius / u_radius[i]);
 
     }
-
-    lightIntensity = 1.0/(pow(2.718, -4.0 * lightIntensity + 2.0) + 1.0);
+    lightIntensity = min(lightIntensity, 1.0);
     lightIntensity = float(int(lightIntensity * 4.0)) / 4.0;
-
 
     color *= vec4(vec3(lightIntensity + u_ambientIntensity), 1);
     gl_FragColor = color;

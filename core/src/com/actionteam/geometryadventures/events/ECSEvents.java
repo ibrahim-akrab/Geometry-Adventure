@@ -28,6 +28,8 @@ public class ECSEvents {
     public static final int HEART_COLLECTED_EVENT       = 14;
     public static final int COIN_COLLECTED_EVENT        = 15;
     public static final int KEY_COLLECTED_EVENT         = 16;
+    public static final int LEVEL_PAUSED                = 17;
+    public static final int LEVEL_STARTED               = 18;
 
 
     public static ECSEvent resizeEvent(int width, int height) {
