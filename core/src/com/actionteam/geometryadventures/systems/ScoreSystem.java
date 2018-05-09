@@ -17,6 +17,12 @@ public class ScoreSystem extends System implements ECSEventListener {
         super(Components.SCORE_COMPONENT_CODE);
     }
 
+    /**
+     * handles when an event it is subscribed to is fired
+     * @param eventCode determines event's type
+     * @param message event's data
+     * @return true of event has been handled
+     */
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
@@ -66,6 +72,11 @@ public class ScoreSystem extends System implements ECSEventListener {
 
     }
 
+    /**
+     * increases entity's player based on the score's increment value
+     * @param killerId
+     * @param scoreIncrementValue
+     */
     public void increaseScore(int killerId, int scoreIncrementValue) {
         ScoreComponent scoreComponent = (ScoreComponent)
                 ecsManager.getComponent(killerId, Components.SCORE_COMPONENT_CODE);
@@ -78,6 +89,10 @@ public class ScoreSystem extends System implements ECSEventListener {
         scoreComponent.lastKillTime = ClockSystem.millis();
     }
 
+    /**
+     * checks for combos (killing more than an enemy fast enough)
+     * @param scoreComponent
+     */
     public void checkCombo(ScoreComponent scoreComponent) {
         if (ClockSystem.timeSinceMillis(scoreComponent.lastKillTime) < ScoreComponent.TIME_BETWEEN_EACH_KILL_TO_COMBO) {
             scoreComponent.comboNumber++;
@@ -90,6 +105,9 @@ public class ScoreSystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     * calculates final score when level is finished
+     */
     public void calculateFinalScore() {
         for (int entity : entities) {
             ScoreComponent scoreComponent = (ScoreComponent)
@@ -101,6 +119,11 @@ public class ScoreSystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     * adds coins to the score bar in the player's score component
+     * @param collectorId
+     * @param coinsValue
+     */
     public void addCoinsToScore(int collectorId, int coinsValue){
         ScoreComponent scoreComponent = (ScoreComponent)
                 ecsManager.getComponent(collectorId, Components.SCORE_COMPONENT_CODE);

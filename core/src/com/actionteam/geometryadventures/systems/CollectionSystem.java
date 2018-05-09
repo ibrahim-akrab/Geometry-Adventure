@@ -17,6 +17,12 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     public CollectionSystem(){ super(Components.COLLECTIBLE_COMPONENT_CODE);}
 
+    /**
+     * handles when an event it is subscribed to is fired
+     * @param eventCode determines event's type
+     * @param message event's data
+     * @return true of event has been handled
+     */
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode){
@@ -45,6 +51,12 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     }
 
+    /**
+     * handles giving collectible to the player
+     * @param collectibleId
+     * @param collectorId
+     * @return true if it was collected, false otherwise
+     */
     private boolean collect(int collectibleId, int collectorId){
         if (!ecsManager.entityHasComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE)){
             return false;
@@ -60,6 +72,11 @@ public class CollectionSystem extends System implements ECSEventListener{
         return true;
     }
 
+    /**
+     * fires correct event when a collectible is collected
+     * @param collectibleId
+     * @param collectorId
+     */
     private void fireEvents(int collectibleId, int collectorId){
         CollectibleComponent collectibleComponent = (CollectibleComponent)
                 ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
@@ -81,6 +98,10 @@ public class CollectionSystem extends System implements ECSEventListener{
         }
     }
 
+    /**
+     * removes collectible so that it appears it has been collected
+     * @param collectibleId
+     */
     private void removeCollectible(int collectibleId){
         ecsManager.removeEntity(collectibleId);
     }

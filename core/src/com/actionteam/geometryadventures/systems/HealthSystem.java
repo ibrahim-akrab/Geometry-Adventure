@@ -16,6 +16,12 @@ public class HealthSystem extends System implements ECSEventListener {
 
     public HealthSystem(){ super(Components.HEALTH_COMPONENT_CODE);}
 
+    /**
+     * handles when an event it is subscribed to is fired
+     * @param eventCode determines event's type
+     * @param message event's data
+     * @return true of event has been handled
+     */
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode){
@@ -55,7 +61,7 @@ public class HealthSystem extends System implements ECSEventListener {
     }
 
     /**
-     *
+     * handles when a bullet is collided with an entity
      * @param bulletId
      * @param entityId
      * @return true if it hit an entity with a health component
@@ -74,6 +80,12 @@ public class HealthSystem extends System implements ECSEventListener {
         return true;
     }
 
+    /**
+     * checks if entity has died by being hit with a bullet
+     * @param bulletId
+     * @param entityId
+     * @return  true if enemy died, false otherwise
+     */
     private boolean isDead(int bulletId, int entityId) {
         HealthComponent healthComponent = (HealthComponent)
                 ecsManager.getComponent(entityId, Components.HEALTH_COMPONENT_CODE);
@@ -93,10 +105,19 @@ public class HealthSystem extends System implements ECSEventListener {
         return false;
     }
 
+    /**
+     * removes bullet's entity when it hits something
+     * @param bulletId
+     */
     private void removeBullet(int bulletId){
         ecsManager.removeEntity(bulletId);
     }
 
+    /**
+     * increase health when player picks up a heart
+     * @param collectorId
+     * @param heartValue
+     */
     private void increaseHealth(int collectorId, int heartValue){
         HealthComponent healthComponent = (HealthComponent)
                 ecsManager.getComponent(collectorId, Components.HEALTH_COMPONENT_CODE);
