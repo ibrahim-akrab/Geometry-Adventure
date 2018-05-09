@@ -25,15 +25,15 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     public GeometryAdventuresGame(GameUtils gameUtils) {
         this.gameUtils = gameUtils;
         ecsManager = null;
-        currentScreen = ChosenScreen.SCREEN_GAME_LEVEL;
+        currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
         time = TimeUtils.millis();
     }
 
     @Override
     public void create() {
-        //TexturePacker.process("mysprites/", "textureatlas/", "textures");
+        // TexturePacker.process("mysprites/", "textureatlas/", "textures");
 
-        M = Gdx.audio.newMusic(Gdx.files.internal("0935.ogg"));
+        M = Gdx.audio.newMusic(Gdx.files.internal("BigCrumble.mp3"));
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu = new MainMenuScreen();
@@ -57,8 +57,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Clock.clock = (int) TimeUtils.millis();
-
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu.render(0);
@@ -67,6 +65,8 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
             case SCREEN_GAME_LEVEL:
                 if (ecsManager == null) {
                     M.stop();
+                    M = Gdx.audio.newMusic(Gdx.files.internal("FirstDance.mp3"));
+                    M.play();
                     this.create();
                     // to update the viewport
                     this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -23,6 +23,7 @@ import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyT
 public class EnemySystem extends System implements ECSEventListener {
     int[] playerPosition;
     private AIUtils aiUtils;
+    static boolean playerDead = false;
 
     public EnemySystem() {
         super(Components.ENEMY_COMPONENT_CODE);
@@ -71,8 +72,7 @@ public class EnemySystem extends System implements ECSEventListener {
             case TASK_DESTROY_THREAT:
                 /* Task is done if enemy can not see the player.            */
                 /* Or if the player is dead.                                */
-                /* Implement if player is dead from the lifetime component. */
-                if(!ec.canSeePlayer)
+                if(!ec.canSeePlayer || playerDead)
                 {
                     ec.currentState = STATE_WAITING;
 //                    Gdx.app.log("Enemy System", "Task destroy threat is done.");
@@ -333,6 +333,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 SwitchDirectionClockwise(enemyComponent, physicsComponent);
                 break;
             case ECSEvents.PLAYER_DEAD_EVENT:
+                playerDead = true;
                 break;
             default:
                 break;

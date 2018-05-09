@@ -13,8 +13,10 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
+import com.actionteam.geometryadventures.events.ECSEvents;
 import com.actionteam.geometryadventures.model.CollectibleTile;
 import com.actionteam.geometryadventures.model.EnemyTile;
 import com.actionteam.geometryadventures.model.LightTile;
@@ -23,6 +25,7 @@ import com.actionteam.geometryadventures.model.PlayerTile;
 import com.actionteam.geometryadventures.model.PortalTile;
 import com.actionteam.geometryadventures.model.Tile;
 import com.actionteam.geometryadventures.systems.CacheSystem;
+import com.actionteam.geometryadventures.systems.ClockSystem;
 import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
@@ -128,7 +131,10 @@ public abstract class GameUtils {
         SoundSystem soundSystem = new SoundSystem();
         HealthSystem healthSystem = new HealthSystem();
         ScoreSystem scoreSystem = new ScoreSystem();
+        ClockSystem clockSystem = new ClockSystem();
         CollectionSystem collectionSystem = new CollectionSystem();
+        CacheSystem cacheSystem = new CacheSystem(initialPlayerX, initialPlayerY);
+        hudSystem.setTextureAtlas(graphicsSystem.getTextureAtlas());
         Gdx.input.setInputProcessor(controlSystem);
 
         lightSystem.setAmbientIntensity(map.getConfig().ambientIntensity);
@@ -148,8 +154,10 @@ public abstract class GameUtils {
         ecsManager.addSystem(scoreSystem);
         ecsManager.addSystem(collectionSystem);
         ecsManager.addSystem(lightSystem);
-        ecsManager.addSystem(new CacheSystem(initialPlayerX, initialPlayerY));
+        ecsManager.addSystem(clockSystem);
+        ecsManager.addSystem(cacheSystem);
         graphicsSystem.setLightSystem(lightSystem);
+        ecsManager.fireEvent(new ECSEvent(ECSEvents.LEVEL_STARTED, null));
     }
 
     private void initLightTiles(List<LightTile> lightTiles) {
@@ -283,8 +291,8 @@ public abstract class GameUtils {
             CollisionComponent enemyCC = new CollisionComponent();
             enemyCC.shapeType = CollisionComponent.RECTANGLE;
             enemyCC.width = 0.7f;
-            enemyCC.height = 0.7f;
-            enemyCC.radius = 0.7f;
+            enemyCC.height = 1.0f;
+            enemyCC.radius = 1.0f;
             enemyCC.id = Entities.ENEMY_COLLISION_ID;
             enemyCC.mask = ~(1L << Entities.ENEMY_COLLISION_ID | 1L << Entities.COLLECTABLE_COLLISION_ID);
             PhysicsComponent enemyPC = new PhysicsComponent();
@@ -328,7 +336,7 @@ public abstract class GameUtils {
             graphicsComponent.frames = wallTile.frames;
             graphicsComponent.width = 1;
             graphicsComponent.height = 1;
-            // graphicsComponent.animationSpeed = wallTile.speed;
+            graphicsComponent.interval = wallTile.speed;
 
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.width = 0.9f;
@@ -355,7 +363,7 @@ public abstract class GameUtils {
             graphicsComponent.textureIndex = floorTile.textureIndex;
             graphicsComponent.isAnimated = floorTile.isAnimated;
             graphicsComponent.frames = floorTile.frames;
-            // graphicsComponent.animationSpeed = floorTile.speed;
+            graphicsComponent.interval = floorTile.speed;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);

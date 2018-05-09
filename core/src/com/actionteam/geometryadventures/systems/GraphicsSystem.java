@@ -1,6 +1,5 @@
 package com.actionteam.geometryadventures.systems;
 
-import com.actionteam.geometryadventures.Clock;
 import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.Components;
@@ -102,15 +101,16 @@ public class GraphicsSystem extends System implements ECSEventListener {
     @Override
     protected void entityRemoved(int entityId, int index) {
         entityList.remove(index);
-        if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
-            for (CompEnt enemy : enemies) {
-                if (enemy.entity == entityId) {
-                    enemies.remove(enemy);
-                    break;
-                }
+        if (!ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE))
+            return;
+        for (CompEnt enemy : enemies) {
+            if (enemy.entity == entityId) {
+                enemies.remove(enemy);
+                break;
             }
         }
     }
+
 
     /**
      * Draws all entities possessing graphics and physics components
@@ -168,7 +168,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
      */
     private void draw(GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
         if (graphicsComponent.isAnimated) {
-            int index = (Clock.clock / graphicsComponent.interval) %
+            int index = (ClockSystem.clock / graphicsComponent.interval) %
                     graphicsComponent.frames;
             if (graphicsComponent.animationSequence == null)
                 graphicsComponent.textureIndex = index;
@@ -222,5 +222,9 @@ public class GraphicsSystem extends System implements ECSEventListener {
         this.lightSystem = lightSystem;
         this.shader = lightSystem.getShaderProgram();
         batch.setShader(shader);
+    }
+
+    public TextureAtlas getTextureAtlas() {
+        return textureAtlas;
     }
 }
