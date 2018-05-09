@@ -204,12 +204,12 @@ public class EnemySystem extends System implements ECSEventListener {
                 if (wp.weaponDamageRegion == WeaponComponent.SEMICIRCLE) {
                     /* Melee */
                     if (Math.abs(deltaX * deltaX + deltaY * deltaY) < wp.radiusOfDamageRegion * wp.radiusOfDamageRegion) {
-                        ecsManager.fireEvent(ECSEvents.attackEvent
+                        ecsManager.fireEvent(ECSEvents.castEvent
                                 (pc.position.x, pc.position.y, angle, entityId, false));
                     }
                 } else {
                     /* Ranged */
-                    ecsManager.fireEvent(ECSEvents.attackEvent
+                    ecsManager.fireEvent(ECSEvents.castEvent
                             (pc.position.x, pc.position.y, angle, entityId, false));
                 }
                 break;

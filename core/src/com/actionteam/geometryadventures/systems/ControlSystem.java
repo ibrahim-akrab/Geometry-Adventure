@@ -164,13 +164,12 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
             // check that the player has a weapon
             if (ecsManager.entityHasComponent(entityId, Components.WEAPON_COMPONENT_CODE)) {
                 Vector2 position = physicsComponent.position;
-                ECSEvent attackEvent = ECSEvents.attackEvent
+                ECSEvent castEvent = ECSEvents.castEvent
                         (position.x, position.y, angle, entityId, true);
-                ecsManager.fireEvent(new ECSEvent(ECSEvents.ADD_TASK,
-                        new ClockSystem.Task(attackEvent, 500)));
+                ecsManager.fireEvent(castEvent);
             }
         }
-        physicsComponent.rotationAngle = - angle * MathUtils.radiansToDegrees;
+        physicsComponent.rotationAngle = -angle * MathUtils.radiansToDegrees;
         if (physicsComponent.rotationAngle < 0) physicsComponent.rotationAngle += 360;
     }
 

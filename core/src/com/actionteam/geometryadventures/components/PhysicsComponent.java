@@ -14,6 +14,7 @@ public class PhysicsComponent extends Component {
     public float rotationAngle;
     public Vector2 angularAcceleration;
     public Vector2 centerOfRotation;
+    public boolean isFreezed;
 
     public PhysicsComponent() {
         super(Components.PHYSICS_COMPONENT_CODE);
@@ -23,5 +24,6 @@ public class PhysicsComponent extends Component {
         angularAcceleration = new Vector2(0, 0);
         rotationAngle = 0;
         centerOfRotation = new Vector2(0, 0);
+        isFreezed = false;
     }
 }

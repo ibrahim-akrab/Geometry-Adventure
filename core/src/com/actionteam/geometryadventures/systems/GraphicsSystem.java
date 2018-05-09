@@ -90,7 +90,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
         ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
-        ecsManager.subscribe(ECSEvents.ATTACK_EVENT, this);
+        ecsManager.subscribe(ECSEvents.CAST_EVENT, this);
     }
 
     /**
@@ -244,7 +244,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 int enemyId = ((int[]) (message))[0];
                 startDeathAnimation(enemyId);
                 break;
-            case ECSEvents.ATTACK_EVENT:
+            case ECSEvents.CAST_EVENT:
                 float[] attackInfo = (float[]) message;
                 int entityId = (int) attackInfo[3];
                 boolean isPlayer = (attackInfo[4] == 1);

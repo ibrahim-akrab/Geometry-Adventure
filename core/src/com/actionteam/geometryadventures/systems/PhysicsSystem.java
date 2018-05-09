@@ -32,6 +32,8 @@ public class PhysicsSystem extends System implements ECSEventListener {
     protected void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.COLLISION_EVENT, this);
         ecsManager.subscribe(ECSEvents.MOVED_TO_A_PORTAL_EVENT, this);
+        ecsManager.subscribe(ECSEvents.FREEZE_EVENT, this);
+        ecsManager.subscribe(ECSEvents.UNFREEZE_EVENT, this);
     }
 
     @Override
@@ -39,7 +41,8 @@ public class PhysicsSystem extends System implements ECSEventListener {
         for (int entity : entities) {
             PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
                     Components.PHYSICS_COMPONENT_CODE);
-            update(physicsComponent, dt, entity);
+            if (!physicsComponent.isFreezed)
+                update(physicsComponent, dt, entity);
         }
     }
 
@@ -73,14 +76,13 @@ public class PhysicsSystem extends System implements ECSEventListener {
             if (didCollide) {
                 endY = beginY;
             }
-            if(movedToAPortal != null){
-                PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((int)movedToAPortal.z,
+            if (movedToAPortal != null) {
+                PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((int) movedToAPortal.z,
                         Components.PHYSICS_COMPONENT_CODE);
                 pc.position.x = movedToAPortal.x;
                 pc.position.y = movedToAPortal.y;
                 movedToAPortal = null;
-            }
-            else {
+            } else {
                 physicsComponent.position.x = endX;
                 physicsComponent.position.y = endY;
             }
@@ -99,7 +101,17 @@ public class PhysicsSystem extends System implements ECSEventListener {
                 didCollide = (Boolean) message;
                 break;
             case ECSEvents.MOVED_TO_A_PORTAL_EVENT:
-                movedToAPortal = (Vector3)message;
+                movedToAPortal = (Vector3) message;
+                break;
+            case ECSEvents.FREEZE_EVENT:
+                PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((Integer) message,
+                        Components.PHYSICS_COMPONENT_CODE);
+                pc.isFreezed = true;
+                break;
+            case ECSEvents.UNFREEZE_EVENT:
+                PhysicsComponent pc1 = (PhysicsComponent) ecsManager.getComponent((Integer) message,
+                        Components.PHYSICS_COMPONENT_CODE);
+                pc1.isFreezed = false;
                 break;
         }
         return false;
