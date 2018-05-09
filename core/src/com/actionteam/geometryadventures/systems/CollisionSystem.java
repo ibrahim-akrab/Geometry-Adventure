@@ -68,7 +68,7 @@ public class CollisionSystem extends System implements ECSEventListener {
         for (int e : entities) {
             CacheComponent cacheComponent = (CacheComponent) ecsManager.getComponent(e,
                     Components.CACHE_COMPONENT_CODE);
-            if (cacheComponent != null && !cacheComponent.isCached) continue;
+            if (cacheComponent == null || !cacheComponent.isCached) continue;
             cc = (CollisionComponent) ecsManager.getComponent(e, Components.COLLISION_COMPONENT_CODE);
             pc = (PhysicsComponent) ecsManager.getComponent(e, Components.PHYSICS_COMPONENT_CODE);
             poc = (PortalComponent) ecsManager.getComponent(e, Components.PORTAL_COMPONENT_CODE);

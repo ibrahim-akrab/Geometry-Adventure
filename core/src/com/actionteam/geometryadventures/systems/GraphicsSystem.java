@@ -8,9 +8,16 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
@@ -32,6 +39,8 @@ public class GraphicsSystem extends System implements ECSEventListener {
 
     private ScreenViewport viewport;
     private SpriteBatch batch;
+    private SpriteBatch frameBufferBatch;
+    private FrameBuffer frameBuffer;
     private TextureAtlas textureAtlas;
     private boolean flag = true;
     private List<CompEnt> entityList;
@@ -39,6 +48,8 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private List<CompEnt> enemies;
     private LightSystem lightSystem;
     private ShaderProgram shader;
+    private Matrix4 idt;
+    private Vector2 zeroVector;
 
     private class CompEnt {
         GraphicsComponent gc;
@@ -60,10 +71,16 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 Components.CACHE_COMPONENT_CODE);
         viewport = new ScreenViewport();
         batch = new SpriteBatch();
+        frameBufferBatch = new SpriteBatch();
+        frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight(), false);
         textureAtlas = new TextureAtlas(gameUtils.
                 getFile("env_packed/envTextureAtlas.atlas").getPath());
         entityList = new ArrayList<CompEnt>();
         enemies = new ArrayList<CompEnt>();
+        idt = new Matrix4();
+        idt.idt();
+        zeroVector = new Vector2(0, 0);
     }
 
     @Override
@@ -120,6 +137,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     @Override
     public void update(float dt) {
         viewport.apply();
+        frameBuffer.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         for (CompEnt enemy : enemies) {
@@ -132,7 +150,15 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 draw(e.gc, e.pc);
         }
         batch.end();
+        frameBuffer.end();
 
+        viewport.unproject(zeroVector.set(0, 0));
+        Texture texture = frameBuffer.getColorBufferTexture();
+        frameBufferBatch.setProjectionMatrix(viewport.getCamera().combined);
+        frameBufferBatch.begin();
+        frameBufferBatch.draw(texture, zeroVector.x, zeroVector.y, viewport.getWorldWidth(),
+                -viewport.getWorldHeight());
+        frameBufferBatch.end();
     }
 
     private void updateSprite(CompEnt ent) {
@@ -221,7 +247,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     public void setLightSystem(LightSystem lightSystem) {
         this.lightSystem = lightSystem;
         this.shader = lightSystem.getShaderProgram();
-        batch.setShader(shader);
+        frameBufferBatch.setShader(shader);
     }
 
     public TextureAtlas getTextureAtlas() {
