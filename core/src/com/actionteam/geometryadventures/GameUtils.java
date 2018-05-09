@@ -67,7 +67,7 @@ public abstract class GameUtils {
     public abstract File getFile(String fileName);
 
     private Map map;
-    private ECSManager ecsManager;
+    private static ECSManager ecsManager;
     private float initialPlayerX;
     private float initialPlayerY;
 
@@ -99,7 +99,6 @@ public abstract class GameUtils {
         }
         return null;
     }
-
 
 
     public void loadLevel(String levelName) throws Exception {
@@ -174,7 +173,7 @@ public abstract class GameUtils {
             graphicsComponent.interval = lightTile.speed;
             lightComponent.lightIntensity = lightTile.lightIntensity;
             lightComponent.radius = lightTile.innerRadius;
-            if(lightTile.collidable) {
+            if (lightTile.collidable) {
                 CollisionComponent collisionComponent =
                         new CollisionComponent(Entities.PLAYER_COLLISION_ID,
                                 Entities.ENEMY_COLLISION_ID);
@@ -236,8 +235,7 @@ public abstract class GameUtils {
     }
 
     private void initPortalTiles(List<PortalTile> portalTiles) {
-        for(PortalTile portalTile : portalTiles)
-        {
+        for (PortalTile portalTile : portalTiles) {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
@@ -271,16 +269,11 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            if(enemyTile.enemyType.equals("green orc"))
-            {
+            if (enemyTile.enemyType.equals("green orc")) {
                 enemyGC.textureName = "greenorc";
-            }
-            else if (enemyTile.enemyType.equals("skeleton"))
-            {
+            } else if (enemyTile.enemyType.equals("skeleton")) {
                 enemyGC.textureName = "skeleton";
-            }
-            else
-            {
+            } else {
                 enemyGC.textureName = "redorc";
             }
             enemyGC.textureIndex = 0;
@@ -302,12 +295,9 @@ public abstract class GameUtils {
             enemyHC.health = enemyTile.health;
             /* Add enemy weapon here */
             WeaponComponent enemyWeapon;
-            if(enemyTile.enemyType.equals("green orc"))
-            {
+            if (enemyTile.enemyType.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-            }
-            else
-            {
+            } else {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
             }
             EnemyComponent enemyComponent = new EnemyComponent();
@@ -371,10 +361,8 @@ public abstract class GameUtils {
         }
     }
 
-    private void initCollectableTile(List<CollectibleTile> collectibleTiles)
-    {
-        for (CollectibleTile collectibleTile : collectibleTiles)
-        {
+    private void initCollectableTile(List<CollectibleTile> collectibleTiles) {
+        for (CollectibleTile collectibleTile : collectibleTiles) {
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             CollisionComponent collisionComponent = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
@@ -403,5 +391,32 @@ public abstract class GameUtils {
             ecsManager.addComponent(collectibleComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
         }
+    }
+
+    public static void createStandardCoin(float x, float y) {
+        int entity = ecsManager.createEntity();
+        PhysicsComponent physicsComponent = new PhysicsComponent();
+        CollisionComponent collisionComponent = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
+        GraphicsComponent graphicsComponent = new GraphicsComponent();
+        CollectibleComponent collectibleComponent = new CollectibleComponent();
+
+        physicsComponent.position.set(x, y);
+        graphicsComponent.textureIndex = 0;
+        graphicsComponent.textureName = "coin";
+        graphicsComponent.isAnimated = true;
+        graphicsComponent.frames = 9;
+        graphicsComponent.interval = 150;
+        collisionComponent.height = 0.8f;
+        collisionComponent.width = 0.8f;
+        collisionComponent.radius = 0.8f;
+        collisionComponent.id = Entities.COLLECTABLE_COLLISION_ID;
+        collisionComponent.shapeType = CollisionComponent.RECTANGLE;
+        collectibleComponent.type = CollectibleComponent.KEY;
+        collectibleComponent.value = 1;
+        ecsManager.addComponent(physicsComponent, entity);
+        ecsManager.addComponent(graphicsComponent, entity);
+        ecsManager.addComponent(collisionComponent, entity);
+        ecsManager.addComponent(collectibleComponent, entity);
+        ecsManager.addComponent(new CacheComponent(), entity);
     }
 }
