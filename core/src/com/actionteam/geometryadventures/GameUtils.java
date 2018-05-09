@@ -39,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -94,6 +95,8 @@ public abstract class GameUtils {
         }
         return null;
     }
+
+
 
     public void loadLevel(String levelName) throws Exception {
         map = loadMap(levelName);
@@ -198,6 +201,7 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
+
         initialPlayerX = playerTile.x;
         initialPlayerY = playerTile.y;
         lc.lightIntensity = 0.7f;
@@ -221,14 +225,15 @@ public abstract class GameUtils {
 
     private void initPortalTiles(List<Tile> portalTiles) {
 
-        for (Tile tile : portalTiles) {
-            PortalTile portalTile = (PortalTile) tile;
+            PortalTile portalTile = new PortalTile();
             int entity = ecsManager.createEntity();
             PhysicsComponent physicsComponent = new PhysicsComponent();
             GraphicsComponent graphicsComponent = new GraphicsComponent();
             CollisionComponent collisionComponent = new CollisionComponent();
-            PortalComponent portalComponent = new PortalComponent(portalTile.toX, portalTile.toY);
-            physicsComponent.position.set(portalTile.x, portalTile.y);
+            PortalComponent portalComponent = new PortalComponent();
+            portalComponent.position.x = 20;
+            portalComponent.position.y = 30;
+            physicsComponent.position.set(15,15);
 
             graphicsComponent.textureName = portalTile.textureName;
             graphicsComponent.textureIndex = portalTile.textureIndex;
@@ -247,7 +252,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(portalComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
-        }
+
     }
 
     private void initEnemyTiles(List<Tile> enemyTiles) {

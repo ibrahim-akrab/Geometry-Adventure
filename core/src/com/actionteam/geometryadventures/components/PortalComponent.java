@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PortalComponent extends Component {
 
-    // position of portal we're ariving at.
+    // position of portal we're arriving at.
     public Vector2 position;
-    public PortalComponent(float x,float y) {
+    public PortalComponent() {
         super(Components.PORTAL_COMPONENT_CODE);
-        position = new Vector2(x,y);
+        position = new Vector2(0,0);
 
     }
 }
