@@ -2,13 +2,13 @@ package com.actionteam.geometryadventures;
 
 import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.CollectibleComponent;
+import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LightComponent;
-import com.actionteam.geometryadventures.components.ParentEntityComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
@@ -224,6 +224,7 @@ public abstract class GameUtils {
         ecsManager.addComponent(lc, entity);
         ecsManager.addComponent(healthComponent, entity);
         ecsManager.addComponent(new CacheComponent(), entity);
+        ecsManager.addComponent(new CollectorComponent(), entity);
     }
 
     private void initPortalTiles(List<PortalTile> portalTiles) {
@@ -393,7 +394,6 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(collectibleComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
-            ecsManager.addComponent(new ParentEntityComponent(), entity);
         }
     }
 }

@@ -1,12 +1,13 @@
 package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.components.CollectibleComponent;
+import com.actionteam.geometryadventures.components.CollectorComponent;
 import com.actionteam.geometryadventures.components.Components;
-import com.actionteam.geometryadventures.components.ParentEntityComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.Entity;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
+import com.badlogic.gdx.Gdx;
 
 /**
  * Created by Ibrahim M. Akrab on 5/3/18.
@@ -14,7 +15,7 @@ import com.actionteam.geometryadventures.events.ECSEvents;
  */
 public class CollectionSystem extends System implements ECSEventListener{
 
-    public CollectionSystem(){ super(Components.COLLECTIBLE_COMPONENT_CODE, Components.PARENT_ENTITY_COMPONENT_CODE);}
+    public CollectionSystem(){ super(Components.COLLECTIBLE_COMPONENT_CODE);}
 
     @Override
     public boolean handle(int eventCode, Object message) {
@@ -25,7 +26,7 @@ public class CollectionSystem extends System implements ECSEventListener{
                 int collectorId = collectibleData[1];
                 if (collect(collectibleId, collectorId)){
                     fireEvents(collectibleId, collectorId);
-                    removeCollectibleFromScreen(collectibleId);
+                    removeCollectible(collectibleId);
                     return true;
                 }
                 return false;
@@ -45,12 +46,17 @@ public class CollectionSystem extends System implements ECSEventListener{
     }
 
     private boolean collect(int collectibleId, int collectorId){
-        if (!ecsManager.entityHasComponent(collectorId, Components.CONTROL_COMPONENT_CODE)){
+        if (!ecsManager.entityHasComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE)){
             return false;
         }
-        ParentEntityComponent parentEntityComponent = (ParentEntityComponent)
-                ecsManager.getComponent(collectibleId, Components.PARENT_ENTITY_COMPONENT_CODE);
-        parentEntityComponent.parentEntityId = collectorId;
+        CollectibleComponent collectibleComponent = (CollectibleComponent)
+                ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
+        if (collectibleComponent.type == CollectibleComponent.COIN){
+            CollectorComponent collectorComponent = (CollectorComponent)
+                    ecsManager.getComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE);
+            collectorComponent.coinCount += collectibleComponent.value;
+            Gdx.app.log("collection system", String.valueOf(collectorComponent.coinCount));
+        }
         return true;
     }
 
@@ -60,21 +66,22 @@ public class CollectionSystem extends System implements ECSEventListener{
         switch (collectibleComponent.type){
             case CollectibleComponent.COIN:
                 ecsManager.fireEvent(ECSEvents.coinCollectedEvent(collectorId, collectibleComponent.value));
+                Gdx.app.log("collection system", "COIN COLLECTED");
                 break;
             case CollectibleComponent.HEART:
                 ecsManager.fireEvent(ECSEvents.heartCollectedEvent(collectorId, collectibleComponent.value));
+                Gdx.app.log("collection system", "HEART COLLECTED");
                 break;
             case CollectibleComponent.KEY:
                 ecsManager.fireEvent(ECSEvents.keyCollectedEvent(collectorId, collectibleComponent.value));
+                Gdx.app.log("collection system", "KEY COLLECTED");
                 break;
             default:
                 break;
         }
     }
 
-    private void removeCollectibleFromScreen(int collectibleId){
-        ecsManager.removeComponent(ecsManager.getComponent(collectibleId, Components.PHYSICS_COMPONENT_CODE).getId());
-//        Entity entity = ecsManager.getEntity(collectibleId);
-//        entity.removeComponent(Components.PHYSICS_COMPONENT_CODE);
+    private void removeCollectible(int collectibleId){
+        ecsManager.removeEntity(collectibleId);
     }
 }
