@@ -6,6 +6,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 
 /**
  * Created by Ibrahim M. Akrab on 5/2/18.
@@ -98,6 +99,14 @@ public class ScoreSystem extends System implements ECSEventListener {
             scoreComponent.score += scoreComponent.killsNumber *
                     (3 * 60 * 1000 / ClockSystem.timeSinceMillis(scoreComponent.levelStartTime));
             Gdx.app.log("Score", String.valueOf(scoreComponent.score));
+            Preferences preferences = Gdx.app.getPreferences("ScorePrefs");
+            int highScore = preferences.getInteger("Score", scoreComponent.score);
+            //Gdx.app.log("High Score = ", String.valueOf(highScore));
+            if (scoreComponent.score >= highScore)
+            {
+                preferences.putInteger("Score", scoreComponent.score);
+                preferences.flush();
+            }
         }
     }
 
