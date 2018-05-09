@@ -30,6 +30,9 @@ public class EnemySystem extends System implements ECSEventListener {
     static boolean playerDead = false;
     private Random rand;
 
+    /**
+     * Default Constructor for EnemySystem.
+     */
     public EnemySystem() {
         super(Components.ENEMY_COMPONENT_CODE);
         aiUtils = GameUtils.aiUtils;
@@ -37,6 +40,11 @@ public class EnemySystem extends System implements ECSEventListener {
         rand = new Random();
     }
 
+    /**
+     * Adds a task to the enemie's task queue.
+     * @param ec the enemy component to add the task to.
+     * @param task the task to be added.
+     */
     public static void AddTaskToEnemy(EnemyComponent ec, EnemyTask task) {
         switch (task) {
             case TASK_FOLLOW_SHOT:
@@ -65,6 +73,13 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     * Returns true if task is done and false otherwise.
+     *  @param ec The enemy component.
+     *  @param pc The physics component of the same enemy.
+     *  @param eCC the collision component of the same enemy.
+     *  @param task the task in question.
+     */
     private boolean IsTaskDone(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC,
                                EnemyTask task) {
         switch (task) {
@@ -116,6 +131,15 @@ public class EnemySystem extends System implements ECSEventListener {
         return false;
     }
 
+
+    /**
+     * Processes enemy task.
+     *
+     *  @param ec The enemy component.
+     *  @param pc The physics component of the same enemy.
+     *  @param eCC the collision component of the same enemy.
+     *  @param task the task in question.
+     */
     private void ProcessEnemyTask(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC,
                                   EnemyTask task) {
         switch (task) {
@@ -177,6 +201,13 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     * Processes all enemy tasks for the enemy whose component is ec.
+     *
+     *  @param ec The enemy component.
+     *  @param pc The physics component of the same enemy.
+     *  @param eCC the collision component of the same enemy.
+     */
     private void ProcessEnemyTasks(EnemyComponent ec, PhysicsComponent pc, CollisionComponent eCC) {
         while (!ec.taskQueue.isEmpty()) {
             EnemyTask currentTask = ec.taskQueue.peek();
@@ -218,6 +249,11 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     * Updates all the enemies..
+     *
+     *  @param dt the time step difference.
+     */
     @Override
     public void update(float dt) {
         /* We should update the enemies per their programmed paths here. */
@@ -235,6 +271,13 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+
+    /**
+     *  Switches the enemy's patrolling direction to be clockwise.
+     *
+     *  @param ec The enemy component.
+     *  @param pc The physics component of the same enemy.
+     */
     private void SwitchDirectionClockwise(EnemyComponent ec, PhysicsComponent pc) {
         if (ec.motionLock)
             return;
@@ -258,8 +301,10 @@ public class EnemySystem extends System implements ECSEventListener {
         ec.motionLock = true;
     }
 
+    /**
+     *  Listens to loud weapons and goes to them if needed.
+     */
     private void listenToLoudWeapon() {
-        /* We should update the enemies per their programmed paths here. */
         for (int entity : entities) {
             EnemyComponent ec = (EnemyComponent) ecsManager.getComponent(entity,
                     Components.ENEMY_COMPONENT_CODE);
@@ -275,6 +320,9 @@ public class EnemySystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     *  Subscribes to the relevant events.
+     */
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
@@ -284,6 +332,12 @@ public class EnemySystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.PLAYER_DEAD_EVENT, this);
     }
 
+    /**
+     *  Handles being called for events.
+     *
+     *  @param eventCode The event code for the event in question.
+     *  @param message The data sent by this event.
+     */
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
@@ -308,7 +362,7 @@ public class EnemySystem extends System implements ECSEventListener {
                 break;
             case ECSEvents.ENEMY_DEAD_EVENT:
                 int[] mes = (int[]) message;
-                handleEnemyDeahth(mes[0], mes[1]);
+                handleEnemyDeath(mes[0], mes[1]);
                 break;
             default:
                 break;
@@ -316,7 +370,13 @@ public class EnemySystem extends System implements ECSEventListener {
         return false;
     }
 
-    private void handleEnemyDeahth(int enemyId, int killerId) {
+    /**
+     *  Handles the death of the enemy specified by enemyId.
+     *
+     *  @param enemyId The enemy entity.
+     *  @param killerId The killer entity.
+     */
+    private void handleEnemyDeath(int enemyId, int killerId) {
         if(!ecsManager.entityHasComponent(enemyId, Components.ENEMY_COMPONENT_CODE))
             return;
         int enemyComponentId = ecsManager.getComponentId(enemyId, Components.ENEMY_COMPONENT_CODE);
