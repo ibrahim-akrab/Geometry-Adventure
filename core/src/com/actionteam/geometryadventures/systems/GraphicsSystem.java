@@ -36,10 +36,10 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private static final int[] MOVING_UP = new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32};
     private static final int[] MOVING_DOWN = new int[]{2, 6, 10, 14, 18, 22, 26, 30, 34};
     private static final int[] ANIM_DYING = new int[]{36, 37, 38, 39, 40, 41};
-    private static final int[] ATTACK_UP = new int[]{42, 43, 44, 45, 46, 47, 48, 49};
-    private static final int[] ATTACK_LEFT = new int[]{50, 51, 52, 53, 54, 55, 56, 57};
-    private static final int[] ATTACK_DOWN = new int[]{58, 59, 60, 61, 62, 63, 64, 65};
-    private static final int[] ATTACK_RIGHT = new int[]{66, 67, 68, 69, 70, 71, 72, 73};
+    private static final int[] ATTACK_UP = new int[]{42, 43, 44, 45, 46, 47, 48, 49, 49, 49};
+    private static final int[] ATTACK_LEFT = new int[]{50, 51, 52, 53, 54, 55, 56, 57, 57, 57};
+    private static final int[] ATTACK_DOWN = new int[]{58, 59, 60, 61, 62, 63, 64, 65, 65, 65};
+    private static final int[] ATTACK_RIGHT = new int[]{66, 67, 68, 69, 70, 71, 72, 73, 73, 73};
     public static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
 
     private ScreenViewport viewport;
@@ -90,6 +90,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
         ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
+        ecsManager.subscribe(ECSEvents.ATTACK_EVENT, this);
     }
 
     /**
@@ -145,7 +146,8 @@ public class GraphicsSystem extends System implements ECSEventListener {
             if (enemy.cc.isCached && !enemy.gc.scripted)
                 updateSprite(enemy);
         }
-        updateSprite(player);
+        if (!player.gc.scripted)
+            updateSprite(player);
         for (CompEnt e : entityList) {
             if (e.cc.isCached)
                 draw(e.gc, e.pc);
@@ -171,20 +173,18 @@ public class GraphicsSystem extends System implements ECSEventListener {
         }
         if ((angle <= 45 && angle >= 0) || (angle >= 360 - 45 && angle <= 360)) {
             ent.gc.animationSequence = MOVING_RIGHT;
-            ent.gc.frames = MOVING_RIGHT.length;
         } else if (angle >= 180 - 45 && angle <= 180 + 45) {
             ent.gc.animationSequence = MOVING_LEFT;
-            ent.gc.frames = MOVING_LEFT.length;
         } else if (angle >= 45 && angle <= 90 + 45) {
             ent.gc.animationSequence = MOVING_UP;
-            ent.gc.frames = MOVING_UP.length;
         } else if (angle >= 270 - 45 && angle <= 270 + 45) {
             ent.gc.animationSequence = MOVING_DOWN;
-            ent.gc.frames = MOVING_DOWN.length;
         } else {
             ent.gc.isAnimated = false;
         }
+        ent.gc.frames = ent.gc.animationSequence.length;
         ent.gc.textureIndex = ent.gc.animationSequence[0];
+        ent.gc.interval = 200;
     }
 
     /**
@@ -203,9 +203,12 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
             else {
                 index = (index + graphicsComponent.indexOffset) % graphicsComponent.frames;
-                if (index < 0) index += graphicsComponent.frames;
+                while (index < 0) index += graphicsComponent.frames;
                 graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
-                if (index == graphicsComponent.frames - 1) graphicsComponent.isAnimated = false;
+                if (index == graphicsComponent.frames - 1) {
+                    graphicsComponent.isAnimated = false;
+                    graphicsComponent.scripted = false;
+                }
             }
         }
         if (graphicsComponent.rotatable) {
@@ -241,9 +244,40 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 int enemyId = ((int[]) (message))[0];
                 startDeathAnimation(enemyId);
                 break;
+            case ECSEvents.ATTACK_EVENT:
+                float[] attackInfo = (float[]) message;
+                int entityId = (int) attackInfo[3];
+                boolean isPlayer = (attackInfo[4] == 1);
+                startAttackAnimation(isPlayer ? player : getEnemy(entityId));
+                break;
         }
         return false;
     }
+
+    private CompEnt getEnemy(int entityId) {
+        for (CompEnt e : enemies) if (e.entity == entityId) return e;
+        return null;
+    }
+
+    private void startAttackAnimation(CompEnt ent) {
+        if (ent == null) return;
+        ent.gc.isAnimated = true;
+        ent.gc.scripted = true;
+        float angle = ent.pc.rotationAngle;
+        if ((angle <= 45 && angle >= 0) || (angle >= 360 - 45 && angle <= 360)) {
+            ent.gc.animationSequence = ATTACK_RIGHT;
+        } else if (angle >= 180 - 45 && angle <= 180 + 45) {
+            ent.gc.animationSequence = ATTACK_LEFT;
+        } else if (angle >= 45 && angle <= 90 + 45) {
+            ent.gc.animationSequence = ATTACK_UP;
+        } else if (angle >= 270 - 45 && angle <= 270 + 45) {
+            ent.gc.animationSequence = ATTACK_DOWN;
+        }
+        ent.gc.interval = 40;
+        ent.gc.frames = ent.gc.animationSequence.length;
+        ent.gc.indexOffset = -(ClockSystem.clock / ent.gc.interval) % ent.gc.frames;
+    }
+
 
     private void startDeathAnimation(int enemyId) {
         for (CompEnt e : enemies) {

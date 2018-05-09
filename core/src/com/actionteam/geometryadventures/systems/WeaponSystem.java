@@ -30,7 +30,7 @@ public class WeaponSystem extends System implements ECSEventListener{
                 float[] weaponData = (float[]) message;
                 boolean successfulAttack =  entityAttacked(weaponData[0], weaponData[1], weaponData[2],
                         (int) weaponData[3], weaponData[4] == 1f);
-                if (successfulAttack){
+                if (successfulAttack) {
                     ecsManager.fireEvent(ECSEvents.loudWeaponFired((int)weaponData[3]));
                 }
                 return true;

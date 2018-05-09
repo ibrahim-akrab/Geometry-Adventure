@@ -3,6 +3,7 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
@@ -163,8 +164,10 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
             // check that the player has a weapon
             if (ecsManager.entityHasComponent(entityId, Components.WEAPON_COMPONENT_CODE)) {
                 Vector2 position = physicsComponent.position;
-                ecsManager.fireEvent(ECSEvents.attackEvent
-                        (position.x, position.y, angle, entityId, true));
+                ECSEvent attackEvent = ECSEvents.attackEvent
+                        (position.x, position.y, angle, entityId, true);
+                ecsManager.fireEvent(new ECSEvent(ECSEvents.ADD_TASK,
+                        new ClockSystem.Task(attackEvent, 500)));
             }
         }
         physicsComponent.rotationAngle = - angle * MathUtils.radiansToDegrees;
