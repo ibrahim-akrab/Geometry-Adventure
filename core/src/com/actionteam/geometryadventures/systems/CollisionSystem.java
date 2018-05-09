@@ -109,12 +109,10 @@ public class CollisionSystem extends System implements ECSEventListener {
                 if (ecsManager.entityHasComponent(entityID, Components.LETHAL_COMPONENT_CODE)) {
                     ecsManager.fireEvent(ECSEvents.bulletCollisionEvent(entityID, e));
                 }
-                /*
                 if (ecsManager.entityHasComponent(e, Components.COLLECTIBLE_COMPONENT_CODE) &&
                         ecsManager.entityHasComponent(entityID, Components.CONTROL_COMPONENT_CODE)) {
                     ecsManager.fireEvent(ECSEvents.collectibleCollisionEvent(e, entityID));
                 }
-                */
 
                 return;
             }
