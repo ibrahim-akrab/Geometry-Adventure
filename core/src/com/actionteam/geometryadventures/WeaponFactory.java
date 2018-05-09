@@ -115,7 +115,7 @@ public class WeaponFactory {
         weaponComponent.magazineSize = 24;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
         weaponComponent.currentAmmo= weaponComponent.magazineSize;
-        weaponComponent.damage = 2;
+        weaponComponent.damage = 1;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.radius = 0.7f;
         weaponComponent.coolDownTime = 700;
