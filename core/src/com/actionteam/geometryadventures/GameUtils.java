@@ -268,12 +268,12 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyGC.textureName = "greenorc";
-            } else if (enemyTile.enemyType.equals("skeleton")) {
+            } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyGC.textureName = "skeleton";
             } else {
-                enemyGC.textureName = "redorc";
+                enemyGC.textureName = "greenorc";
             }
             enemyGC.textureIndex = 0;
             enemyGC.height = 1.7f;
@@ -282,9 +282,9 @@ public abstract class GameUtils {
             enemyGC.offsetY = -0.35f;
             CollisionComponent enemyCC = new CollisionComponent();
             enemyCC.shapeType = CollisionComponent.RECTANGLE;
-            enemyCC.width = 0.7f;
-            enemyCC.height = 1.0f;
-            enemyCC.radius = 1.0f;
+            enemyCC.width = 0.8f;
+            enemyCC.height = 0.8f;
+            enemyCC.radius = 0.8f;
             enemyCC.id = Entities.ENEMY_COLLISION_ID;
             enemyCC.mask = ~(1L << Entities.ENEMY_COLLISION_ID | 1L << Entities.COLLECTABLE_COLLISION_ID);
             PhysicsComponent enemyPC = new PhysicsComponent();
@@ -294,9 +294,9 @@ public abstract class GameUtils {
             enemyHC.health = enemyTile.health;
             /* Add enemy weapon here */
             WeaponComponent enemyWeapon;
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-            } else if (enemyTile.enemyType.equals("skeleton")) {
+            } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
             }
             else {
