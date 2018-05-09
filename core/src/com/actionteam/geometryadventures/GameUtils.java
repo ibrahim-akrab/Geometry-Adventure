@@ -282,8 +282,8 @@ public abstract class GameUtils {
             CollisionComponent enemyCC = new CollisionComponent();
             enemyCC.shapeType = CollisionComponent.RECTANGLE;
             enemyCC.width = 0.7f;
-            enemyCC.height = 0.7f;
-            enemyCC.radius = 0.7f;
+            enemyCC.height = 1.0f;
+            enemyCC.radius = 1.0f;
             enemyCC.id = Entities.ENEMY_COLLISION_ID;
             enemyCC.mask = ~(1L << Entities.ENEMY_COLLISION_ID | 1L << Entities.COLLECTABLE_COLLISION_ID);
             PhysicsComponent enemyPC = new PhysicsComponent();

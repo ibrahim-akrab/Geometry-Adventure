@@ -31,7 +31,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
 
     @Override
     public void create() {
-        //TexturePacker.process("mysprites/", "textureatlas/", "textures");
+        // TexturePacker.process("mysprites/", "textureatlas/", "textures");
 
         M = Gdx.audio.newMusic(Gdx.files.internal("BigCrumble.mp3"));
         switch (currentScreen) {
