@@ -78,7 +78,9 @@ public class ECSManager {
         if (entityId >= entities.size()) return false;
         Entity entity = entities.get(entityId);
         if (entity == null) return false;
-        entitiesToBeRemoved.add(entityId);
+        if(!entitiesToBeRemoved.contains(entityId)) {
+            entitiesToBeRemoved.add(entityId);
+        }
         return true;
     }
 
