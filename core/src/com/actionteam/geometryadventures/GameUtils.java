@@ -268,12 +268,12 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyGC.textureName = "greenorc";
-            } else if (enemyTile.enemyType.equals("skeleton")) {
+            } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyGC.textureName = "skeleton";
             } else {
-                enemyGC.textureName = "redorc";
+                enemyGC.textureName = "greenorc";
             }
             enemyGC.textureIndex = 0;
             enemyGC.height = 1.7f;
@@ -294,9 +294,9 @@ public abstract class GameUtils {
             enemyHC.health = enemyTile.health;
             /* Add enemy weapon here */
             WeaponComponent enemyWeapon;
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-            } else if (enemyTile.enemyType.equals("skeleton")) {
+            } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
             }
             else {
