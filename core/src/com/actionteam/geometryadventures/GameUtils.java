@@ -382,9 +382,11 @@ public abstract class GameUtils {
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             if (collectibleTile.subtype.equals("heart"))
                 collectibleComponent.type = CollectibleComponent.HEART;
+            else if (collectibleTile.subtype.equals("coin"))
+                collectibleComponent.type = CollectibleComponent.COIN;
             else
                 collectibleComponent.type = CollectibleComponent.KEY;
-            collectibleComponent.value = collectibleTile.value;
+            collectibleComponent.value = 1;
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
             ecsManager.addComponent(collisionComponent, entity);
