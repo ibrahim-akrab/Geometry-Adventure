@@ -12,8 +12,10 @@ import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSManager;
 import com.actionteam.geometryadventures.entities.Entities;
+import com.actionteam.geometryadventures.events.ECSEvents;
 import com.actionteam.geometryadventures.model.CollectibleTile;
 import com.actionteam.geometryadventures.model.EnemyTile;
 import com.actionteam.geometryadventures.model.LightTile;
@@ -22,6 +24,7 @@ import com.actionteam.geometryadventures.model.PlayerTile;
 import com.actionteam.geometryadventures.model.PortalTile;
 import com.actionteam.geometryadventures.model.Tile;
 import com.actionteam.geometryadventures.systems.CacheSystem;
+import com.actionteam.geometryadventures.systems.ClockSystem;
 import com.actionteam.geometryadventures.systems.CollectionSystem;
 import com.actionteam.geometryadventures.systems.CollisionSystem;
 import com.actionteam.geometryadventures.systems.ControlSystem;
@@ -107,7 +110,7 @@ public abstract class GameUtils {
         initFloorTiles(map.getFloorTiles());
         initWallTiles(map.getWallTiles());
         initFloorTiles(map.getMiscTiles());
-        initEnemyTiles(map.getEnemyTiles());
+        // initEnemyTiles(map.getEnemyTiles());
         initPortalTiles(map.getPortalTiles());
         initPlayerTile(map.getPlayerTile());
         initLightTiles(map.getLightTiles());
@@ -127,7 +130,10 @@ public abstract class GameUtils {
         SoundSystem soundSystem = new SoundSystem();
         HealthSystem healthSystem = new HealthSystem();
         ScoreSystem scoreSystem = new ScoreSystem();
+        ClockSystem clockSystem = new ClockSystem();
         CollectionSystem collectionSystem = new CollectionSystem();
+        CacheSystem cacheSystem = new CacheSystem(initialPlayerX, initialPlayerY);
+        hudSystem.setTextureAtlas(graphicsSystem.getTextureAtlas());
         Gdx.input.setInputProcessor(controlSystem);
 
         lightSystem.setAmbientIntensity(map.getConfig().ambientIntensity);
@@ -147,8 +153,10 @@ public abstract class GameUtils {
         ecsManager.addSystem(scoreSystem);
         ecsManager.addSystem(collectionSystem);
         ecsManager.addSystem(lightSystem);
-        ecsManager.addSystem(new CacheSystem(initialPlayerX, initialPlayerY));
+        ecsManager.addSystem(clockSystem);
+        ecsManager.addSystem(cacheSystem);
         graphicsSystem.setLightSystem(lightSystem);
+        ecsManager.fireEvent(new ECSEvent(ECSEvents.LEVEL_STARTED, null));
     }
 
     private void initLightTiles(List<LightTile> lightTiles) {
@@ -212,7 +220,7 @@ public abstract class GameUtils {
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
         HealthComponent healthComponent = new HealthComponent();
-        healthComponent.health = playerTile.health;
+        healthComponent.health = 5; //playerTile.health;
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);

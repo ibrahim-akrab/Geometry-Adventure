@@ -57,8 +57,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Clock.clock = (int) TimeUtils.millis();
-
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu.render(0);
