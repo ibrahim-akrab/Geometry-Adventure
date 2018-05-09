@@ -30,11 +30,17 @@ import java.util.List;
 
 public class GraphicsSystem extends System implements ECSEventListener {
 
-    private static final int[] MOVING_LEFT = new int[]{1, 5, 9, 13};
-    private static final int[] MOVING_RIGHT = new int[]{3, 7, 11, 15};
-    private static final int[] MOVING_UP = new int[]{0, 4, 8, 12};
-    private static final int[] MOVING_DOWN = new int[]{6, 10, 14, 18};
-    static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+
+    private static final int[] MOVING_LEFT = new int[]{1, 5, 9, 13, 17, 21, 25, 29, 33};
+    private static final int[] MOVING_RIGHT = new int[]{3, 7, 11, 15, 19, 23, 27, 31, 35};
+    private static final int[] MOVING_UP = new int[]{0, 4, 8, 12, 16, 20, 24, 28, 32};
+    private static final int[] MOVING_DOWN = new int[]{2, 6, 10, 14, 18, 22, 26, 30, 34};
+    private static final int[] ANIM_DYING = new int[]{36, 37, 38, 39, 40, 41};
+    private static final int[] ATTACK_UP = new int[]{42, 43, 44, 45, 46, 47, 48, 49};
+    private static final int[] ATTACK_LEFT = new int[]{50, 51, 52, 53, 54, 55, 56, 57};
+    private static final int[] ATTACK_DOWN = new int[]{58, 59, 60, 61, 62, 63, 64, 65};
+    private static final int[] ATTACK_RIGHT = new int[]{66, 67, 68, 69, 70, 71, 72, 73};
+    public static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
 
     private ScreenViewport viewport;
     private SpriteBatch batch;
@@ -197,12 +203,10 @@ public class GraphicsSystem extends System implements ECSEventListener {
             else if (!graphicsComponent.scripted)
                 graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
             else {
-                if (index + graphicsComponent.indexOffset >= graphicsComponent.frames) {
-                    graphicsComponent.isAnimated = false;
-                } else {
-                    graphicsComponent.textureIndex = graphicsComponent.animationSequence[index +
-                            graphicsComponent.indexOffset];
-                }
+                index = (index + graphicsComponent.indexOffset) % graphicsComponent.frames;
+                if (index < 0) index += graphicsComponent.frames;
+                graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
+                if (index == graphicsComponent.frames - 1) graphicsComponent.isAnimated = false;
             }
         }
         if (graphicsComponent.rotatable) {
@@ -220,6 +224,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
                     physicsComponent.position.y + graphicsComponent.offsetY,
                     graphicsComponent.width, graphicsComponent.height);
         }
+
     }
 
     @Override
@@ -246,9 +251,11 @@ public class GraphicsSystem extends System implements ECSEventListener {
             if (e.entity == enemyId) {
                 e.gc.isAnimated = true;
                 e.gc.scripted = true;
-                e.gc.animationSequence = MOVING_UP;
-                e.gc.frames = MOVING_UP.length;
+                e.gc.animationSequence = ANIM_DYING;
+                e.gc.frames = ANIM_DYING.length;
                 e.gc.indexOffset = -(ClockSystem.clock / e.gc.interval) % e.gc.frames;
+                e.gc.rotatable = true;
+                e.pc.rotationAngle -= (float) Math.PI / 2;
             }
         }
     }
