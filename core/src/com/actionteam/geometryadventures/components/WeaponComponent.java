@@ -1,8 +1,7 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
-import com.badlogic.gdx.utils.TimeUtils;
-
+import com.actionteam.geometryadventures.systems.ClockSystem;
 
 /**
  * Created by ibrahim on 3/29/18.
@@ -41,7 +40,7 @@ public class WeaponComponent extends Component {
 
     public WeaponComponent() {
         super(Components.WEAPON_COMPONENT_CODE);
-        timeOfLastFire = TimeUtils.millis();
+        timeOfLastFire = ClockSystem.millis();
         speed = 0;
         numberOfLethalObjectsAtTime = 1;
         angleOfSpreading = 0.1f;

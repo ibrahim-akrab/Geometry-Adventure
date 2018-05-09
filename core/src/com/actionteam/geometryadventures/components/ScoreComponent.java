@@ -1,8 +1,7 @@
 package com.actionteam.geometryadventures.components;
 
 import com.actionteam.geometryadventures.ecs.Component;
-import com.badlogic.gdx.utils.TimeUtils;
-
+import com.actionteam.geometryadventures.systems.ClockSystem;
 
 /**
  * Created by Ibrahim M. Akrab on 5/2/18.
@@ -24,7 +23,7 @@ public class ScoreComponent extends Component {
 
     public ScoreComponent() {
         super(Components.SCORE_COMPONENT_CODE);
-        lastKillTime= TimeUtils.millis();
-        levelStartTime = TimeUtils.millis();
+        lastKillTime= ClockSystem.millis();
+        levelStartTime = ClockSystem.millis();
     }
 }

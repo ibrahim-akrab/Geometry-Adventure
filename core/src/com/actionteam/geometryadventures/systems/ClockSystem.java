@@ -4,8 +4,6 @@ import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by theartful on 5/9/18.
@@ -53,5 +51,13 @@ public class ClockSystem extends System implements ECSEventListener {
                 break;
         }
         return false;
+    }
+
+    public static long timeSinceMillis(long timeOfCreation) {
+        return clock - timeOfCreation;
+    }
+
+    public static long millis() {
+        return clock;
     }
 }

@@ -13,11 +13,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.TimeUtils;
-
-import box2dLight.Light;
 
 /**
  * Created by ibrahim on 4/2/18.
@@ -65,12 +61,12 @@ public class WeaponSystem extends System implements ECSEventListener{
                 Components.WEAPON_COMPONENT_CODE);
         GraphicsComponent graphicsComponent = (GraphicsComponent)
                 ecsManager.getComponent(entityId, Components.GRAPHICS_COMPONENT_CODE);
-        if (TimeUtils.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
+        if (ClockSystem.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
             return false;
 
 //     Gdx.app.log("entityAttack", "attacked");
 
-        weaponComponent.timeOfLastFire = TimeUtils.millis();
+        weaponComponent.timeOfLastFire = ClockSystem.millis();
 
         // DOES IT REALLY REACH HERE?!
         for (int i = 0; i < weaponComponent.numberOfLethalObjectsAtTime; i++){

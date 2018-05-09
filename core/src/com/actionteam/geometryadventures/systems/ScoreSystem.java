@@ -6,7 +6,6 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by Ibrahim M. Akrab on 5/2/18.
@@ -66,11 +65,11 @@ public class ScoreSystem extends System implements ECSEventListener {
         scoreComponent.score += scoreIncrementValue;
         scoreComponent.killsNumber++;
         checkCombo(scoreComponent);
-        scoreComponent.lastKillTime = TimeUtils.millis();
+        scoreComponent.lastKillTime = ClockSystem.millis();
     }
 
     public void checkCombo(ScoreComponent scoreComponent) {
-        if (TimeUtils.timeSinceMillis(scoreComponent.lastKillTime) < ScoreComponent.TIME_BETWEEN_EACH_KILL_TO_COMBO) {
+        if (ClockSystem.timeSinceMillis(scoreComponent.lastKillTime) < ScoreComponent.TIME_BETWEEN_EACH_KILL_TO_COMBO) {
             scoreComponent.comboNumber++;
         } else {
             scoreComponent.score += scoreComponent.comboNumber * scoreComponent.comboNumber * ScoreComponent.SCORE_PER_COMBO;
@@ -87,7 +86,7 @@ public class ScoreSystem extends System implements ECSEventListener {
                     ecsManager.getComponent(entity, Components.SCORE_COMPONENT_CODE);
             scoreComponent.score += scoreComponent.longestCombo * 12;
             scoreComponent.score += scoreComponent.killsNumber *
-                    (3 * 60 * 1000 / TimeUtils.timeSinceMillis(scoreComponent.levelStartTime));
+                    (3 * 60 * 1000 / ClockSystem.timeSinceMillis(scoreComponent.levelStartTime));
             Gdx.app.log("Score", String.valueOf(scoreComponent.score));
         }
     }
