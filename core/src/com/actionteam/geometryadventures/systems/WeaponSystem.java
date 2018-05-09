@@ -169,8 +169,8 @@ public class WeaponSystem extends System implements ECSEventListener {
             physicsComponent.position.x = x - 0.1f;// + graphicsComponent.width / 2.f;
             physicsComponent.position.y = y;// - graphicsComponent.height / 2.f;
         } else if (weaponComponent.weaponDamageRegion == WeaponComponent.SEMICIRCLE) {
-            physicsComponent.centerOfRotation.x = x + graphicsComponent.width / 2;
-            physicsComponent.centerOfRotation.y = y + graphicsComponent.height / 2;
+            physicsComponent.centerOfRotation.x = x /*+ graphicsComponent.width / 2*/;
+            physicsComponent.centerOfRotation.y = y /*- graphicsComponent.height / 2*/;
             angle += weaponComponent.angleOfSpreading;
             if (weaponComponent.speed != 0) {
                 physicsComponent.velocity =
