@@ -19,6 +19,7 @@ public abstract class System {
     // a list of all the entities that the system is interested in
     protected List<Integer> entities;
     protected ECSManager ecsManager;
+    private List<Integer> entitiesToBeRemoved;
 
     /**
      * Initializes the system
@@ -32,6 +33,7 @@ public abstract class System {
         }
         componentsMask = tmpMask;
         entities = new ArrayList<Integer>(1024);
+        entitiesToBeRemoved = new ArrayList<Integer>();
     }
 
     void setEcsManager() {
@@ -59,19 +61,35 @@ public abstract class System {
      *
      * @return true if successful, false otherwise
      */
-    boolean removeEntity(int entityId) {
-        int index = 0;
-        for (Iterator<Integer> iterator = entities.iterator(); iterator.hasNext(); ) {
-            int id = iterator.next();
-            if (id == entityId) {
-                entityRemoved(id, index);
-                iterator.remove();
-                return true;
-            }
-            index++;
-        }
-        return false;
+    void removeEntity(int entityId) {
+        entitiesToBeRemoved.add(entityId);
+//        int index = 0;
+//        for (Iterator<Integer> iterator = entities.iterator(); iterator.hasNext(); ) {
+//            int id = iterator.next();
+//            if (id == entityId) {
+//                entityRemoved(id, index);
+//                iterator.remove();
+//                return true;
+//            }
+//            index++;
+//        }
+//        return false;
     }
+
+    public void updateEntities() {
+        for (int entityId: entitiesToBeRemoved){
+            entities.remove(Integer.valueOf(entityId));
+        }
+//        for (Iterator<Integer> iterator = entities.iterator(); iterator.hasNext(); ) {
+//            int id = iterator.next();
+//            if (entitiesToBeRemoved.contains(id)) {
+//                iterator.remove();
+//            }
+//        }
+        entitiesToBeRemoved.clear();
+    }
+
+
 
     protected void entityRemoved(int entityId, int index) {
     }
