@@ -1,4 +1,4 @@
-package com.actionteam.geometryadventures.systems;
+package test.systems;
 
 import org.junit.After;
 import org.junit.Before;

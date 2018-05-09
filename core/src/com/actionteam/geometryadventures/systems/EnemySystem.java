@@ -2,6 +2,7 @@ package com.actionteam.geometryadventures.systems;
 
 import com.actionteam.geometryadventures.AIUtils;
 import com.actionteam.geometryadventures.GameUtils;
+import com.actionteam.geometryadventures.components.CacheComponent;
 import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
@@ -34,7 +35,7 @@ public class EnemySystem extends System implements ECSEventListener {
      * Default Constructor for EnemySystem.
      */
     public EnemySystem() {
-        super(Components.ENEMY_COMPONENT_CODE);
+        super(Components.ENEMY_COMPONENT_CODE, Components.CACHE_COMPONENT_CODE);
         aiUtils = GameUtils.aiUtils;
         playerPosition = new int[2];
         rand = new Random();
@@ -258,6 +259,9 @@ public class EnemySystem extends System implements ECSEventListener {
     public void update(float dt) {
         /* We should update the enemies per their programmed paths here. */
         for (int entity : entities) {
+            CacheComponent cacheComponent = (CacheComponent) ecsManager.getComponent(entity,
+                    Components.CACHE_COMPONENT_CODE);
+            if(!cacheComponent.isCached) continue;
             EnemyComponent enemyComponent = (EnemyComponent) ecsManager.getComponent(entity,
                     Components.ENEMY_COMPONENT_CODE);
             PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,

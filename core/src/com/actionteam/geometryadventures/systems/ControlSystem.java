@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -34,12 +35,17 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     private int leftPointer;
     private int rightPointer;
     private int entityId;
+    private boolean wDown, aDown, sDown, dDown;
 
     public ControlSystem() {
         super(Components.PHYSICS_COMPONENT_CODE, Components.CONTROL_COMPONENT_CODE,
                 Components.GRAPHICS_COMPONENT_CODE);
         leftPointer = -1;
         rightPointer = -1;
+        wDown = false;
+        aDown = false;
+        sDown = false;
+        dDown = false;
     }
 
     @Override
@@ -206,12 +212,74 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        boolean flag = false;
+        switch (keycode) {
+            case Input.Keys.W:
+                wDown = true;
+                flag = true;
+                break;
+            case Input.Keys.A:
+                aDown = true;
+                flag = true;
+                break;
+            case Input.Keys.S:
+                sDown = true;
+                flag = true;
+                break;
+            case Input.Keys.D:
+                dDown = true;
+                flag = true;
+                break;
+        }
+        if (!flag) return false;
+        updateMovementDirection();
+        return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        boolean flag = false;
+        switch (keycode) {
+            case Input.Keys.W:
+                wDown = false;
+                flag = true;
+                break;
+            case Input.Keys.A:
+                aDown = false;
+                flag = true;
+                break;
+            case Input.Keys.S:
+                sDown = false;
+                flag = true;
+                break;
+            case Input.Keys.D:
+                dDown = false;
+                flag = true;
+                break;
+        }
+        if (!flag) return false;
+        updateMovementDirection();
         return false;
+    }
+
+    private void updateMovementDirection() {
+        if (!wDown && !dDown && !aDown && !sDown) {
+            physicsComponent.velocity.setZero();
+            return;
+        }
+        float angle = 0;
+        if (wDown)
+            angle = (float) Math.PI / 2;
+        if (sDown)
+            angle = (angle == 0) ? (float) Math.PI * 3 / 2 : (angle + 3 * (float) Math.PI / 2) / 2;
+        if (dDown)
+            angle /= 2;
+        if (aDown)
+            angle = angle == 0 ? (float) Math.PI: (angle + (float) Math.PI) / 2;
+        if (sDown && dDown) angle = 7 * (float) Math.PI / 4;
+        physicsComponent.velocity.x = (float) (controlComponent.maximumSpeed * Math.cos(angle));
+        physicsComponent.velocity.y = (float) (controlComponent.maximumSpeed * Math.sin(angle));
+        physicsComponent.rotationAngle = (float) Math.toDegrees(angle);
     }
 
     @Override

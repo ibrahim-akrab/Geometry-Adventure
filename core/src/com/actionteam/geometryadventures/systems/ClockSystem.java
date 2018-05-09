@@ -1,28 +1,38 @@
 package com.actionteam.geometryadventures.systems;
 
-import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
-import com.badlogic.gdx.Gdx;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
  * Created by theartful on 5/9/18.
+ * <p>
+ * This system is responsible for providing in game clock and
+ * delaying tasks
  */
 
 public class ClockSystem extends System implements ECSEventListener {
 
-    static int clock;
-    static int gameTime;
-    static float gameSeconds;
-    static float gameMinutes;
+    // time in millis
+    private static int clock;
+    // in-game time in millis
+    private static int gameTime;
+    // in-game time in seconds
+    private static float gameSeconds;
+    // in-game time in minutes
+    private static float gameMinutes;
     private boolean isLevelRunning;
+    // priority queue of tasks to be done
     private PriorityQueue<Task> tasks;
 
+    /**
+     * The clock system can be given tasks to be done after @delay time
+     * Tasks are just events to be fired to the ecs manager
+     */
     static public class Task {
         ECSEvent event;
         int timeIssued;
@@ -57,6 +67,7 @@ public class ClockSystem extends System implements ECSEventListener {
 
     @Override
     public void update(float dt) {
+        // update time
         clock += dt * 1000;
         if (isLevelRunning) {
             gameTime += dt * 1000;
@@ -64,6 +75,8 @@ public class ClockSystem extends System implements ECSEventListener {
             gameMinutes += dt / 60;
             if (gameSeconds >= 60) gameSeconds -= 60;
         }
+
+        // see if any task is due and do it
         if (!tasks.isEmpty()) {
             Task task = tasks.peek();
             if (task.timeIssued + task.delay <= clock) {
@@ -89,15 +102,36 @@ public class ClockSystem extends System implements ECSEventListener {
         return false;
     }
 
-    public static long timeSinceMillis(long timeOfCreation) {
-        return clock - timeOfCreation;
+    /**
+     * @return time passed since @time
+     */
+    static long timeSinceMillis(long time) {
+        return gameTime - time;
     }
 
+    /**
+     * @return time in millis
+     */
     public static int millis() {
-        return clock;
+        return gameTime;
     }
 
-    public void addTask(Task task) {
+    /**
+     * Adds task to be done
+     * @param task task to be added
+     */
+    void addTask(Task task) {
         tasks.add(task);
+    }
+
+    static float getGameSeconds() {
+        return gameSeconds;
+    }
+
+    /**
+     * @return game time in minutes
+     */
+    static float getGameMinutes() {
+        return gameMinutes;
     }
 }

@@ -47,50 +47,62 @@ public class PhysicsSystem extends System implements ECSEventListener {
     }
 
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {
-        physicsComponent.velocity
-                .add(physicsComponent.acceleration.scl(dt))
+        // update velocity
+        physicsComponent.velocity.add(physicsComponent.acceleration.scl(dt))
                 .add(physicsComponent.angularAcceleration.scl(dt));
+
         if (physicsComponent.velocity.isZero())
             return;
 
+        // handle angular acceleration
+        if (!physicsComponent.angularAcceleration.isZero()) {
+            // relative position vector
+            Vector2 relPos = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
+            physicsComponent.angularAcceleration = relPos.limit(1.0f).scl(
+                    physicsComponent.velocity.len2() / relPos.len());
+        }
+
+        // position of the entity at previous frame
         float beginX = physicsComponent.position.x;
         float beginY = physicsComponent.position.y;
+        // next position of the entity
         float endX = beginX + dt * physicsComponent.velocity.x;
         float endY = beginY + dt * physicsComponent.velocity.y;
 
         CollisionComponent col = (CollisionComponent) ecsManager.
                 getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
 
-        didCollide = false;
-        if (col != null) {
-            ecsManager.fireEvent(ECSEvents.collidableMovedEvent
-                    (beginX, beginY, endX, beginY, entityID));
-            if (!didCollide) {
-                beginX = endX;
-            } else {
-                // Gdx.app.log("PhysicsSystem", "(" + physicsComponent.velocity.x + ", "
-                //+ physicsComponent.velocity.y + ").");
-                endX = beginX;
-            }
-            ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));
-            if (didCollide) {
-                endY = beginY;
-            }
-            if (movedToAPortal != null) {
-                PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((int) movedToAPortal.z,
-                        Components.PHYSICS_COMPONENT_CODE);
-                pc.position.x = movedToAPortal.x;
-                pc.position.y = movedToAPortal.y;
-                movedToAPortal = null;
-            } else {
-                physicsComponent.position.x = endX;
-                physicsComponent.position.y = endY;
-            }
+        // if there is no collision component, then simply update the position
+        if (col == null) {
+            physicsComponent.position.set(endX, endY);
+            return;
         }
-        if (!physicsComponent.angularAcceleration.isZero()) {
-            Vector2 relativePositionVector = physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position);
-            physicsComponent.angularAcceleration = relativePositionVector.limit(1.0f).scl(
-                    physicsComponent.velocity.len2() / relativePositionVector.len());
+
+        // else check for collision
+        didCollide = false;
+        // first move in x direction
+        ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, beginY, entityID));
+        if (!didCollide) {
+            beginX = endX;
+        } else {
+            endX = beginX;
+        }
+        // then move in y direction
+        ecsManager.fireEvent(ECSEvents.collidableMovedEvent(beginX, beginY, endX, endY, entityID));
+        if (didCollide) {
+            endY = beginY;
+        }
+
+        // handle portals
+        if (movedToAPortal != null) {
+            PhysicsComponent pc = (PhysicsComponent) ecsManager.getComponent((int) movedToAPortal.z,
+                    Components.PHYSICS_COMPONENT_CODE);
+            pc.position.x = movedToAPortal.x;
+            pc.position.y = movedToAPortal.y;
+            movedToAPortal = null;
+        } else {
+            physicsComponent.position.x = endX;
+            physicsComponent.position.y = endY;
         }
     }
 

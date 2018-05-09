@@ -137,7 +137,6 @@ public abstract class GameUtils {
         Gdx.input.setInputProcessor(controlSystem);
 
         lightSystem.setAmbientIntensity(map.getConfig().ambientIntensity);
-        lightSystem.setAmbientLight(map.getConfig().ambientLight);
 
         ecsManager.addSystem(graphicsSystem);
         ecsManager.addSystem(physicsSystem);

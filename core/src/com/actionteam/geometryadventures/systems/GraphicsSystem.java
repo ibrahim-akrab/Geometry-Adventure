@@ -195,7 +195,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
      */
     private void draw(GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
         if (graphicsComponent.isAnimated) {
-            int index = (ClockSystem.clock / graphicsComponent.interval) %
+            int index = (ClockSystem.millis() / graphicsComponent.interval) %
                     graphicsComponent.frames;
             if (graphicsComponent.animationSequence == null)
                 graphicsComponent.textureIndex = index;
@@ -275,7 +275,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         }
         ent.gc.interval = 70;
         ent.gc.frames = ent.gc.animationSequence.length;
-        ent.gc.indexOffset = -(ClockSystem.clock / ent.gc.interval) % ent.gc.frames;
+        ent.gc.indexOffset = -(ClockSystem.millis() / ent.gc.interval) % ent.gc.frames;
     }
 
 
@@ -286,7 +286,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 e.gc.scripted = true;
                 e.gc.animationSequence = ANIM_DYING;
                 e.gc.frames = ANIM_DYING.length;
-                e.gc.indexOffset = -(ClockSystem.clock / e.gc.interval) % e.gc.frames;
+                e.gc.indexOffset = -(ClockSystem.millis() / e.gc.interval) % e.gc.frames;
                 e.gc.rotatable = true;
                 e.pc.rotationAngle -= (float) Math.PI / 2;
             }
