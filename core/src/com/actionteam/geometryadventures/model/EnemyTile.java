@@ -5,6 +5,6 @@ package com.actionteam.geometryadventures.model;
  */
 
 public class EnemyTile extends Tile {
-    public String enemyType = "green orc";
+    public String subtype = "green orc";
     public int health;
 }

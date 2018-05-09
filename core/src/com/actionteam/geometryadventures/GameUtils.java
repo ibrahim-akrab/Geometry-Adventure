@@ -109,7 +109,7 @@ public abstract class GameUtils {
 
         initFloorTiles(map.getFloorTiles());
         initWallTiles(map.getWallTiles());
-        initFloorTiles(map.getMiscTiles());
+        initMiscTiles(map.getMiscTiles());
         initEnemyTiles(map.getEnemyTiles());
         initPortalTiles(map.getPortalTiles());
         initPlayerTile(map.getPlayerTile());
@@ -211,7 +211,6 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
-
         initialPlayerX = playerTile.x;
         initialPlayerY = playerTile.y;
         lc.lightIntensity = 0.7f;
@@ -269,12 +268,12 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyGC.textureName = "greenorc";
-            } else if (enemyTile.enemyType.equals("skeleton")) {
+            } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyGC.textureName = "skeleton";
             } else {
-                enemyGC.textureName = "redorc";
+                enemyGC.textureName = "greenorc";
             }
             enemyGC.textureIndex = 0;
             enemyGC.height = 1.7f;
@@ -283,9 +282,9 @@ public abstract class GameUtils {
             enemyGC.offsetY = -0.35f;
             CollisionComponent enemyCC = new CollisionComponent();
             enemyCC.shapeType = CollisionComponent.RECTANGLE;
-            enemyCC.width = 0.7f;
-            enemyCC.height = 1.0f;
-            enemyCC.radius = 1.0f;
+            enemyCC.width = 0.8f;
+            enemyCC.height = 0.8f;
+            enemyCC.radius = 0.8f;
             enemyCC.id = Entities.ENEMY_COLLISION_ID;
             enemyCC.mask = ~(1L << Entities.ENEMY_COLLISION_ID | 1L << Entities.COLLECTABLE_COLLISION_ID);
             PhysicsComponent enemyPC = new PhysicsComponent();
@@ -295,9 +294,12 @@ public abstract class GameUtils {
             enemyHC.health = enemyTile.health;
             /* Add enemy weapon here */
             WeaponComponent enemyWeapon;
-            if (enemyTile.enemyType.equals("green orc")) {
+            if (enemyTile.subtype.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-            } else {
+            } else if (enemyTile.subtype.equals("skeleton")) {
+                enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+            }
+            else {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
             }
             EnemyComponent enemyComponent = new EnemyComponent();
@@ -354,6 +356,35 @@ public abstract class GameUtils {
             graphicsComponent.isAnimated = floorTile.isAnimated;
             graphicsComponent.frames = floorTile.frames;
             graphicsComponent.interval = floorTile.speed;
+
+            ecsManager.addComponent(physicsComponent, entity);
+            ecsManager.addComponent(graphicsComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
+        }
+    }
+
+
+    private void initMiscTiles(List<Tile> miscTiles) {
+        for (Tile miscTile : miscTiles) {
+            int entity = ecsManager.createEntity();
+            PhysicsComponent physicsComponent = new PhysicsComponent();
+            GraphicsComponent graphicsComponent = new GraphicsComponent();
+            physicsComponent.position.set(miscTile.x, miscTile.y);
+            graphicsComponent.textureName = miscTile.textureName;
+            graphicsComponent.textureIndex = miscTile.textureIndex;
+            graphicsComponent.isAnimated = miscTile.isAnimated;
+            graphicsComponent.frames = miscTile.frames;
+            graphicsComponent.interval = miscTile.speed;
+            if(miscTile.textureName.equals("endportal"))
+            {
+                CollisionComponent cc = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
+                cc.radius = 0.7f;
+                cc.height = 0.7f;
+                cc.width = 0.7f;
+                cc.shapeType = CollisionComponent.RECTANGLE;
+                cc.id = Entities.END_PORTAL_COLLISION_ID;
+                ecsManager.addComponent(cc, entity);
+            }
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
