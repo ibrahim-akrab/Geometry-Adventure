@@ -57,7 +57,7 @@ public class ClockSystem extends System implements ECSEventListener {
         return clock - timeOfCreation;
     }
 
-    public static long millis() {
+    public static int millis() {
         return clock;
     }
 }

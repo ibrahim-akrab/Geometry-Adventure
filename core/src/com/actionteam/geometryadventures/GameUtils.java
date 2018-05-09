@@ -181,12 +181,12 @@ public abstract class GameUtils {
                 collisionComponent.width = 0.9f;
                 collisionComponent.height = 0.9f;
                 collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
-                ecsManager.addComponent(collisionComponent, entity);
+                ecsManager.addComponentNow(collisionComponent, entity);
             }
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(lightComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(lightComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 
@@ -221,16 +221,16 @@ public abstract class GameUtils {
         HealthComponent healthComponent = new HealthComponent();
         healthComponent.health = playerTile.health;
 
-        ecsManager.addComponent(pc, entity);
-        ecsManager.addComponent(cc, entity);
-        ecsManager.addComponent(gc, entity);
-        ecsManager.addComponent(col, entity);
-        ecsManager.addComponent(wc, entity);
-        ecsManager.addComponent(sc, entity);
-        ecsManager.addComponent(lc, entity);
-        ecsManager.addComponent(healthComponent, entity);
-        ecsManager.addComponent(new CacheComponent(), entity);
-        ecsManager.addComponent(new CollectorComponent(), entity);
+        ecsManager.addComponentNow(pc, entity);
+        ecsManager.addComponentNow(cc, entity);
+        ecsManager.addComponentNow(gc, entity);
+        ecsManager.addComponentNow(col, entity);
+        ecsManager.addComponentNow(wc, entity);
+        ecsManager.addComponentNow(sc, entity);
+        ecsManager.addComponentNow(lc, entity);
+        ecsManager.addComponentNow(healthComponent, entity);
+        ecsManager.addComponentNow(new CacheComponent(), entity);
+        ecsManager.addComponentNow(new CollectorComponent(), entity);
     }
 
     private void initPortalTiles(List<PortalTile> portalTiles) {
@@ -255,11 +255,11 @@ public abstract class GameUtils {
             collisionComponent.width = 1;
             collisionComponent.id = Entities.ENVIRONMENT_COLLISION_ID;
 
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(collisionComponent, entity);
-            ecsManager.addComponent(portalComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(collisionComponent, entity);
+            ecsManager.addComponentNow(portalComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 
@@ -303,13 +303,13 @@ public abstract class GameUtils {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
             }
             EnemyComponent enemyComponent = new EnemyComponent();
-            ecsManager.addComponent(enemyPC, enemyEntity);
-            ecsManager.addComponent(enemyGC, enemyEntity);
-            ecsManager.addComponent(enemyCC, enemyEntity);
-            ecsManager.addComponent(enemyHC, enemyEntity);
-            ecsManager.addComponent(enemyWeapon, enemyEntity);
-            ecsManager.addComponent(enemyComponent, enemyEntity);
-            ecsManager.addComponent(new CacheComponent(), enemyEntity);
+            ecsManager.addComponentNow(enemyPC, enemyEntity);
+            ecsManager.addComponentNow(enemyGC, enemyEntity);
+            ecsManager.addComponentNow(enemyCC, enemyEntity);
+            ecsManager.addComponentNow(enemyHC, enemyEntity);
+            ecsManager.addComponentNow(enemyWeapon, enemyEntity);
+            ecsManager.addComponentNow(enemyComponent, enemyEntity);
+            ecsManager.addComponentNow(new CacheComponent(), enemyEntity);
         }
     }
 
@@ -337,10 +337,10 @@ public abstract class GameUtils {
             collisionComponent.mask = ~0;
             //TODO: Collision component needs id and mask
 
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(collisionComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(collisionComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 
@@ -357,9 +357,9 @@ public abstract class GameUtils {
             graphicsComponent.frames = floorTile.frames;
             graphicsComponent.interval = floorTile.speed;
 
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 
@@ -383,12 +383,12 @@ public abstract class GameUtils {
                 cc.width = 0.7f;
                 cc.shapeType = CollisionComponent.RECTANGLE;
                 cc.id = Entities.END_PORTAL_COLLISION_ID;
-                ecsManager.addComponent(cc, entity);
+                ecsManager.addComponentNow(cc, entity);
             }
 
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 
@@ -418,11 +418,11 @@ public abstract class GameUtils {
             else
                 collectibleComponent.type = CollectibleComponent.KEY;
             collectibleComponent.value = 1;
-            ecsManager.addComponent(physicsComponent, entity);
-            ecsManager.addComponent(graphicsComponent, entity);
-            ecsManager.addComponent(collisionComponent, entity);
-            ecsManager.addComponent(collectibleComponent, entity);
-            ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponentNow(physicsComponent, entity);
+            ecsManager.addComponentNow(graphicsComponent, entity);
+            ecsManager.addComponentNow(collisionComponent, entity);
+            ecsManager.addComponentNow(collectibleComponent, entity);
+            ecsManager.addComponentNow(new CacheComponent(), entity);
         }
     }
 

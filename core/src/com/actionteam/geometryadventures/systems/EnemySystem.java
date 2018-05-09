@@ -6,12 +6,15 @@ import com.actionteam.geometryadventures.components.CollisionComponent;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
+import com.actionteam.geometryadventures.components.LifetimeComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.WeaponComponent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.Random;
 
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyState.*;
 import static com.actionteam.geometryadventures.components.EnemyComponent.EnemyTask;
@@ -25,11 +28,13 @@ public class EnemySystem extends System implements ECSEventListener {
     int[] playerPosition;
     private AIUtils aiUtils;
     static boolean playerDead = false;
+    private Random rand;
 
     public EnemySystem() {
         super(Components.ENEMY_COMPONENT_CODE);
         aiUtils = GameUtils.aiUtils;
         playerPosition = new int[2];
+        rand = new Random();
     }
 
     public static void AddTaskToEnemy(EnemyComponent ec, EnemyTask task) {
@@ -303,16 +308,30 @@ public class EnemySystem extends System implements ECSEventListener {
                 break;
             case ECSEvents.ENEMY_DEAD_EVENT:
                 int[] mes = (int[]) message;
-                int enemyComponentId = ecsManager.getComponentId(mes[0],
-                        Components.ENEMY_COMPONENT_CODE);
-                PhysicsComponent physicsComponent1 =
-                        (PhysicsComponent) ecsManager.getComponent(mes[0], Components.PHYSICS_COMPONENT_CODE);
-                physicsComponent1.velocity.set(0, 0);
-                ecsManager.removeComponentNow(enemyComponentId);
+                handleEnemyDeahth(mes[0], mes[1]);
                 break;
             default:
                 break;
         }
         return false;
     }
+
+    private void handleEnemyDeahth(int enemyId, int killerId) {
+        if(!ecsManager.entityHasComponent(enemyId, Components.ENEMY_COMPONENT_CODE))
+            return;
+        int enemyComponentId = ecsManager.getComponentId(enemyId, Components.ENEMY_COMPONENT_CODE);
+        int collisionComponentId = ecsManager.getComponentId(enemyId, Components.COLLISION_COMPONENT_CODE);
+        PhysicsComponent physicsComponent1 =
+                (PhysicsComponent) ecsManager.getComponent(enemyId, Components.PHYSICS_COMPONENT_CODE);
+        physicsComponent1.velocity.set(0, 0);
+        ecsManager.addComponent(new LifetimeComponent(5000), enemyId);
+        ecsManager.removeComponentNow(enemyComponentId);
+        ecsManager.removeComponent(collisionComponentId);
+        boolean coin = rand.nextBoolean();
+        if (coin) {
+            GameUtils.createStandardCoin(physicsComponent1.position.x,
+                    physicsComponent1.position.y);
+        }
+    }
+
 }

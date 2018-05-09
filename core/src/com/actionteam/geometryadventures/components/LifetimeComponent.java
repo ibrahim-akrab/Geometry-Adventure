@@ -9,11 +9,16 @@ import com.actionteam.geometryadventures.systems.ClockSystem;
  */
 public class LifetimeComponent extends Component {
 
-    public long timeOfCreation;
-    public long lifetime;
+    public int timeOfCreation;
+    public int lifetime;
 
     public LifetimeComponent() {
+        super(0);
+    }
+
+    public LifetimeComponent(int lifetime) {
         super(Components.LIFETIME_COMPONENT_CODE);
-        timeOfCreation = ClockSystem.millis();
+        this.timeOfCreation = ClockSystem.millis();
+        this.lifetime = lifetime;
     }
 }

@@ -61,8 +61,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         CacheComponent cc;
         int entity;
 
-        CompEnt(GraphicsComponent gc, PhysicsComponent pc, CacheComponent cc,
-                int entity) {
+        CompEnt(GraphicsComponent gc, PhysicsComponent pc, CacheComponent cc, int entity) {
             this.gc = gc;
             this.pc = pc;
             this.cc = cc;

@@ -31,11 +31,11 @@ public class WeaponComponent extends Component {
     //public float width;
     //public float height;
     public float radius;// radius of the lethal object
-    public long timeOfLastFire;
-    public long coolDownTime;
+    public int timeOfLastFire;
+    public int coolDownTime;
     public float speed;
     public float angleOfSpreading;
-    public long lifetimeOfLethalObject;
+    public int lifetimeOfLethalObject;
 
 
     public WeaponComponent() {
