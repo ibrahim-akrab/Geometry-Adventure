@@ -7,17 +7,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 
+import java.util.logging.Level;
+
 public class GeometryAdventuresGame extends ApplicationAdapter {
 
     private ECSManager ecsManager;
     private GameUtils gameUtils;
     private MainMenuScreen mainMenu;
+    private LevelSelectScreen levelSelectMenu;
     public static ChosenScreen currentScreen;
     private Music M;
 
     public enum ChosenScreen {
         SCREEN_MAIN_MENU,
-        SCREEN_GAME_LEVEL
+        SCREEN_GAME_LEVEL,
+        SCREEN_LEVEL_SELECT
     }
 
     public GeometryAdventuresGame(GameUtils gameUtils) {
@@ -29,11 +33,13 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     @Override
     public void create() {
         // TexturePacker.process("mysprites/", "textureatlas/", "textures");
-
         M = Gdx.audio.newMusic(Gdx.files.internal("sounds/BigCrumble.mp3"));
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu = new MainMenuScreen();
+                break;
+            case SCREEN_LEVEL_SELECT:
+                levelSelectMenu = new LevelSelectScreen();
                 break;
             case SCREEN_GAME_LEVEL:
                 try {
@@ -60,6 +66,16 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
                 M.setLooping(true);
                 M.play();
                 break;
+            case SCREEN_LEVEL_SELECT:
+                if (levelSelectMenu == null) {
+                    M.setLooping(true);
+                    M.play();
+                    this.create();
+                    // to update the viewport
+                    this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                }
+                levelSelectMenu.render(0);
+                break;
             case SCREEN_GAME_LEVEL:
                 if (ecsManager == null) {
                     M.stop();
@@ -85,6 +101,10 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         }
         if (ecsManager != null) {
             ecsManager.fireEvent(ECSEvents.disposeEvent());
+        }
+        if (levelSelectMenu != null) {
+            levelSelectMenu.dispose();
+            levelSelectMenu = null;
         }
     }
 

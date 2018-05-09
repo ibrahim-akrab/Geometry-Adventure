@@ -292,17 +292,19 @@ public abstract class GameUtils {
             enemyPC.position.y = enemyTile.y;
             HealthComponent enemyHC = new HealthComponent();
             enemyHC.health = enemyTile.health;
+            EnemyComponent enemyComponent = new EnemyComponent();
             /* Add enemy weapon here */
             WeaponComponent enemyWeapon;
             if (enemyTile.subtype.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
+                enemyComponent.speed = 1.0f;
             } else if (enemyTile.subtype.equals("skeleton")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+                enemyComponent.speed = 1.5f;
             }
             else {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
             }
-            EnemyComponent enemyComponent = new EnemyComponent();
             ecsManager.addComponentNow(enemyPC, enemyEntity);
             ecsManager.addComponentNow(enemyGC, enemyEntity);
             ecsManager.addComponentNow(enemyCC, enemyEntity);
