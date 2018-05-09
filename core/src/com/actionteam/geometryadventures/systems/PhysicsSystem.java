@@ -57,8 +57,6 @@ public class PhysicsSystem extends System implements ECSEventListener {
 
         CollisionComponent col = (CollisionComponent) ecsManager.
                 getComponent(entityID, Components.COLLISION_COMPONENT_CODE);
-        PortalComponent por = (PortalComponent) ecsManager.
-                getComponent(entityID, Components.PORTAL_COMPONENT_CODE);
 
         didCollide = false;
         if (col != null) {

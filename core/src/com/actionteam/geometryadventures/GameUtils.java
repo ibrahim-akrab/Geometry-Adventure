@@ -413,7 +413,7 @@ public abstract class GameUtils {
         collisionComponent.radius = 0.8f;
         collisionComponent.id = Entities.COLLECTABLE_COLLISION_ID;
         collisionComponent.shapeType = CollisionComponent.RECTANGLE;
-        collectibleComponent.type = CollectibleComponent.KEY;
+        collectibleComponent.type = CollectibleComponent.COIN;
         collectibleComponent.value = 1;
         ecsManager.addComponent(physicsComponent, entity);
         ecsManager.addComponent(graphicsComponent, entity);

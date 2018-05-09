@@ -1,7 +1,10 @@
 package com.actionteam.geometryadventures.systems;
 
+import com.actionteam.geometryadventures.GameUtils;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
+import com.actionteam.geometryadventures.components.PhysicsComponent;
+import com.actionteam.geometryadventures.ecs.Component;
 import com.actionteam.geometryadventures.ecs.System;
 
 import java.util.Random;
@@ -38,15 +41,15 @@ public class LifetimeSystem extends System {
                     > lifetimeComponent.lifetime) {
                 if (ecsManager.entityHasComponent(entity, Components.ENEMY_COMPONENT_CODE)) {
                     boolean coin = rand.nextBoolean();
-                    if (coin) createCoin();
+                    if (coin) {
+                        PhysicsComponent physicsComponent = (PhysicsComponent)
+                                ecsManager.getComponent(entity, Components.PHYSICS_COMPONENT_CODE);
+                        GameUtils.createStandardCoin(physicsComponent.position.x,
+                                physicsComponent.position.y);
+                    }
                 }
                 ecsManager.removeEntity(entity);
             }
         }
-    }
-
-    private void createCoin() {
-        int entity = ecsManager.createEntity();
-
     }
 }

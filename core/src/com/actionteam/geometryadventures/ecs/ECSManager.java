@@ -14,7 +14,7 @@ import java.util.Stack;
  * - Assigning components to entities
  * - Acting as a message bus for communication across systems using events
  * - Updating the systems each frame
- *
+ * <p>
  * Created by ibrahim on 3/18/18.
  */
 
@@ -29,6 +29,7 @@ public class ECSManager {
     private Stack<Integer> entityEmptySlots;
     private Stack<Integer> componentEmptySlots;
     private List<Integer> entitiesToBeRemoved;
+    private List<Integer> componentsToBeRemoved;
 
     // an instance of the singleton class
     private static final ECSManager instance = new ECSManager();
@@ -44,9 +45,10 @@ public class ECSManager {
             listenerLists[i] = new ArrayList<ECSEventListener>();
         }
         entitiesToBeRemoved = new ArrayList<Integer>();
+        componentsToBeRemoved = new ArrayList<Integer>();
     }
 
-    public static ECSManager getInstance(){
+    public static ECSManager getInstance() {
         return instance;
     }
 
@@ -78,7 +80,7 @@ public class ECSManager {
         if (entityId >= entities.size()) return false;
         Entity entity = entities.get(entityId);
         if (entity == null) return false;
-        if(!entitiesToBeRemoved.contains(entityId)) {
+        if (!entitiesToBeRemoved.contains(entityId)) {
             entitiesToBeRemoved.add(entityId);
         }
         return true;
@@ -88,7 +90,7 @@ public class ECSManager {
      * remove entities in entitiesToBeRemoved list
      */
     private void updateEntities() {
-        for(int entityId : entitiesToBeRemoved) {
+        for (int entityId : entitiesToBeRemoved) {
             Entity entity = getEntity(entityId);
             // removes all components associated with that entity
             for (int componentCode = 0; componentCode < Entity.MAXIMUM_COMPONENT_NUMBER;
@@ -151,8 +153,15 @@ public class ECSManager {
     public boolean removeComponent(int componentId) {
         Component component = getComponent(componentId);
         if (component == null) return false;
-        Entity entity = null;
+        componentsToBeRemoved.add(componentId);
+        return true;
+    }
 
+
+    public boolean removeComponentNow(int componentId) {
+        Component component = getComponent(componentId);
+        if (component == null) return false;
+        Entity entity = null;
         // get the entity to which the component is attached
         for (Entity tmpEntity : entities) {
             if (tmpEntity.checkComponentAttached(component.getCode(), componentId)) {
@@ -161,7 +170,8 @@ public class ECSManager {
             }
         }
         if (entity == null) return false;
-        return _removeComponent(component, entity);
+        _removeComponent(component, entity);
+        return true;
     }
 
     /**
@@ -277,7 +287,16 @@ public class ECSManager {
             system.update(dt);
         }
         updateEntities();
+        updateComponents();
     }
+
+    private void updateComponents() {
+        for (int componentId : componentsToBeRemoved) {
+            removeComponentNow(componentId);
+        }
+        componentsToBeRemoved.clear();
+    }
+
 
     public boolean entityHasComponent(int entityId, int componentCode) {
         Entity entity = getEntity(entityId);
@@ -296,11 +315,17 @@ public class ECSManager {
         return components.get(id);
     }
 
-    public Component getComponent(int entityId, int componentCode) {
+    public int getComponentId(int entityId, int componentCode) {
         Entity entity = entities.get(entityId);
-        if (entity == null) return null;
+        if (entity == null) return -1;
         int componentId = entity.getComponentId(componentCode);
-        if (componentId == -1) return null;
+        if (componentId == -1) return -1;
+        return componentId;
+    }
+
+    public Component getComponent(int entityId, int componentCode) {
+        int componentId = getComponentId(entityId, componentCode);
+        if(componentId == -1) return null;
         return components.get(componentId);
     }
 

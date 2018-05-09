@@ -83,6 +83,7 @@ public class HealthSystem extends System implements ECSEventListener {
             healthComponent.isDead = true;
             if (ecsManager.entityHasComponent(entityId, Components.ENEMY_COMPONENT_CODE)) {
                 ecsManager.fireEvent(ECSEvents.enemyDeadEvent(entityId, lethalComponent.owner));
+                Gdx.app.log("Enemy", "Dead");
             } else {
                 ecsManager.fireEvent(ECSEvents.playerDeadEvent(entityId, lethalComponent.owner));
                 Gdx.app.log("Player", "Dead");

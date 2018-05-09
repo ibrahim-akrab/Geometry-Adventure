@@ -31,7 +31,6 @@ float rand(vec2 co)
 void main()
 {
     vec4 color = (v_color * texture2D(u_texture, v_texCoords));
-
     float lightIntensity = 0.0;
 
     for(int i = 0; i < u_lightSources; i++)
@@ -40,8 +39,6 @@ void main()
                             + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y) +
                             0.5 * rand((6.0 * u_time) * v_pos.xy);
         lightIntensity += u_lightIntensity[i] * u_radius[i]  / ((radius) * (radius) + 1.0);
-                //pow(2.718, -radius / u_radius[i]);
-
     }
     lightIntensity = min(lightIntensity, 1.0);
     lightIntensity = float(int(lightIntensity * 4.0)) / 4.0;
