@@ -109,7 +109,7 @@ public abstract class GameUtils {
 
         initFloorTiles(map.getFloorTiles());
         initWallTiles(map.getWallTiles());
-        initFloorTiles(map.getMiscTiles());
+        initMiscTiles(map.getMiscTiles());
         initEnemyTiles(map.getEnemyTiles());
         initPortalTiles(map.getPortalTiles());
         initPlayerTile(map.getPlayerTile());
@@ -211,7 +211,6 @@ public abstract class GameUtils {
         col.id = Entities.PLAYER_COLLISION_ID;
         col.mask = ~0;
         pc.position.set(playerTile.x, playerTile.y);
-
         initialPlayerX = playerTile.x;
         initialPlayerY = playerTile.y;
         lc.lightIntensity = 0.7f;
@@ -354,6 +353,35 @@ public abstract class GameUtils {
             graphicsComponent.isAnimated = floorTile.isAnimated;
             graphicsComponent.frames = floorTile.frames;
             graphicsComponent.interval = floorTile.speed;
+
+            ecsManager.addComponent(physicsComponent, entity);
+            ecsManager.addComponent(graphicsComponent, entity);
+            ecsManager.addComponent(new CacheComponent(), entity);
+        }
+    }
+
+
+    private void initMiscTiles(List<Tile> miscTiles) {
+        for (Tile miscTile : miscTiles) {
+            int entity = ecsManager.createEntity();
+            PhysicsComponent physicsComponent = new PhysicsComponent();
+            GraphicsComponent graphicsComponent = new GraphicsComponent();
+            physicsComponent.position.set(miscTile.x, miscTile.y);
+            graphicsComponent.textureName = miscTile.textureName;
+            graphicsComponent.textureIndex = miscTile.textureIndex;
+            graphicsComponent.isAnimated = miscTile.isAnimated;
+            graphicsComponent.frames = miscTile.frames;
+            graphicsComponent.interval = miscTile.speed;
+            if(miscTile.textureName.equals("endportal"))
+            {
+                CollisionComponent cc = new CollisionComponent(Entities.PLAYER_COLLISION_ID);
+                cc.radius = 0.7f;
+                cc.height = 0.7f;
+                cc.width = 0.7f;
+                cc.shapeType = CollisionComponent.RECTANGLE;
+                cc.id = Entities.END_PORTAL_COLLISION_ID;
+                ecsManager.addComponent(cc, entity);
+            }
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);

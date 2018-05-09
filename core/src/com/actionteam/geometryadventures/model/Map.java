@@ -62,6 +62,8 @@ public class Map {
         for (Tile tile : tiles) {
             if (tile.tileType.equals(ENEMY))
                 enemyTiles.add((EnemyTile)tile);
+            else if (tile.textureName.equals("endportal"))
+                miscTiles.add(tile);
             else if (tile.tileType.equals(FLOOR))
                 floorTiles.add(tile);
             else if (tile.tileType.equals(PORTAL))
