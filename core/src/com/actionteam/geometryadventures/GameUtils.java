@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LightComponent;
+import com.actionteam.geometryadventures.components.ParentEntityComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
@@ -392,6 +393,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(collectibleComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponent(new ParentEntityComponent(), entity);
         }
     }
 }

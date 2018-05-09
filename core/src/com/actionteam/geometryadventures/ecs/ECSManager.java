@@ -29,6 +29,7 @@ public class ECSManager {
     private Stack<Integer> entityEmptySlots;
     private Stack<Integer> componentEmptySlots;
     private List<Integer> entitiesToBeRemoved;
+    private List<Integer> componentsToBeRemoved;
 
     // an instance of the singleton class
     private static final ECSManager instance = new ECSManager();
@@ -44,6 +45,7 @@ public class ECSManager {
             listenerLists[i] = new ArrayList<ECSEventListener>();
         }
         entitiesToBeRemoved = new ArrayList<Integer>();
+        componentsToBeRemoved= new ArrayList<Integer>();
     }
 
     public static ECSManager getInstance(){
@@ -102,11 +104,31 @@ public class ECSManager {
 
             for (System system : systems) {
                 if (system.entities.contains(entityId)) {
-                    system.entities.remove(Integer.valueOf(entityId));
+                    system.removeEntity(entityId);
+//                    system.entities.remove(Integer.valueOf(entityId));
                 }
             }
         }
         entitiesToBeRemoved.clear();
+    }
+
+    private void updateComponents(){
+        for (int componentId: componentsToBeRemoved){
+            Component component = getComponent(componentId);
+            if (component == null) return;
+            Entity entity = null;
+
+            // get the entity to which the component is attached
+            for (Entity tmpEntity : entities) {
+                if (tmpEntity.checkComponentAttached(component.getCode(), componentId)) {
+                    entity = tmpEntity;
+                    break;
+                }
+            }
+            if (entity == null) return;
+            _removeComponent(component, entity);
+        }
+        componentsToBeRemoved.clear();
     }
 
 
@@ -147,6 +169,7 @@ public class ECSManager {
      * @return true if successful, false otherwise
      */
     public boolean removeComponent(int componentId) {
+        componentsToBeRemoved.add(componentId);
         Component component = getComponent(componentId);
         if (component == null) return false;
         Entity entity = null;
@@ -272,6 +295,7 @@ public class ECSManager {
      */
     public void update(float dt) {
         for (System system : systems) {
+            system.updateEntities();
             system.update(dt);
         }
         updateEntities();

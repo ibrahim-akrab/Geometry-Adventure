@@ -45,7 +45,7 @@ public class CollectionSystem extends System implements ECSEventListener{
     }
 
     private boolean collect(int collectibleId, int collectorId){
-        if (ecsManager.entityHasComponent(collectorId, Components.CONTROL_COMPONENT_CODE)){
+        if (!ecsManager.entityHasComponent(collectorId, Components.CONTROL_COMPONENT_CODE)){
             return false;
         }
         ParentEntityComponent parentEntityComponent = (ParentEntityComponent)
@@ -73,7 +73,8 @@ public class CollectionSystem extends System implements ECSEventListener{
     }
 
     private void removeCollectibleFromScreen(int collectibleId){
-        Entity entity = ecsManager.getEntity(collectibleId);
-        entity.removeComponent(Components.PHYSICS_COMPONENT_CODE);
+        ecsManager.removeComponent(ecsManager.getComponent(collectibleId, Components.PHYSICS_COMPONENT_CODE).getId());
+//        Entity entity = ecsManager.getEntity(collectibleId);
+//        entity.removeComponent(Components.PHYSICS_COMPONENT_CODE);
     }
 }
