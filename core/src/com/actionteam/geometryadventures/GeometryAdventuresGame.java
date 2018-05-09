@@ -6,7 +6,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class GeometryAdventuresGame extends ApplicationAdapter {
 
@@ -15,7 +14,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     private MainMenuScreen mainMenu;
     public static ChosenScreen currentScreen;
     private Music M;
-    private long time;
 
     public enum ChosenScreen {
         SCREEN_MAIN_MENU,
@@ -26,7 +24,6 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         this.gameUtils = gameUtils;
         ecsManager = null;
         currentScreen = ChosenScreen.SCREEN_MAIN_MENU;
-        time = TimeUtils.millis();
     }
 
     @Override

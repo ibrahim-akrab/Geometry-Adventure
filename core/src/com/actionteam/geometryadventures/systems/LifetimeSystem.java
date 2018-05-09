@@ -3,8 +3,6 @@ package com.actionteam.geometryadventures.systems;
 import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.LifetimeComponent;
 import com.actionteam.geometryadventures.ecs.System;
-import com.badlogic.gdx.utils.TimeUtils;
-
 
 /**
  * Created by Ibrahim M. Akrab on 4/3/18.
@@ -30,7 +28,7 @@ public class LifetimeSystem extends System {
                 entities) {
             LifetimeComponent lifetimeComponent = (LifetimeComponent)
                     ecsManager.getComponent(entity, Components.LIFETIME_COMPONENT_CODE);
-            if (TimeUtils.timeSinceMillis(lifetimeComponent.timeOfCreation)
+            if (ClockSystem.timeSinceMillis(lifetimeComponent.timeOfCreation)
                     > lifetimeComponent.lifetime) {
                 ecsManager.removeEntity(entity);
             }
