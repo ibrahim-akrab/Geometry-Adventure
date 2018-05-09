@@ -296,7 +296,10 @@ public abstract class GameUtils {
             WeaponComponent enemyWeapon;
             if (enemyTile.enemyType.equals("green orc")) {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
-            } else {
+            } else if (enemyTile.enemyType.equals("skeleton")) {
+                enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.MELEE);
+            }
+            else {
                 enemyWeapon = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
             }
             EnemyComponent enemyComponent = new EnemyComponent();
