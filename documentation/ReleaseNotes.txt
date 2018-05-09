@@ -1,22 +1,31 @@
 Action Team (Team 12)
 Geometry Adventures
-Version 0.1
+Version 2.0
 
 New Features
-	1. Maps can be loaded, three types of tiles are supported.
-	2. Players can walk around the map.
-	3. Physics and collision are implemented and working.
-	4. Enemies can patrol the map according to predetermined paths, can detect players inside their vision cone and chase them accordingly.
-	5. Players can fire a ranged weapon.
-	6. Tiles (floor/wall/enemy) can be added from the map creator.
+    1.  Player can hit enemies with both melee and ranged weapons.
+    2.  Enemies can hear player's weapon firing and thus start looking for him.
+    3.  Added many new tiles.
+    4.  Enemies patrol the level autonomously and try to kill the player if they saw him.
+    5.  Light system to give the level a taste of action.
+    6.  Portals that can move player from one place to another in the same level.
+    7.  New background music and effects sounds are played during the game.
+    8.  Player and enemy now have health. They both can be killed or healed.
+    9.  Add score to player. It increases when it kills an enemy or picks up a coin.
+    10. Player can heal by collecting hearts in the level.
+    11. Everything is animated now using sprites.
+    12. Enemies are deleted after a while after their death.
+    13. When you kill an enemy, it leaves a coin behind to increase your score.
+    14. Multiple types of enemies that have different speed and weapon.     
+    15. You can choose a level after choosing to start the game.
+    16. Your score in each level is saved and given a grade that you can see later.
+    17. Map creator can save/load maps to edit them later.
 
 Enhanced Look-and-Feel
-	1. Enemy motion no longer feels jerky.
+	1. New artistic tiles. 
+    2. New main menu style.
+    3. A full level is ready to be played.
+
 	
 Unsupported Functionality
-	1. No background music.
-	2. Not a real level.
-	3. The enemy can't really attack yet, only chase.
-	4. The art used is placeholder art.
-	5. Only one type of weapon, can't kill enemy yet.
-	6. Map creator can't load previously created maps.
+
