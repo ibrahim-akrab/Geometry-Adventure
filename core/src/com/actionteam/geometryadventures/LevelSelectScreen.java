@@ -1,12 +1,14 @@
 package com.actionteam.geometryadventures;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -19,6 +21,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class LevelSelectScreen implements Screen {
     Stage stage;
 
+    /**
+     *  Constructs the level selection menu and its buttons.
+     */
     public LevelSelectScreen() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -37,10 +42,22 @@ public class LevelSelectScreen implements Screen {
         Button startButton = new Button(new TextureRegionDrawable(startUpRegion),
                 new TextureRegionDrawable(startDownRegion));
         table.row();
-        table.add(startButton).center().expand();
-        
-
-
+        table.add(startButton).center().bottom().expand();
+        Preferences preferences = Gdx.app.getPreferences("ScorePrefs");
+        int highScore = preferences.getInteger("Score", -1);
+        Texture rating;
+        if(highScore > 40)
+            rating = new Texture(Gdx.files.internal("main-menu/Rating_A.png"));
+        else if (highScore > 20)
+            rating = new Texture(Gdx.files.internal("main-menu/Rating_B.png"));
+        else if (highScore >= 0)
+            rating = new Texture(Gdx.files.internal("main-menu/Rating_C.png"));
+        else
+            rating = new Texture(Gdx.files.internal("main-menu/Rating_Unknown.png"));
+        TextureRegion ratingRegion = new TextureRegion(rating);
+        Button ratingButton = new Button(new TextureRegionDrawable(ratingRegion), new TextureRegionDrawable(ratingRegion));
+        table.row();
+        table.add(ratingButton).center().top().maxSize(64);
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -49,12 +66,20 @@ public class LevelSelectScreen implements Screen {
         });
     }
 
+
+    /**
+     *  Renders to the screen.
+     *  @param  dt time step value.
+     */
     @Override
     public void render(float dt) {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
+    /**
+     *  The following classes are Scene boilerplate.
+     */
     @Override
     public void show()
     {

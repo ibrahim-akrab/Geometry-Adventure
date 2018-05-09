@@ -20,6 +20,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainMenuScreen implements Screen {
     Stage stage;
 
+    /**
+     *  Constructs the main menu and its buttons.
+     */
     public MainMenuScreen() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -64,12 +67,21 @@ public class MainMenuScreen implements Screen {
         });
     }
 
+
+    /**
+     *  Renders to the screen.
+     *  @param  dt time step value.
+     */
     @Override
     public void render(float dt) {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
+
+    /**
+     *  The following classes are Scene boilerplate.
+     */
     @Override
     public void show()
     {

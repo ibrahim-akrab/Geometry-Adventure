@@ -15,6 +15,9 @@ import static java.lang.Math.abs;
  */
 
 public class AIUtils {
+    /**
+     *  Implements the Manhattan or Taxicab Distance Heuristic.
+     */
     private class ManhattanDistanceHeuristic implements Heuristic<MapGraphNode> {
         @Override
         public float estimate(MapGraphNode node, MapGraphNode endNode) {
@@ -23,6 +26,9 @@ public class AIUtils {
             return abs(deltaX) + abs(deltaY);
         }
     }
+    /**
+     *  Implements the Euclidean Heuristic.
+     */
     private class EuclideanDistanceHeurestic implements Heuristic<MapGraphNode> {
         @Override
         public float estimate(MapGraphNode node, MapGraphNode endNode) {
@@ -34,6 +40,10 @@ public class AIUtils {
     public DefaultGraphPath<MapGraphNode> graphPath;
     public Heuristic<MapGraphNode> distanceHeuristic;
 
+    /**
+     *  Constructs AIUtils, its mapGraph and pathfinding mechanism.
+     *  @param map The map from which the graph is constructed.
+     */
     public AIUtils(Map map) {
         mapGraph = new MapGraph(map);
         pathFinder = new IndexedAStarPathFinder<MapGraphNode>(mapGraph);
@@ -41,6 +51,11 @@ public class AIUtils {
         distanceHeuristic = new ManhattanDistanceHeuristic();
     }
 
+    /**
+     *  Checks if node (x, y) can be visited.
+     *  @param x the x-coordinate.
+     *  @param y the y-coordinate.
+     */
     public boolean checkNodeIsVisitable(float x, float y)
     {
         int ix = (int)Math.floor(x);
@@ -48,7 +63,11 @@ public class AIUtils {
         MapGraphNode node = mapGraph.nodes.get(mapGraph.xyToIndex(ix, iy));
         return !(node.edges.size == 0);
     }
-
+    /**
+     *  Checks if the line between start and end points is blocked by anything using a Bresenham-like algorithm.
+     *  @param start the start point.
+     *  @param end the end point.
+     */
     public boolean checkLineSegmentCollision(Vector2 start, Vector2 end)
     {
         int j = 0;
@@ -109,7 +128,11 @@ public class AIUtils {
         }
         return false;
     }
-
+    /**
+     *  Finds the path between two points.
+     *  @param startX the starting x-coordinate.
+     *  @param startY the starting y-coordinate.
+     */
     public float[] calculatePath(int startX, int startY, int endX, int endY)
     {
         MapGraphNode startNode = mapGraph.nodes.get(mapGraph.xyToIndex(startX, startY));
@@ -131,6 +154,11 @@ public class AIUtils {
         return nextNodePosition;
     }
 
+    /**
+     *  Gets node XY position from two points in the real map.
+     *  @param x the x-coordinate.
+     *  @param x they-coordinate.
+     */
     public Vector2 getNodeXYFromPosition(float x, float y)
     {
         return new Vector2( (float)Math.floor(x), (float)Math.floor(y) );

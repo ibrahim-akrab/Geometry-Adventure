@@ -19,12 +19,20 @@ public class VisionSystem extends System implements ECSEventListener {
     Vector2 playerPosition;
     private AIUtils aiUtils;
 
+    /**
+     *  Default constructor for the vision system.
+     */
     public VisionSystem() {
         super(Components.ENEMY_COMPONENT_CODE);
         aiUtils = GameUtils.aiUtils;
         playerPosition = new Vector2();
     }
 
+    /**
+     *  Updates the enemy visibility for all the enemies.
+     *
+     *  @param dt The timestep.
+     */
     @Override
     public void update(float dt) {
         for (int entity : entities) {
@@ -32,11 +40,22 @@ public class VisionSystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     *  Returns true if the vector with angle @angle is clockwise from @startAngle.
+     *
+     *  @param startAngle The starting angle.
+     *  @param angle The angle of the second vector.
+     */
     private boolean isClockwise(float startAngle, float angle)
     {
         return Math.sin(Math.toRadians(startAngle - angle)) < 0;
     }
 
+    /**
+     *  Updates the visibility for the enemy whose ID is entity.
+     *
+     *  @param entity The enemy entity id.
+     */
     private void updateEnemyVisibility(int entity) {
         EnemyComponent ec = (EnemyComponent)ecsManager.getComponent(entity,
                 Components.ENEMY_COMPONENT_CODE);
@@ -75,11 +94,19 @@ public class VisionSystem extends System implements ECSEventListener {
         }
     }
 
+    /**
+     *  Subscribes to events in the ECS manager.
+     */
     @Override
     public void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
     }
 
+    /**
+     *  Handles events, called by ECS Manager.
+     *  @param  eventCode code of the event in question.
+     *  @param  message the message of the event in question.
+     */
     @Override
     public boolean handle(int eventCode, Object message) {
         switch (eventCode) {
