@@ -39,6 +39,7 @@ public class PhysicsSystem extends System implements ECSEventListener {
         for (int entity : entities) {
             PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
                     Components.PHYSICS_COMPONENT_CODE);
+            if (physicsComponent != null)
             update(physicsComponent, dt, entity);
         }
     }

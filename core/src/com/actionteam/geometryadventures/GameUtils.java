@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.components.EnemyComponent;
 import com.actionteam.geometryadventures.components.GraphicsComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.LightComponent;
+import com.actionteam.geometryadventures.components.ParentEntityComponent;
 import com.actionteam.geometryadventures.components.PhysicsComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
 import com.actionteam.geometryadventures.components.PortalComponent;
@@ -110,7 +111,7 @@ public abstract class GameUtils {
         initFloorTiles(map.getFloorTiles());
         initWallTiles(map.getWallTiles());
         initFloorTiles(map.getMiscTiles());
-        // initEnemyTiles(map.getEnemyTiles());
+        initEnemyTiles(map.getEnemyTiles());
         initPortalTiles(map.getPortalTiles());
         initPlayerTile(map.getPlayerTile());
         initLightTiles(map.getLightTiles());
@@ -220,7 +221,7 @@ public abstract class GameUtils {
         WeaponComponent wc = WeaponFactory.createWeapon(WeaponComponent.HAND_GUN);
         ScoreComponent sc = new ScoreComponent();
         HealthComponent healthComponent = new HealthComponent();
-        healthComponent.health = 5; //playerTile.health;
+        healthComponent.health = playerTile.health;
 
         ecsManager.addComponent(pc, entity);
         ecsManager.addComponent(cc, entity);
@@ -269,8 +270,19 @@ public abstract class GameUtils {
             // temporary, for enemy creation.
             int enemyEntity = ecsManager.createEntity();
             GraphicsComponent enemyGC = new GraphicsComponent();
-            enemyGC.textureName = enemyTile.textureName;
-            enemyGC.textureIndex = enemyTile.textureIndex;
+            if(enemyTile.enemyType.equals("green orc"))
+            {
+                enemyGC.textureName = "greenorc";
+            }
+            else if (enemyTile.enemyType.equals("skeleton"))
+            {
+                enemyGC.textureName = "skeleton";
+            }
+            else
+            {
+                enemyGC.textureName = "redorc";
+            }
+            enemyGC.textureIndex = 0;
             enemyGC.height = 1.7f;
             enemyGC.width = 1.7f;
             enemyGC.offsetX = -0.35f;
@@ -323,7 +335,7 @@ public abstract class GameUtils {
             graphicsComponent.frames = wallTile.frames;
             graphicsComponent.width = 1;
             graphicsComponent.height = 1;
-            // graphicsComponent.animationSpeed = wallTile.speed;
+            graphicsComponent.interval = wallTile.speed;
 
             collisionComponent.shapeType = CollisionComponent.RECTANGLE;
             collisionComponent.width = 0.9f;
@@ -350,7 +362,7 @@ public abstract class GameUtils {
             graphicsComponent.textureIndex = floorTile.textureIndex;
             graphicsComponent.isAnimated = floorTile.isAnimated;
             graphicsComponent.frames = floorTile.frames;
-            // graphicsComponent.animationSpeed = floorTile.speed;
+            graphicsComponent.interval = floorTile.speed;
 
             ecsManager.addComponent(physicsComponent, entity);
             ecsManager.addComponent(graphicsComponent, entity);
@@ -389,6 +401,7 @@ public abstract class GameUtils {
             ecsManager.addComponent(collisionComponent, entity);
             ecsManager.addComponent(collectibleComponent, entity);
             ecsManager.addComponent(new CacheComponent(), entity);
+            ecsManager.addComponent(new ParentEntityComponent(), entity);
         }
     }
 }
