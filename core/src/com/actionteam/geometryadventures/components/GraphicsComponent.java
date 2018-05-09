@@ -23,6 +23,8 @@ public class GraphicsComponent extends Component {
     public float offsetY;
     public float rotationAngle;
     public boolean rotatable;
+    public boolean scripted;
+    public int indexOffset;
 
     public GraphicsComponent() {
         super(Components.GRAPHICS_COMPONENT_CODE);
@@ -36,6 +38,8 @@ public class GraphicsComponent extends Component {
         offsetX = 0;
         offsetY = 0;
         rotatable = false;
+        scripted = false;
+        indexOffset = 0;
     }
 
     @Override

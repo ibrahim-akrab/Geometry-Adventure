@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -35,7 +34,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private static final int[] MOVING_RIGHT = new int[]{3, 7, 11, 15};
     private static final int[] MOVING_UP = new int[]{0, 4, 8, 12};
     private static final int[] MOVING_DOWN = new int[]{6, 10, 14, 18};
-    public static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+    static final int[] BULLET_ANIMATION = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
 
     private ScreenViewport viewport;
     private SpriteBatch batch;
@@ -48,7 +47,6 @@ public class GraphicsSystem extends System implements ECSEventListener {
     private List<CompEnt> enemies;
     private LightSystem lightSystem;
     private ShaderProgram shader;
-    private Matrix4 idt;
     private Vector2 zeroVector;
 
     private class CompEnt {
@@ -78,8 +76,6 @@ public class GraphicsSystem extends System implements ECSEventListener {
                 getFile("env_packed/envTextureAtlas.atlas").getPath());
         entityList = new ArrayList<CompEnt>();
         enemies = new ArrayList<CompEnt>();
-        idt = new Matrix4();
-        idt.idt();
         zeroVector = new Vector2(0, 0);
     }
 
@@ -88,6 +84,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         // subscribe to events
         ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
         ecsManager.subscribe(ECSEvents.PLAYER_MOVED_EVENT, this);
+        ecsManager.subscribe(ECSEvents.ENEMY_DEAD_EVENT, this);
     }
 
     /**
@@ -128,7 +125,6 @@ public class GraphicsSystem extends System implements ECSEventListener {
         }
     }
 
-
     /**
      * Draws all entities possessing graphics and physics components
      *
@@ -141,7 +137,7 @@ public class GraphicsSystem extends System implements ECSEventListener {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         for (CompEnt enemy : enemies) {
-            if (enemy.cc.isCached)
+            if (enemy.cc.isCached && !enemy.gc.scripted)
                 updateSprite(enemy);
         }
         updateSprite(player);
@@ -198,8 +194,16 @@ public class GraphicsSystem extends System implements ECSEventListener {
                     graphicsComponent.frames;
             if (graphicsComponent.animationSequence == null)
                 graphicsComponent.textureIndex = index;
-            else
+            else if (!graphicsComponent.scripted)
                 graphicsComponent.textureIndex = graphicsComponent.animationSequence[index];
+            else {
+                if (index + graphicsComponent.indexOffset >= graphicsComponent.frames) {
+                    graphicsComponent.isAnimated = false;
+                } else {
+                    graphicsComponent.textureIndex = graphicsComponent.animationSequence[index +
+                            graphicsComponent.indexOffset];
+                }
+            }
         }
         if (graphicsComponent.rotatable) {
             batch.draw(graphicsComponent.regions.get(graphicsComponent.textureIndex),
@@ -228,8 +232,25 @@ public class GraphicsSystem extends System implements ECSEventListener {
             case ECSEvents.PLAYER_MOVED_EVENT:
                 float[] position = (float[]) message;
                 updateCameraPosition(position[0], position[1]);
+                break;
+            case ECSEvents.ENEMY_DEAD_EVENT:
+                int enemyId = ((int[]) (message))[0];
+                startDeathAnimation(enemyId);
+                break;
         }
         return false;
+    }
+
+    private void startDeathAnimation(int enemyId) {
+        for (CompEnt e : enemies) {
+            if (e.entity == enemyId) {
+                e.gc.isAnimated = true;
+                e.gc.scripted = true;
+                e.gc.animationSequence = MOVING_UP;
+                e.gc.frames = MOVING_UP.length;
+                e.gc.indexOffset = -(ClockSystem.clock / e.gc.interval) % e.gc.frames;
+            }
+        }
     }
 
     private void updateCameraPosition(float x, float y) {
