@@ -8,6 +8,7 @@ import com.actionteam.geometryadventures.components.PortalComponent;
 import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
+import com.actionteam.geometryadventures.entities.Entities;
 import com.actionteam.geometryadventures.events.ECSEvents;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
@@ -99,10 +100,14 @@ public class CollisionSystem extends System implements ECSEventListener {
             if (entityCollided && poc == null) {
                 ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
                 /*
-                Gdx.app.log("Collision", entityID + " " + e);
+                Gdx.app.log("Collision", myCc.id + " " + cc.id);
                 Gdx.app.log("Collision", "(" + beginX + ", " + beginY + ") " + "("
                                     + endX + ", " + endY + ").");
                 */
+                if (myCc.id == Entities.END_PORTAL_COLLISION_ID ||
+                        cc.id == Entities.END_PORTAL_COLLISION_ID) {
+                    ecsManager.fireEvent(ECSEvents.endOfLevelEvent());
+                }
                 if (ecsManager.entityHasComponent(entityID, Components.ENEMY_COMPONENT_CODE)) {
                     ecsManager.fireEvent(ECSEvents.enemyCollisionEvent((Integer) entityID));
                 }
@@ -113,7 +118,6 @@ public class CollisionSystem extends System implements ECSEventListener {
                         ecsManager.entityHasComponent(entityID, Components.COLLECTOR_COMPONENT_CODE)) {
                     ecsManager.fireEvent(ECSEvents.collectibleCollisionEvent(e, entityID));
                 }
-
                 return;
             } else if (entityCollided && poc != null &&
                     ecsManager.getComponent(entityID, Components.CONTROL_COMPONENT_CODE) != null) {
@@ -121,7 +125,6 @@ public class CollisionSystem extends System implements ECSEventListener {
                 ecsManager.fireEvent(ECSEvents.movedToAPortalEvent(v));
             }
         }
-
         ecsManager.fireEvent(ECSEvents.collisionEvent(entityCollided));
 
     }
