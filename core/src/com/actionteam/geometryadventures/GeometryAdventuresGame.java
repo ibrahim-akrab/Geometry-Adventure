@@ -30,7 +30,7 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
     public void create() {
         // TexturePacker.process("mysprites/", "textureatlas/", "textures");
 
-        M = Gdx.audio.newMusic(Gdx.files.internal("BigCrumble.mp3"));
+        M = Gdx.audio.newMusic(Gdx.files.internal("sounds/BigCrumble.mp3"));
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu = new MainMenuScreen();
@@ -57,12 +57,14 @@ public class GeometryAdventuresGame extends ApplicationAdapter {
         switch (currentScreen) {
             case SCREEN_MAIN_MENU:
                 mainMenu.render(0);
+                M.setLooping(true);
                 M.play();
                 break;
             case SCREEN_GAME_LEVEL:
                 if (ecsManager == null) {
                     M.stop();
-                    M = Gdx.audio.newMusic(Gdx.files.internal("FirstDance.mp3"));
+                    M = Gdx.audio.newMusic(Gdx.files.internal("sounds/FirstDance.mp3"));
+                    M.setLooping(true);
                     M.play();
                     this.create();
                     // to update the viewport

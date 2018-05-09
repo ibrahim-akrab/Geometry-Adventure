@@ -32,6 +32,7 @@ public class Map {
     private List<Tile> wallTiles;
     private List<Tile> miscTiles;
     private List<Tile> doorTiles;
+    private List<Tile>  uncastedLightTiles;
     private List<LightTile> lightTiles;
     private List<EnemyTile> enemyTiles;
     private List<PortalTile> portalTiles;
@@ -52,6 +53,7 @@ public class Map {
         wallTiles = new ArrayList<Tile>();
         miscTiles = new ArrayList<Tile>();
         doorTiles = new ArrayList<Tile>();
+        uncastedLightTiles = new ArrayList<Tile>();
         lightTiles = new ArrayList<LightTile>();
         enemyTiles = new ArrayList<EnemyTile>();
         portalTiles = new ArrayList<PortalTile>();
@@ -71,7 +73,10 @@ public class Map {
             else if (tile.tileType.equals(DOOR))
                 doorTiles.add(tile);
             else if (tile.tileType.equals(LIGHT))
+            {
                 lightTiles.add((LightTile)tile);
+                uncastedLightTiles.add(tile);
+            }
             else if (tile.tileType.equals(COLLECTABLE))
                 collectibleTiles.add((CollectibleTile)tile);
             else if (tile.collidable)
@@ -108,8 +113,11 @@ public class Map {
 
     /* These are the tiles the enemy can not traverse. */
     /* To-do: fix this to include light as well. */
-    public List<Tile> getBlockedTiles() {
-        return getWallTiles(); // should be extended when there are other blockes tiles.
+    public List<List<Tile>> getBlockedTiles() {
+        List<List<Tile>> list = new ArrayList<List<Tile>>();
+        list.add(getWallTiles());
+        list.add(uncastedLightTiles);
+        return list; // should be extended when there are other blockes tiles.
     }
 
     /* Get the dimensions of the map. */

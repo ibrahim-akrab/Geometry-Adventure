@@ -62,7 +62,7 @@ public class MapGraph implements IndexedGraph<MapGraphNode> {
      * to a file and read from memory.                                              */
     public void initializeGraph(Map map)
     {
-        List<Tile> blockedTiles = map.getBlockedTiles();
+        List<List<Tile>> blockedTileArrays = map.getBlockedTiles();
         int[] dimensions = map.getMapDimensions();
         minX = dimensions[0];
         maxX = dimensions[1];
@@ -104,24 +104,27 @@ public class MapGraph implements IndexedGraph<MapGraphNode> {
                 node.addEdge(new MapGraphEdge(node, leftNode));
             }
         }
-        /* Now remove all the blocked edges. */
-        for(Tile tile : blockedTiles)
+        for(List<Tile> blockedTiles : blockedTileArrays)
         {
-            int tileX = (int)tile.x;
-            int tileY = (int)tile.y;
-            for(MapGraphNode node : nodes)
+            /* Now remove all the blocked edges. */
+            for(Tile tile : blockedTiles)
             {
+                int tileX = (int)tile.x;
+                int tileY = (int)tile.y;
+                for(MapGraphNode node : nodes)
+                {
                 /* Does this node belong to the blocked tile? */
-                if (node.x == tileX && node.y == tileY && node.edges.size > 0)
-                {
-                    node.edges.removeRange(0, node.edges.size - 1);
-                }
+                    if (node.x == tileX && node.y == tileY && node.edges.size > 0)
+                    {
+                        node.edges.removeRange(0, node.edges.size - 1);
+                    }
                 /* Are any of this node's neighbor's the blocked tile? */
-                for (int i = 0; i < node.edges.size; i++)
-                {
-                    MapGraphNode neighbor = node.edges.get(i).getToNode();
-                    if (neighbor.x == tile.x && neighbor.y == tile.y)
-                        node.edges.removeIndex(i);
+                    for (int i = 0; i < node.edges.size; i++)
+                    {
+                        MapGraphNode neighbor = node.edges.get(i).getToNode();
+                        if (neighbor.x == tile.x && neighbor.y == tile.y)
+                            node.edges.removeIndex(i);
+                    }
                 }
             }
         }
