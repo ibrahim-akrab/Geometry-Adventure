@@ -39,15 +39,6 @@ public class LifetimeSystem extends System {
                     ecsManager.getComponent(entity, Components.LIFETIME_COMPONENT_CODE);
             if (ClockSystem.timeSinceMillis(lifetimeComponent.timeOfCreation)
                     > lifetimeComponent.lifetime) {
-                if (ecsManager.entityHasComponent(entity, Components.ENEMY_COMPONENT_CODE)) {
-                    boolean coin = rand.nextBoolean();
-                    if (coin) {
-                        PhysicsComponent physicsComponent = (PhysicsComponent)
-                                ecsManager.getComponent(entity, Components.PHYSICS_COMPONENT_CODE);
-                        GameUtils.createStandardCoin(physicsComponent.position.x,
-                                physicsComponent.position.y);
-                    }
-                }
                 ecsManager.removeEntity(entity);
             }
         }

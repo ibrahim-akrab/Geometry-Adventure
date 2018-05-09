@@ -21,7 +21,6 @@ import java.util.Stack;
 public class ECSManager {
 
     private static final int MAXIMUM_NUMBER_OF_EVENT_CODES = 64;
-
     private List<Entity> entities;
     private List<Component> components;
     private List<System> systems;
@@ -30,6 +29,17 @@ public class ECSManager {
     private Stack<Integer> componentEmptySlots;
     private List<Integer> entitiesToBeRemoved;
     private List<Integer> componentsToBeRemoved;
+    private List<ComponentEntity> componentsToBeAdded;
+
+    private class ComponentEntity {
+        public Component component;
+        public Entity entity;
+
+        public ComponentEntity(Component component, Entity entity) {
+            this.component = component;
+            this.entity = entity;
+        }
+    }
 
     // an instance of the singleton class
     private static final ECSManager instance = new ECSManager();
@@ -46,6 +56,7 @@ public class ECSManager {
         }
         entitiesToBeRemoved = new ArrayList<Integer>();
         componentsToBeRemoved = new ArrayList<Integer>();
+        componentsToBeAdded = new ArrayList<ComponentEntity>();
     }
 
     public static ECSManager getInstance() {
@@ -113,7 +124,6 @@ public class ECSManager {
         entitiesToBeRemoved.clear();
     }
 
-
     /**
      * Adds a component to an entity
      */
@@ -121,26 +131,7 @@ public class ECSManager {
         Entity entity = getEntity(entityId);
         if (entity == null)
             return false;
-
-        // checks if there are empty slots in the components arraylist
-        // if there is any, the component is added in that slot
-        // otherwise, it's added at the end of the list
-        int componentId;
-        if (componentEmptySlots.empty()) {
-            componentId = components.size();
-            components.add(component);
-        } else {
-            componentId = componentEmptySlots.pop();
-            components.set(componentId, component);
-        }
-        component.setComponentId(componentId);
-
-        // inform systems of the change of components for the entity
-        // the addition of a new component may make a system interested in that entity
-        long oldMask = entity.getComponentsMask();
-        if (!entity.addComponent(component.getCode(), componentId)) return false;
-        long newMask = entity.getComponentsMask();
-        updateEntitySystems(entity.getId(), oldMask, newMask);
+        componentsToBeAdded.add(new ComponentEntity(component, entity));
         return true;
     }
 
@@ -164,6 +155,7 @@ public class ECSManager {
         Entity entity = null;
         // get the entity to which the component is attached
         for (Entity tmpEntity : entities) {
+            if(tmpEntity == null) continue;
             if (tmpEntity.checkComponentAttached(component.getCode(), componentId)) {
                 entity = tmpEntity;
                 break;
@@ -295,6 +287,36 @@ public class ECSManager {
             removeComponentNow(componentId);
         }
         componentsToBeRemoved.clear();
+        for (ComponentEntity ce : componentsToBeAdded) {
+            addComponentNow(ce.component, ce.entity);
+        }
+        componentsToBeAdded.clear();
+    }
+
+    public void addComponentNow(Component component, int entityId) {
+        addComponentNow(component, getEntity(entityId));
+    }
+
+    private void addComponentNow(Component component, Entity entity) {
+        // checks if there are empty slots in the components arraylist
+        // if there is any, the component is added in that slot
+        // otherwise, it's added at the end of the list
+        int componentId;
+        if (componentEmptySlots.empty()) {
+            componentId = components.size();
+            components.add(component);
+        } else {
+            componentId = componentEmptySlots.pop();
+            components.set(componentId, component);
+        }
+        component.setComponentId(componentId);
+
+        // inform systems of the change of components for the entity
+        // the addition of a new component may make a system interested in that entity
+        long oldMask = entity.getComponentsMask();
+        if (!entity.addComponent(component.getCode(), componentId)) return;
+        long newMask = entity.getComponentsMask();
+        updateEntitySystems(entity.getId(), oldMask, newMask);
     }
 
 
@@ -325,7 +347,7 @@ public class ECSManager {
 
     public Component getComponent(int entityId, int componentCode) {
         int componentId = getComponentId(entityId, componentCode);
-        if(componentId == -1) return null;
+        if (componentId == -1) return null;
         return components.get(componentId);
     }
 
