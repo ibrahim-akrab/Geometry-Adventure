@@ -23,7 +23,8 @@ import com.badlogic.gdx.math.Vector2;
 public class WeaponSystem extends System implements ECSEventListener {
 
     public WeaponSystem() {
-        super(Components.WEAPON_COMPONENT_CODE, Components.HEALTH_COMPONENT_CODE, Components.LETHAL_COMPONENT_CODE);
+        super(Components.WEAPON_COMPONENT_CODE, Components.HEALTH_COMPONENT_CODE,
+                Components.LETHAL_COMPONENT_CODE);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class WeaponSystem extends System implements ECSEventListener {
                 entityAttacked(weaponData[0], weaponData[1], weaponData[2], (int) weaponData[3],
                         weaponData[4] == 1.0f);
                 ecsManager.fireEvent(ECSEvents.loudWeaponFired((int) weaponData[3]));
-                ecsManager.fireEvent(ECSEvents.unFreezeEvent((int) weaponData[3]));git
+                ecsManager.fireEvent(ECSEvents.unFreezeEvent((int) weaponData[3]));
                 return true;
             case ECSEvents.CAST_EVENT:
                 weaponData = (float[]) message;
@@ -47,6 +48,7 @@ public class WeaponSystem extends System implements ECSEventListener {
                     ECSEvent attackEvent = new ECSEvent(ECSEvents.ATTACK_EVENT, message);
                     ecsManager.fireEvent(ECSEvents.taskEvent(attackEvent, weaponComponent.castTime));
                     ecsManager.fireEvent(ECSEvents.freezeEvent((int) weaponData[3]));
+                    ecsManager.fireEvent(new ECSEvent(ECSEvents.SUCCESSFUL_CAST_EVENT, message));
                     weaponComponent.timeOfLastFire = ClockSystem.millis();
                 }
 
@@ -93,14 +95,15 @@ public class WeaponSystem extends System implements ECSEventListener {
         // DOES IT REALLY REACH HERE?!
         for (int i = 0; i < weaponComponent.numberOfLethalObjectsAtTime; i++) {
             int entity = ecsManager.createEntity();
-            //TODO handle if ecsManager can't add component
             ecsManager.addComponent(createLethalComponent(weaponComponent, entityId), entity);
             ecsManager.addComponent(createCollisionComponent(weaponComponent, isPlayer), entity);
             ecsManager.addComponent(createPhysicsComponent(weaponComponent, graphicsComponent, x, y, angle, i), entity);
-            ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
+            if(weaponComponent.hasGraphics) {
+                ecsManager.addComponent(createGraphicsComponent(weaponComponent), entity);
+                ecsManager.addComponent(new LightComponent(), entity);
+            }
             ecsManager.addComponent(createLifetimeComponent(weaponComponent), entity);
             ecsManager.addComponent(new CacheComponent(), entity);
-            ecsManager.addComponent(new LightComponent(), entity);
         }
 
         return true;

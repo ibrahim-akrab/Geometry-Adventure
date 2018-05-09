@@ -13,7 +13,7 @@ public class LifetimeComponent extends Component {
     public int lifetime;
 
     public LifetimeComponent() {
-        super(0);
+        this(0);
     }
 
     public LifetimeComponent(int lifetime) {

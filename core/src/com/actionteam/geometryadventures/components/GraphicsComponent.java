@@ -34,7 +34,7 @@ public class GraphicsComponent extends Component {
         isAnimated = false;
         animationSequence = null;
         frames = 0;
-        interval = 200;
+        interval = 70;
         offsetX = 0;
         offsetY = 0;
         rotatable = false;

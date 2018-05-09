@@ -36,7 +36,7 @@ public class ClockSystem extends System implements ECSEventListener {
     }
 
     public ClockSystem() {
-        super(Components.CLOCK_COMPONENT);
+        super();
         gameTime = 0;
         clock = 0;
         Comparator<Task> taskComparator = new Comparator<Task>() {

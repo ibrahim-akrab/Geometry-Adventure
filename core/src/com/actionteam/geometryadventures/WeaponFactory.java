@@ -8,8 +8,8 @@ import com.actionteam.geometryadventures.components.WeaponComponent;
 
 public class WeaponFactory {
 
-    public static WeaponComponent createWeapon(int weaponType){
-        switch (weaponType){
+    public static WeaponComponent createWeapon(int weaponType) {
+        switch (weaponType) {
             case WeaponComponent.MELEE:
                 return createMelee();
             case WeaponComponent.KNIFE:
@@ -27,12 +27,12 @@ public class WeaponFactory {
         }
     }
 
-    public static WeaponComponent createMelee(){
+    public static WeaponComponent createMelee() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.MELEE;
         weaponComponent.magazineSize = 0;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 1;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
         weaponComponent.radiusOfDamageRegion = 1;
@@ -41,15 +41,16 @@ public class WeaponFactory {
         weaponComponent.coolDownTime = 500;
         weaponComponent.speed = 10;
         weaponComponent.lifetimeOfLethalObject = 100;
+        weaponComponent.hasGraphics = false;
         return weaponComponent;
     }
 
-    public static WeaponComponent createKnife(){
+    public static WeaponComponent createKnife() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.KNIFE;
         weaponComponent.magazineSize = 0;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
         weaponComponent.radiusOfDamageRegion = 1;
@@ -61,12 +62,12 @@ public class WeaponFactory {
         return weaponComponent;
     }
 
-    public static WeaponComponent createSword(){
+    public static WeaponComponent createSword() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.SWORD;
         weaponComponent.magazineSize = 0;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.SEMICIRCLE;
         weaponComponent.radiusOfDamageRegion = 1.3f;
@@ -77,12 +78,12 @@ public class WeaponFactory {
         return weaponComponent;
     }
 
-    public static WeaponComponent createRifle(){
+    public static WeaponComponent createRifle() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.RIFLE;
         weaponComponent.magazineSize = 4;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.numberOfLethalObjectsAtTime = 3;
@@ -93,12 +94,12 @@ public class WeaponFactory {
         return weaponComponent;
     }
 
-    public static WeaponComponent createRiotGun(){
+    public static WeaponComponent createRiotGun() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.RIOT_GUN;
         weaponComponent.magazineSize = 6;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 2;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.numberOfLethalObjectsAtTime = 5;
@@ -109,16 +110,17 @@ public class WeaponFactory {
         return weaponComponent;
     }
 
-    public static WeaponComponent createHandGun(){
+    public static WeaponComponent createHandGun() {
         WeaponComponent weaponComponent = new WeaponComponent();
         weaponComponent.weaponType = WeaponComponent.HAND_GUN;
         weaponComponent.magazineSize = 24;
         weaponComponent.currentMagazine = weaponComponent.magazineSize;
-        weaponComponent.currentAmmo= weaponComponent.magazineSize;
+        weaponComponent.currentAmmo = weaponComponent.magazineSize;
         weaponComponent.damage = 1;
         weaponComponent.weaponDamageRegion = WeaponComponent.CIRCLE;
         weaponComponent.radius = 0.7f;
-        weaponComponent.coolDownTime = 700;
+        weaponComponent.coolDownTime = 800;
+        weaponComponent.castTime = 570;
         weaponComponent.speed = 7;
         weaponComponent.lifetimeOfLethalObject = 5000;
         return weaponComponent;

@@ -37,6 +37,7 @@ public class WeaponComponent extends Component {
     public float angleOfSpreading;
     public int lifetimeOfLethalObject;
     public int castTime;
+    public boolean hasGraphics;
 
 
     public WeaponComponent() {
@@ -46,5 +47,6 @@ public class WeaponComponent extends Component {
         numberOfLethalObjectsAtTime = 1;
         angleOfSpreading = 0.1f;
         castTime = 400;
+        hasGraphics = true;
     }
 }

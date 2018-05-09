@@ -35,6 +35,7 @@ public class ECSEvents {
     public static final int CAST_EVENT = 20;
     public static final int FREEZE_EVENT = 21;
     public static final int UNFREEZE_EVENT = 22;
+    public static final int SUCCESSFUL_CAST_EVENT = 23;
 
     /**
      * creates an event for resizing screen
@@ -87,7 +88,7 @@ public class ECSEvents {
     }
 
     /**
-     * creates an event for when an attack occurs
+     * creates an event for when an entities starts an attack
      *
      * @param x        the x-position of the attacking entity
      * @param y        the y-position of the attacking entity
@@ -101,7 +102,9 @@ public class ECSEvents {
     }
 
     /**
-     * creates an event for when an is about to occur
+     * creates an event for when an entity tries to attack
+     * this is event is handled by the weapon system which determines whether
+     * or not this is a successful cast
      *
      * @param x        the x-position of the attacking entity
      * @param y        the y-position of the attacking entity
@@ -112,6 +115,20 @@ public class ECSEvents {
      */
     public static ECSEvent castEvent(float x, float y, float angle, int entityId, boolean isPlayer) {
         return new ECSEvent(CAST_EVENT, new float[]{x, y, angle, entityId, isPlayer ? 1f : 0f});
+    }
+
+    /**
+     * creates an event for when an entity successfully casts an attack
+     *
+     * @param x        the x-position of the attacking entity
+     * @param y        the y-position of the attacking entity
+     * @param angle    the rotation angle of the attacking entity
+     * @param entityId the ID of the attacking entity
+     * @param isPlayer an indicator if the attacker is the player
+     * @return created event with appropriate data
+     */
+    public static ECSEvent successfulCastEvent(float x, float y, float angle, int entityId, boolean isPlayer) {
+        return new ECSEvent(SUCCESSFUL_CAST_EVENT, new float[]{x, y, angle, entityId, isPlayer ? 1f : 0f});
     }
 
     /**
@@ -240,5 +257,9 @@ public class ECSEvents {
 
     public static ECSEvent unFreezeEvent(int entityId) {
         return new ECSEvent(UNFREEZE_EVENT, entityId);
+    }
+
+    public static ECSEvent successfulCastEvent(int entityId) {
+        return new ECSEvent(SUCCESSFUL_CAST_EVENT, entityId);
     }
 }
