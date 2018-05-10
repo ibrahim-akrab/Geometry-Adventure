@@ -57,9 +57,7 @@ public class WeaponSystem extends System implements ECSEventListener {
     }
 
     private boolean isValidAttack(WeaponComponent weaponComponent) {
-        if (ClockSystem.timeSinceMillis(weaponComponent.timeOfLastFire) < weaponComponent.coolDownTime)
-            return false;
-        return true;
+        return ClockSystem.timeSinceMillis(weaponComponent.timeOfLastFire) >= weaponComponent.coolDownTime;
     }
 
     @Override
@@ -187,8 +185,7 @@ public class WeaponSystem extends System implements ECSEventListener {
             physicsComponent.angularAcceleration =
                     physicsComponent.centerOfRotation.cpy().sub(physicsComponent.position).limit(1.0f).scl(
                             weaponComponent.speed * weaponComponent.speed /
-                                    weaponComponent.radiusOfDamageRegion
-                    );
+                                    weaponComponent.radiusOfDamageRegion);
         }
         return physicsComponent;
     }
@@ -208,7 +205,6 @@ public class WeaponSystem extends System implements ECSEventListener {
         graphicsComponent.rotatable = true;
         graphicsComponent.isAnimated = true;
         graphicsComponent.interval = 10;
-        graphicsComponent.frames = 8;
         graphicsComponent.animationSequence = GraphicsSystem.BULLET_ANIMATION;
         return graphicsComponent;
     }

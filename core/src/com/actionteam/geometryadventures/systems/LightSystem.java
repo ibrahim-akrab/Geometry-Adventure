@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,7 +53,7 @@ public class LightSystem extends System {
         }
     }
 
-    public LightSystem(GameUtils gameUtils) throws IOException {
+    public LightSystem(GameUtils gameUtils) throws FileNotFoundException {
         super(Components.LIGHT_COMPONENT_CODE, Components.PHYSICS_COMPONENT_CODE,
                 Components.CACHE_COMPONENT_CODE);
         // load shader
@@ -71,11 +72,12 @@ public class LightSystem extends System {
 
     /**
      * Loads vertex and fragment shader
+     *
      * @param gameUtils a reference of game utils to open files
      */
     private void loadShader(GameUtils gameUtils) {
         try {
-            InputStream  fis = gameUtils.openFile("vertex.glsl");
+            InputStream fis = gameUtils.openFile("vertex.glsl");
 
             // load vertex shader in memory
             StringBuilder vertex = new StringBuilder();
@@ -133,7 +135,7 @@ public class LightSystem extends System {
     @Override
     protected void ecsManagerAttached() {
     }
-    
+
     @Override
     public void update(float dt) {
         shader.begin();

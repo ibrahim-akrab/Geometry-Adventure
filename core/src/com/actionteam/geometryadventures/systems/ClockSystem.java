@@ -71,9 +71,8 @@ public class ClockSystem extends System implements ECSEventListener {
         clock += dt * 1000;
         if (isLevelRunning) {
             gameTime += dt * 1000;
-            gameSeconds += dt;
+            gameSeconds = (gameSeconds + dt) % 60;
             gameMinutes += dt / 60;
-            if (gameSeconds >= 60) gameSeconds -= 60;
         }
 
         // see if any task is due and do it
@@ -117,10 +116,11 @@ public class ClockSystem extends System implements ECSEventListener {
     }
 
     /**
-     * Adds task to be done
+     * Adds a task to the task queue
+     *
      * @param task task to be added
      */
-    void addTask(Task task) {
+    private void addTask(Task task) {
         tasks.add(task);
     }
 

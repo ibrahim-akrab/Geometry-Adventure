@@ -13,24 +13,27 @@ import com.badlogic.gdx.Gdx;
  * Created by Ibrahim M. Akrab on 5/3/18.
  * ibrahim.m.akrab@gmail.com
  */
-public class CollectionSystem extends System implements ECSEventListener{
+public class CollectionSystem extends System implements ECSEventListener {
 
-    public CollectionSystem(){ super(Components.COLLECTIBLE_COMPONENT_CODE);}
+    public CollectionSystem() {
+        super(Components.COLLECTIBLE_COMPONENT_CODE);
+    }
 
     /**
      * handles when an event it is subscribed to is fired
+     *
      * @param eventCode determines event's type
-     * @param message event's data
+     * @param message   event's data
      * @return true of event has been handled
      */
     @Override
     public boolean handle(int eventCode, Object message) {
-        switch (eventCode){
+        switch (eventCode) {
             case ECSEvents.COLLECTIBLE_COLLIDED_EVENT:
                 int[] collectibleData = (int[]) message;
                 int collectibleId = collectibleData[0];
                 int collectorId = collectibleData[1];
-                if (collect(collectibleId, collectorId)){
+                if (collect(collectibleId, collectorId)) {
                     fireEvents(collectibleId, collectorId);
                     removeCollectible(collectibleId);
                     return true;
@@ -53,17 +56,18 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     /**
      * handles giving collectible to the player
+     *
      * @param collectibleId
      * @param collectorId
      * @return true if it was collected, false otherwise
      */
-    private boolean collect(int collectibleId, int collectorId){
-        if (!ecsManager.entityHasComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE)){
+    private boolean collect(int collectibleId, int collectorId) {
+        if (!ecsManager.entityHasComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE)) {
             return false;
         }
         CollectibleComponent collectibleComponent = (CollectibleComponent)
                 ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
-        if (collectibleComponent.type == CollectibleComponent.COIN){
+        if (collectibleComponent.type == CollectibleComponent.COIN) {
             CollectorComponent collectorComponent = (CollectorComponent)
                     ecsManager.getComponent(collectorId, Components.COLLECTOR_COMPONENT_CODE);
             collectorComponent.coinCount += collectibleComponent.value;
@@ -74,13 +78,14 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     /**
      * fires correct event when a collectible is collected
+     *
      * @param collectibleId
      * @param collectorId
      */
-    private void fireEvents(int collectibleId, int collectorId){
+    private void fireEvents(int collectibleId, int collectorId) {
         CollectibleComponent collectibleComponent = (CollectibleComponent)
                 ecsManager.getComponent(collectibleId, Components.COLLECTIBLE_COMPONENT_CODE);
-        switch (collectibleComponent.type){
+        switch (collectibleComponent.type) {
             case CollectibleComponent.COIN:
                 ecsManager.fireEvent(ECSEvents.coinCollectedEvent(collectorId, collectibleComponent.value));
                 Gdx.app.log("collection system", "COIN COLLECTED");
@@ -100,9 +105,10 @@ public class CollectionSystem extends System implements ECSEventListener{
 
     /**
      * removes collectible so that it appears it has been collected
+     *
      * @param collectibleId
      */
-    private void removeCollectible(int collectibleId){
+    private void removeCollectible(int collectibleId) {
         ecsManager.removeEntity(collectibleId);
     }
 }

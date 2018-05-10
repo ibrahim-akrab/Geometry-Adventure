@@ -76,12 +76,8 @@ public class CacheSystem extends System implements ECSEventListener {
                 Components.CACHE_COMPONENT_CODE);
         CompEnt ent = new CompEnt(pc, cc, entityId);
         entityList.add(ent);
-        if (Math.abs(ent.pc.position.x - centerX) < OUTER_RADIUS &&
-                Math.abs(ent.pc.position.y - centerY) < OUTER_RADIUS) {
-            ent.cc.isCached = true;
-        } else {
-            ent.cc.isCached = false;
-        }
+        ent.cc.isCached = Math.abs(ent.pc.position.x - centerX) < OUTER_RADIUS &&
+                Math.abs(ent.pc.position.y - centerY) < OUTER_RADIUS;
     }
 
     /**
@@ -129,12 +125,8 @@ public class CacheSystem extends System implements ECSEventListener {
      */
     private void updateCache() {
         for (CompEnt e : entityList) {
-            if (Math.abs(e.pc.position.x - centerX) < OUTER_RADIUS &&
-                    Math.abs(e.pc.position.y - centerY) < OUTER_RADIUS) {
-                e.cc.isCached = true;
-            } else {
-                e.cc.isCached = false;
-            }
+            e.cc.isCached = Math.abs(e.pc.position.x - centerX) < OUTER_RADIUS &&
+                    Math.abs(e.pc.position.y - centerY) < OUTER_RADIUS;
         }
     }
 

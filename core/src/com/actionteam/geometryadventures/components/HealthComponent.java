@@ -10,9 +10,13 @@ public class HealthComponent extends Component {
     public int health;
     public boolean isDead = false;
 
-
     public HealthComponent() {
+        this(0);
+    }
+
+    public HealthComponent(int health) {
         super(Components.HEALTH_COMPONENT_CODE);
+        this.health = health;
     }
 
     /**

@@ -36,16 +36,29 @@ public class PhysicsSystem extends System implements ECSEventListener {
         ecsManager.subscribe(ECSEvents.UNFREEZE_EVENT, this);
     }
 
+    /**
+     * Iterates over all entities and updates their positions and velocities
+     *
+     * @param dt delta time from last update
+     */
     @Override
     public void update(float dt) {
         for (int entity : entities) {
             PhysicsComponent physicsComponent = (PhysicsComponent) ecsManager.getComponent(entity,
                     Components.PHYSICS_COMPONENT_CODE);
+            // if entity is freezed, then do nothing
             if (!physicsComponent.isFreezed)
                 update(physicsComponent, dt, entity);
         }
     }
 
+    /**
+     * Updates the position of physics component
+     *
+     * @param physicsComponent physics component to be update
+     * @param dt               delta time from last update
+     * @param entityID         entity id of the owner of the physics component
+     */
     private void update(PhysicsComponent physicsComponent, float dt, int entityID) {
         // update velocity
         physicsComponent.velocity.add(physicsComponent.acceleration.scl(dt))

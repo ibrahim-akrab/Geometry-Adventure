@@ -4,6 +4,7 @@ import com.actionteam.geometryadventures.components.Components;
 import com.actionteam.geometryadventures.components.ControlComponent;
 import com.actionteam.geometryadventures.components.HealthComponent;
 import com.actionteam.geometryadventures.components.ScoreComponent;
+import com.actionteam.geometryadventures.ecs.ECSEvent;
 import com.actionteam.geometryadventures.ecs.ECSEventListener;
 import com.actionteam.geometryadventures.ecs.System;
 import com.actionteam.geometryadventures.events.ECSEvents;
@@ -112,15 +113,16 @@ public class HudSystem extends System implements ECSEventListener {
     }
 
     /**
-     * subscribes to resize event
+     * Subscribes to resize event
      */
     @Override
     protected void ecsManagerAttached() {
         ecsManager.subscribe(ECSEvents.RESIZE_EVENT, this);
+        ecsManager.subscribe(ECSEvents.DISPOSE_EVENT, this);
     }
 
     /**
-     * draws hud
+     * Draws hud
      *
      * @param dt delta time from last draw
      */
@@ -222,6 +224,9 @@ public class HudSystem extends System implements ECSEventListener {
                 int[] size = (int[]) message;
                 resize(size[0], size[1]);
                 return true;
+            case ECSEvents.DISPOSE_EVENT:
+                dispose();
+                break;
         }
         return false;
     }
@@ -255,5 +260,12 @@ public class HudSystem extends System implements ECSEventListener {
     public void setTextureAtlas(TextureAtlas atlas) {
         this.healthRegion = atlas.findRegion("heart", 0);
         this.coinRegion = atlas.findRegion("coin", 0);
+    }
+
+
+    private void dispose() {
+        font.dispose();
+        shapeRenderer.dispose();
+        batch.dispose();
     }
 }

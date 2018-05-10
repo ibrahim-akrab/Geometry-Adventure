@@ -35,6 +35,9 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     private int leftPointer;
     private int rightPointer;
     private int entityId;
+
+    // are w,a,s,d keys down
+    // used for keyboard
     private boolean wDown, aDown, sDown, dDown;
 
     public ControlSystem() {
@@ -84,25 +87,45 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (screenX < Gdx.graphics.getWidth() / 2) {
+            handleLeftTouch(screenX, screenY, pointer);
             Gdx.app.log("ControlSystem", "left touch");
-            if (controlComponent.isLeftTouchDown) return true;
-            controlComponent.isLeftTouchDown = true;
-            controlComponent.leftInitialX = screenX;
-            controlComponent.leftInitialY = screenY;
-            controlComponent.leftX = screenX;
-            controlComponent.leftY = screenY;
-            leftPointer = pointer;
         } else {
+            handleRightTouch(screenX, screenY, pointer);
             Gdx.app.log("ControlSystem", "right touch");
-            if (controlComponent.isRightTouchDown) return true;
-            controlComponent.isRightTouchDown = true;
-            controlComponent.rightInitialX = screenX;
-            controlComponent.rightInitialY = screenY;
-            controlComponent.rightX = screenX;
-            controlComponent.rightY = screenY;
-            rightPointer = pointer;
         }
         return true;
+    }
+
+    /**
+     * Updates control component of the touch on the right side
+     * @param screenX x coordinate of the screen
+     * @param screenY y coordinate of the screen
+     * @param pointer touch pointer
+     */
+    private void handleRightTouch(int screenX, int screenY, int pointer) {
+        if (controlComponent.isRightTouchDown) return;
+        controlComponent.isRightTouchDown = true;
+        controlComponent.rightInitialX = screenX;
+        controlComponent.rightInitialY = screenY;
+        controlComponent.rightX = screenX;
+        controlComponent.rightY = screenY;
+        rightPointer = pointer;
+    }
+
+    /**
+     * Updates control component of the touch on the left side
+     * @param screenX x coordinate of the screen
+     * @param screenY y coordinate of the screen
+     * @param pointer touch pointer
+     */
+    private void handleLeftTouch(int screenX, int screenY, int pointer) {
+        if (controlComponent.isLeftTouchDown) return;
+        controlComponent.isLeftTouchDown = true;
+        controlComponent.leftInitialX = screenX;
+        controlComponent.leftInitialY = screenY;
+        controlComponent.leftX = screenX;
+        controlComponent.leftY = screenY;
+        leftPointer = pointer;
     }
 
     /**
@@ -175,6 +198,7 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
                 ecsManager.fireEvent(castEvent);
             }
         }
+        // update rotation angle
         physicsComponent.rotationAngle = -angle * MathUtils.radiansToDegrees;
         if (physicsComponent.rotationAngle < 0) physicsComponent.rotationAngle += 360;
     }
@@ -262,6 +286,9 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         return false;
     }
 
+    /**
+     * update player speed based on pressed keys
+     */
     private void updateMovementDirection() {
         if (!wDown && !dDown && !aDown && !sDown) {
             physicsComponent.velocity.setZero();
@@ -275,7 +302,7 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
         if (dDown)
             angle /= 2;
         if (aDown)
-            angle = angle == 0 ? (float) Math.PI: (angle + (float) Math.PI) / 2;
+            angle = angle == 0 ? (float) Math.PI : (angle + (float) Math.PI) / 2;
         if (sDown && dDown) angle = 7 * (float) Math.PI / 4;
         physicsComponent.velocity.x = (float) (controlComponent.maximumSpeed * Math.cos(angle));
         physicsComponent.velocity.y = (float) (controlComponent.maximumSpeed * Math.sin(angle));
@@ -286,5 +313,4 @@ public class ControlSystem extends System implements InputProcessor, ECSEventLis
     public boolean keyTyped(char character) {
         return false;
     }
-
 }

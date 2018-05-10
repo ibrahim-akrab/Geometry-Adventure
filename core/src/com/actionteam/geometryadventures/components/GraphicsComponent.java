@@ -17,14 +17,13 @@ public class GraphicsComponent extends Component {
     public Array<TextureAtlas.AtlasRegion> regions;
     public boolean isAnimated;
     public int[] animationSequence;
-    public int frames;
     public int interval; // in milliseconds
     public float offsetX;
     public float offsetY;
-    public float rotationAngle;
     public boolean rotatable;
     public boolean scripted;
     public int indexOffset;
+    public int frames;
 
     public GraphicsComponent() {
         super(Components.GRAPHICS_COMPONENT_CODE);
@@ -33,7 +32,6 @@ public class GraphicsComponent extends Component {
         height = 1.02f;
         isAnimated = false;
         animationSequence = null;
-        frames = 0;
         interval = 70;
         offsetX = 0;
         offsetY = 0;
@@ -42,8 +40,13 @@ public class GraphicsComponent extends Component {
         indexOffset = 0;
     }
 
+    public int frames() {
+        if(animationSequence == null) return frames;
+        return animationSequence.length;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "GraphicsComponent - textureName:" + textureName + ", width: " + width +
                 ", height: " + height;
     }
